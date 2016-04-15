@@ -11,6 +11,6 @@ This ride­sharing system will serve as the foundation of our parallelization mo
 chunks.
 
 ## What methods does this library expose?
-​* `map()`
+* `map()`
 * `filter()`
 * `reduce()`
