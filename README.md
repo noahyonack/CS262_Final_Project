@@ -28,3 +28,5 @@ Nose is a Python package that makes running the tests themselves easy. To instal
 To run, navigate to the root directory. Then run:
 
 `nosetests`
+
+Test files live in `/parallelogram/tests/` and are of the form `test[METHOD].py`
