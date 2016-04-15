@@ -19,9 +19,9 @@ chunks.
 
 `MANIFEEST.in`: Tells setuptools to include the README when generating source distributions. Otherwise, only Python files will be included.
 
-## How can I run the tests?
+## How can I run or write tests?
 
-Nose is a Python package that makes running the tests themselves easy. To install:
+Nose is a Python package that makes running the tests themselves easy. To install, run:
 
 `pip install nose`
 

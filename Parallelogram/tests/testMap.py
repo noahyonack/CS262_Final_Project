@@ -8,6 +8,10 @@ from parallelogram import parallelogram
 class TestMap(unittest.TestCase):
 
 	def test_map(self):
-		output = parallelogram.map(1,2)
-		self.assertEqual(output, 1)
+		
+		def foo(elt):
+			return elt + 1
+		
+		output = parallelogram.map([1,2,3], foo)
+		self.assertEqual(output, [2,3,4])
 

@@ -4,7 +4,6 @@ reduce().
 '''
 
 def map(data, foo):
-	# for index, elt in data:
-	# 	data[index] = foo(elt)
-	# return data
-	return 1
+	for index, elt in enumerate(data):
+		data[index] = foo(elt)
+	return data
