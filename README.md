@@ -1,6 +1,6 @@
 # This is Parallelogram.
 
-Parallelogram is a parallelization library that distributes computationally intensive programs across machines in a distributed system using distribution mechanism similar to the ride-sharing service Uber.
+Parallelogram is a parallelization library that distributes computationally intensive programs across machines in a distributed system using a distribution model similar to that of the ride-sharing service Uber.
 
 ## How exactly does distribution work?
 
