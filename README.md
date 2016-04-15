@@ -2,6 +2,8 @@
 
 Parallelogram is a parallelization package that distributes computationally intensive programs across machines in a distributed system using a distribution model similar to that of the ride-sharing service Uber.
 
+(helpful tips on creating a good package structure can be found <a href"https://python-packaging.readthedocs.org/en/latest/everything.html">here</a>)
+
 ## How exactly does distribution work?
 
 Uber has a pool of users that can be classified as

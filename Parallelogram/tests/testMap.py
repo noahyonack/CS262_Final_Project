@@ -14,4 +14,3 @@ class TestMap(unittest.TestCase):
 		
 		output = parallelogram.map([1,2,3], foo)
 		self.assertEqual(output, [2,3,4])
-
