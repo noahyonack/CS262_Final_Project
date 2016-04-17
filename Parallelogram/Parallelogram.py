@@ -57,10 +57,3 @@ def reduce(foo, data):
 		# once the function has been applied, remove the old element
 		data.pop(1)
 	return data[0]
-
-
-
-
-
-
-
