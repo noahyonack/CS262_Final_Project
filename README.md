@@ -4,6 +4,10 @@ Parallelogram is a parallelization package that distributes computationally inte
 
 NOTE: Helpful tips on creating a good package structure can be found [here](https://python-packaging.readthedocs.org/en/latest/everything.html)
 
+## To begin using:
+
+Clone and `cd` into the repository. Simply run `python setup.py install` to install the package. Some systems may require `sudo` access.
+
 ## How exactly does distribution work?
 
 Uber has a pool of users that can be classified as
@@ -23,11 +27,7 @@ chunks.
 
 ## How can I run or write tests?
 
-Nose is a Python package that makes running the tests themselves easy. To install, run:
-
-`pip install nose`
-
-To run, navigate to the root directory. Then simply run:
+Nose is a Python package that makes running the tests themselves easy. It automatically gets installed when you run `python setup.py install`. To run tests, navigate to the root directory. Then:
 
 `nosetests`
 
