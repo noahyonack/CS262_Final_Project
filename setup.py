@@ -9,7 +9,7 @@ setup(name='parallelogram',
       description='A parallelization library for distributed machines',
       url='https://github.com/noahyonack/parallelogram',
       author='Aaron Kabcenell, Jack Murtagh, Noah Yonack',
-      author_email='flyingcircus@example.com',
+      author_email='noahyonack@college.harvard.edu',
       license='APACHE 2.0',
       packages=['parallelogram'],
       # this parameter holds a list of 3rd-party 
