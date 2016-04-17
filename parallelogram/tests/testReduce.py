@@ -9,8 +9,8 @@ class TestReduce(unittest.TestCase):
 
 	def test_reduce(self):
 		
-		def test1(elt, index):
-			return elt + 1
+		def test1(elt1, elt2):
+			return elt1 + elt2
 		
-		output = parallelogram.reduce([1,2,3], test1)
-		self.assertEqual(output, [2,3,4])
+		output = parallelogram.reduce(test1, [1,2,3])
+		self.assertEqual(output, 6)

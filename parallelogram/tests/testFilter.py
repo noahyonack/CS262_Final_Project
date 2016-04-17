@@ -12,5 +12,5 @@ class TestFilter(unittest.TestCase):
 		def test1(elt, index):
 			return elt % 2 == 0
 		
-		output = parallelogram.filter([1,2,3,4,5,6], test1)
+		output = parallelogram.filter(test1, [1,2,3,4,5,6])
 		self.assertEqual(output, [2,4,6])

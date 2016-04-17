@@ -12,5 +12,5 @@ class TestMap(unittest.TestCase):
 		def test1(elt, index):
 			return elt + 1
 		
-		output = parallelogram.map([1,2,3], test1)
+		output = parallelogram.map(test1, [1,2,3])
 		self.assertEqual(output, [2,3,4])
