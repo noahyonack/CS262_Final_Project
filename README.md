@@ -27,7 +27,7 @@ Nose is a Python package that makes running the tests themselves easy. To instal
 
 `pip install nose`
 
-To run, navigate to the root directory. Then run:
+To run, navigate to the root directory. Then simply run:
 
 `nosetests`
 
