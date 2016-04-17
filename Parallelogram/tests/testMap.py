@@ -9,8 +9,8 @@ class TestMap(unittest.TestCase):
 
 	def test_map(self):
 		
-		def foo(elt):
+		def test1(elt, index):
 			return elt + 1
 		
-		output = parallelogram.map([1,2,3], foo)
+		output = parallelogram.map([1,2,3], test1)
 		self.assertEqual(output, [2,3,4])
