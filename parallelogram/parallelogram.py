@@ -20,14 +20,17 @@ CHUNK_SIZE = 100
 
 def map(foo, data):
 	'''
-	Map a function foo() over data (of type list). Map modifies data in place
-	and supplies foo() with both the current element of the list and its
-	respective index.
+	Map a function foo() over chunks of data (of type list) and 
+	join the mapped chunks before returning back to the caller. 
+
+	This mapping will likely not be done on a single machine (unless the data 
+	to be mapped over is so small that sending it over a network would be 
+	inefficient.)
 	'''
 	result = []
 	chunks = helpers._chunk_list(data, CHUNK_SIZE)
 	for index, chunk in enumerate(chunks):
-		mapped_chunk = _single_map(foo, chunk)
+		mapped_chunk = helpers._single_map(foo, chunk)
 		result.extend(mapped_chunk)
 		# ideally, we'd like to pop the chunk after processing 
 		# it to preserve memory, but this messes up the loop
@@ -36,21 +39,22 @@ def map(foo, data):
 
 def filter(foo, data):
 	'''
-	Filter data (of type list) via a predicate formatted as a function. For 
-	example, if data is a list of natural numbers from 1 to N:
+	Filter a function foo() over chunks of data (of type list) and 
+	join the filtered chunks before returning back to the caller. 
 
-		[1, 2, 3, ..., N]
-
-	And you'd like to filter this list so that it contains only even numbers, 
-	then simply define foo() to be:
-
-		def foo(elt, index):
-			return elt % 2 == 0
+	This filtering will likely not be done on a single machine (unless the data 
+	to be filtered over is so small that sending it over a network would be 
+	inefficient.)
 	'''
-	for index, elt in enumerate(data):
-		if not foo(elt, index):
-			data.pop(index)
-	return data
+	result = []
+	chunks = helpers._chunk_list(data, CHUNK_SIZE)
+	for index, chunk in enumerate(chunks):
+		filtered_chunk = helpers._single_filter(foo, chunk)
+		result.extend(filtered_chunk)
+		# ideally, we'd like to pop the chunk after processing 
+		# it to preserve memory, but this messes up the loop
+		# chunks.pop(index)
+	return result
 
 def reduce(foo, data):
 	'''
