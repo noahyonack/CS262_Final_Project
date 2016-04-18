@@ -20,9 +20,19 @@ CHUNK_SIZE = 100
 
 def map(foo, data):
 	'''
-	TODO: write comment
+	Map a function foo() over data (of type list). Map modifies data in place
+	and supplies foo() with both the current element of the list and its
+	respective index.
 	'''
-	return helpers._chunk_map(foo, data)
+	result = []
+	chunks = helpers._chunk_list(data, CHUNK_SIZE)
+	for index, chunk in enumerate(chunks):
+		mapped_chunk = _single_map(foo, chunk)
+		result.extend(mapped_chunk)
+		# ideally, we'd like to pop the chunk after processing 
+		# it to preserve memory, but this messes up the loop
+		# chunks.pop(index)
+	return result
 
 def filter(foo, data):
 	'''
