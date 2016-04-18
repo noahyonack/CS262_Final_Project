@@ -1,17 +1,28 @@
 ''' 
 This file contains our library's implementations of map(), filter(), and 
 reduce().
+
+Imports helpers.py, which contains 'private' helper functions
 '''
+
+import helpers
+
+'''
+Our minimum chunk size in terms of number of elements. When asked to map(),
+filter(), or reduce() a presumably large list, we chunk it in pieces of 
+CHUNK_SIZE and send those chunks to other physical machines on the network.
+
+If the list on which to apply a function foo() is smaller than CHUNK_SIZE, 
+it makes more sense to have the calling machine process the chunk instead
+of sending it over the wire.
+'''
+CHUNK_SIZE = 100
 
 def map(foo, data):
 	'''
-	Map a function foo() over data (of type list). Map modifies data in place
-	and supplies foo() with both the current element of the list and its
-	respective index.
+	TODO: write comment
 	'''
-	for index, elt in enumerate(data):
-		data[index] = foo(elt, index)
-	return data
+	return helpers._chunk_map(foo, data)
 
 def filter(foo, data):
 	'''
