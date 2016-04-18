@@ -54,3 +54,34 @@ def _single_filter(foo, data):
 		if not foo(elt, index):
 			data.pop(index)
 	return data
+
+def _single_reduce(foo, data):
+	'''
+	Reduce data (of type list) by continually applying foo() to subsequent
+	elements of data. For exmaple, if data is a list of elements e_1 to e_N:
+
+		[e_1, e_2, e_3, ..., e_N]
+
+	And you'd like to reduce this list to the sum of all the elements, then 
+	simply define foo() to be:
+
+		def foo(elt1, elt2):
+			return elt1 + elt2
+
+	foo() is applied to data in the following way:
+
+		1. [foo(e_1, e_2), e_3, ..., e_N]
+		2. [foo(foo(e_1, e_2), e_3), ..., e_N]
+		...
+		N - 1. [foo(foo(foo(e_1, e_2), e_3), ..., e_N)]
+
+	This function is meant to be used on a chunk, which is a portion of 
+	a list designated for a single machine. This function is called by 
+	parallelogram.reduce()
+	'''
+	# as explained above, we need to apply foo() N-1 times
+	for _ in range(len(data) - 1):
+		data[0] = foo(data[0], data[1])
+		# once the function has been applied, remove the old element
+		data.pop(1)
+	return data[0]

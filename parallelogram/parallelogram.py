@@ -18,7 +18,7 @@ of sending it over the wire.
 '''
 CHUNK_SIZE = 100
 
-def map(foo, data):
+def p_map(foo, data):
 	'''
 	Map a function foo() over chunks of data (of type list) and 
 	join the mapped chunks before returning back to the caller. 
@@ -37,7 +37,7 @@ def map(foo, data):
 		# chunks.pop(index)
 	return result
 
-def filter(foo, data):
+def p_filter(foo, data):
 	'''
 	Filter a function foo() over chunks of data (of type list) and 
 	join the filtered chunks before returning back to the caller. 
@@ -56,29 +56,29 @@ def filter(foo, data):
 		# chunks.pop(index)
 	return result
 
-def reduce(foo, data):
+def p_reduce(foo, data):
 	'''
-	Reduce data (of type list) by continually applying foo() to subsequent
-	elements of data. For exmaple, if data is a list of elements e_1 to e_N:
+	Reduce a function foo() over chunks of data (of type list) and 
+	then reduce the results before returning back to the caller. 
 
-		[e_1, e_2, e_3, ..., e_N]
+	This reduction will likely not be done on a single machine (unless the data 
+	to be reduced over is so small that sending it over a network would be 
+	inefficient.)
 
-	And you'd like to reduce this list to the sum of all the elements, then 
-	simply define foo() to be:
-
-		def foo(elt1, elt2):
-			return elt1 + elt2
-
-	foo() is applied to data in the following way:
-
-		1. [foo(e_1, e_2), e_3, ..., e_N]
-		2. [foo(foo(e_1, e_2), e_3), ..., e_N]
-		...
-		N - 1. [foo(foo(foo(e_1, e_2), e_3), ..., e_N)]
+	After the intial chunks have been reduced, we still need to reduce
+	the results of the initial reduction, so we call our function again
+	and either redistribute the initial results or simply locally-process
+	chunks, depending on the size of the initial results array.
 	'''
-	# as explained above, we need to apply foo() N-1 times
-	for _ in range(len(data) - 1):
-		data[0] = foo(data[0], data[1])
-		# once the function has been applied, remove the old element
-		data.pop(1)
-	return data[0]
+	results = []
+	chunks = helpers._chunk_list(data, CHUNK_SIZE)
+	for index, chunk in enumerate(chunks):
+		reduced_chunk = helpers._single_filter(foo, chunk)
+		results.extend(reduced_chunk)
+		# ideally, we'd like to pop the chunk after processing 
+		# it to preserve memory, but this messes up the loop
+		# chunks.pop(index)
+	if (len(results) < 1000):
+		return helpers._single_reduce(foo, results)
+	else:
+		return _reduce(foo, data)
