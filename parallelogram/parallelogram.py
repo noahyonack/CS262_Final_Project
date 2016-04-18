@@ -19,7 +19,7 @@ If the list on which to apply a function foo() is smaller than CHUNK_SIZE,
 it makes more sense to have the calling machine process the chunk instead
 of sending it over the wire.
 '''
-CHUNK_SIZE = 100
+CHUNK_SIZE = 2
 
 def p_map(foo, data):
 	'''
@@ -76,12 +76,12 @@ def p_reduce(foo, data):
 	results = []
 	chunks = helpers._chunk_list(data, CHUNK_SIZE)
 	for index, chunk in enumerate(chunks):
-		reduced_chunk = helpers._single_filter(foo, chunk)
-		results.extend(reduced_chunk)
+		reduced_chunk = helpers._single_reduce(foo, chunk)
+		results.append(reduced_chunk)
 		# ideally, we'd like to pop the chunk after processing 
 		# it to preserve memory, but this messes up the loop
 		# chunks.pop(index)
-	if (len(results) < 1000):
+	if (len(results) <= CHUNK_SIZE):
 		return helpers._single_reduce(foo, results)
 	else:
-		return _reduce(foo, data)
+		return p_reduce(foo, data)
