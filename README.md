@@ -17,9 +17,15 @@ This ride­sharing system will serve as the foundation of our parallelization mo
 chunks.
 
 ## What methods does this library expose?
-* `map()`
-* `filter()`
-* `reduce()`
+* `p_map(foo, data)`
+    * Map a function `foo()` over `data` (of type list). `p_map()` modifies `data` in place
+and supplies `foo()` with both the current element of the list and its
+respective index.
+* `p_filter(foo, data)`
+    * Filter `data` (of type list) via a predicate formatted as a function.
+* `p_reduce(foo, data)`
+    * Reduce `data` (of type list) by continually applying `foo()` to subsequent
+	elements of `data`.
 
 ## Package Structure
 

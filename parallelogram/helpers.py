@@ -1,6 +1,10 @@
 ''' 
 This file contains helper functions for use in our parallelized 
 implementations  of p_map(), p_filter(), and p_reduce()
+
+Three of the methods in this file are prefixed by "_single_", indicating
+that they will be used as helper functions for single chunks of data (as
+opposed to large lists that comprise multiple chunks)
 '''
 
 def _chunk_list(data, sz):
