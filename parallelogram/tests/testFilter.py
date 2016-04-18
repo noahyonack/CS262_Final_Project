@@ -1,5 +1,5 @@
 '''
-Ensures correctness for filter() using the PyUnit (unittest) package
+Ensures correctness for p_filter() using the PyUnit (unittest) package
 '''
 
 import unittest

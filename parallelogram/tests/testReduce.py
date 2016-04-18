@@ -1,5 +1,5 @@
 '''
-Ensures correctness for reduce() using the PyUnit (unittest) package
+Ensures correctness for p_reduce() using the PyUnit (unittest) package
 '''
 
 import unittest

@@ -1,6 +1,9 @@
 ''' 
-This file contains our library's implementations of map(), filter(), and 
-reduce().
+This file contains our library's implementations of p_map(), p_filter(), and 
+p_reduce().
+
+We use the letter "p" because it indicates that the method is paralellized
+and because doing so ensures that our functions are properly namespaced
 
 Imports helpers.py, which contains 'private' helper functions
 '''

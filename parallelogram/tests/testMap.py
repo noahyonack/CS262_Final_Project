@@ -1,5 +1,5 @@
 '''
-Ensures correctness for map() using the PyUnit (unittest) package
+Ensures correctness for p_map() using the PyUnit (unittest) package
 '''
 
 import unittest

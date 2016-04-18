@@ -1,6 +1,6 @@
 ''' 
 This file contains helper functions for use in our parallelized 
-implementations  of map(), filter(), and reduce()
+implementations  of p_map(), p_filter(), and p_reduce()
 '''
 
 def _chunk_list(data, sz):
@@ -27,7 +27,7 @@ def _single_map(foo, data):
 
 	This function is meant to be used on a chunk, which is a portion of 
 	a list designated for a single machine. This function is called by 
-	parallelogram.map()
+	parallelogram.p_map()
 	'''
 	for index, elt in enumerate(data):
 		data[index] = foo(elt, index)
@@ -48,7 +48,7 @@ def _single_filter(foo, data):
 
 	This function is meant to be used on a chunk, which is a portion of 
 	a list designated for a single machine. This function is called by 
-	parallelogram.filter()
+	parallelogram.p_filter()
 	'''
 	for index, elt in enumerate(data):
 		if not foo(elt, index):
@@ -77,7 +77,7 @@ def _single_reduce(foo, data):
 
 	This function is meant to be used on a chunk, which is a portion of 
 	a list designated for a single machine. This function is called by 
-	parallelogram.reduce()
+	parallelogram.p_reduce()
 	'''
 	# as explained above, we need to apply foo() N-1 times
 	for _ in range(len(data) - 1):
