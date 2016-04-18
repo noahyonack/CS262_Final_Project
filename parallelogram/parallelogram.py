@@ -19,7 +19,7 @@ If the list on which to apply a function foo() is smaller than CHUNK_SIZE,
 it makes more sense to have the calling machine process the chunk instead
 of sending it over the wire.
 '''
-CHUNK_SIZE = 2
+CHUNK_SIZE = 6
 
 def p_map(foo, data):
 	'''
@@ -84,4 +84,4 @@ def p_reduce(foo, data):
 	if (len(results) <= CHUNK_SIZE):
 		return helpers._single_reduce(foo, results)
 	else:
-		return p_reduce(foo, data)
+		return p_reduce(foo, results)

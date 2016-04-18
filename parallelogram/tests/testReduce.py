@@ -12,5 +12,5 @@ class TestReduce(unittest.TestCase):
 		def test1(elt1, elt2):
 			return elt1 + elt2
 		
-		output = parallelogram.p_reduce(test1, [1,2,3])
-		self.assertEqual(output, 6)
+		output = parallelogram.p_reduce(test1, [1,2,3,4,5,6])
+		self.assertEqual(output, 21)
