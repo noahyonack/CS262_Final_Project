@@ -1,4 +1,9 @@
-''' 
+import socket
+import cloudpickle as pickle
+import threading
+import Queue
+
+'''
 This file contains helper functions for use in our parallelized 
 implementations  of p_map(), p_filter(), and p_reduce()
 
@@ -6,6 +11,9 @@ Three of the methods in this file are prefixed by "_single_", indicating
 that they will be used as helper functions for single chunks of data (as
 opposed to large lists that comprise multiple chunks)
 '''
+
+DEFAULT_TIMEOUT = None #socket timeout
+IP_ADDRESS = 'localhost' #run sockets on localhost
 
 def _chunk_list(data, sz):
     '''
@@ -89,3 +97,90 @@ def _single_reduce(foo, data):
 		# once the function has been applied, remove the old element
 		data.pop(1)
 	return data[0]
+
+def _send_op(result, foo, chunk, op, index, port):
+    dict_sending = {'func': foo, 'chunk': chunk, 'op': op, 'index': index}
+    csts = threading.Thread(target = _client_socket_thread_send, args = (port, pickle.dumps(dict_sending)))
+    csts.start()
+    queue = Queue.Queue()
+    cstr = threading.Thread(target = _client_socket_thread_receive, args = (port+1, queue))
+    cstr.start()
+    cstr.join(timeout = None)
+    response = pickle.loads(queue.get())
+    print(response)
+    print('here')
+    result[response['index']] = response['chunk']
+    print(result)
+
+def _server_socket_thread_send(target_port, msg):
+    '''
+    Starts a client thread to send a message to the target port
+    :param target_port: The port to which the message should be sent
+    :param msg: The message to send
+    :return:
+    '''
+    socket.setdefaulttimeout(DEFAULT_TIMEOUT)
+    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    target_port = target_port
+    clientsocket.connect((IP_ADDRESS, target_port))
+    sent = clientsocket.send(msg)
+    if sent == 0:
+        raise RuntimeError("socket connection broken")
+    clientsocket.close()
+
+# based on examples from https://docs.python.org/2/howto/sockets.html
+def _server_socket_thread_receive(port, queue):
+    '''
+    Starts a server socket that listens on the input port and writes received messages to the queue. Has a blocking
+    infinite loop, so should be run as a separate thread
+    :param port: Port on which to listen for messages
+    :param queue: Queue to add messages to
+    '''
+    socket.setdefaulttimeout(DEFAULT_TIMEOUT)
+    serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serversocket.bind((IP_ADDRESS, port))
+    serversocket.listen(5)
+    queue = queue
+    while(True):
+        clientsocket, _ = serversocket.accept()
+        msg = clientsocket.recv(4096)
+        if msg == '':
+            raise RuntimeError("socket connection broken")
+        queue.put(msg)
+        clientsocket.close()
+
+# based on examples from https://docs.python.org/2/howto/sockets.html
+def _client_socket_thread_send(target_port, msg):
+    '''
+    Starts a client thread to send a message to the target port
+    :param target_port: The port to which the message should be sent
+    :param msg: The message to send
+    :return:
+    '''
+    socket.setdefaulttimeout(DEFAULT_TIMEOUT)
+    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    target_port = target_port
+    clientsocket.connect((IP_ADDRESS, target_port))
+    sent = clientsocket.send(msg)
+    if sent == 0:
+        raise RuntimeError("socket connection broken")
+    clientsocket.close()
+
+    # based on examples from https://docs.python.org/2/howto/sockets.html
+def _client_socket_thread_receive(port, queue):
+    '''
+    Starts a server socket that listens on the input port and writes received messages to the queue. Has a blocking
+    infinite loop, so should be run as a separate thread
+    :param port: Port on which to listen for messages
+    :param queue: Queue to add messages to
+    '''
+    socket.setdefaulttimeout(DEFAULT_TIMEOUT)
+    serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serversocket.bind((IP_ADDRESS, port))
+    serversocket.listen(5)
+    clientsocket, _ = serversocket.accept()
+    msg = clientsocket.recv(4096)
+    if msg == '':
+        raise RuntimeError("socket connection broken")
+    queue.put(msg)
+    clientsocket.close()

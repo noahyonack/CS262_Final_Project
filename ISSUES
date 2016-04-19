@@ -1,0 +1,2 @@
+Didn't benchmark it, but cloudpickle is probably really slow compared to cPickling the dataset and then cloudpickling the function...do we care?
+We also might get speedup from caching the pickled function if we expect repeated chunks to be passed, but that adds additional overhead

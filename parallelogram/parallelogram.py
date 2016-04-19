@@ -9,6 +9,9 @@ Imports helpers.py, which contains 'private' helper functions
 '''
 
 import helpers
+import threading
+import itertools
+
 
 '''
 Our minimum chunk size in terms of number of elements. When asked to map(),
@@ -20,25 +23,34 @@ it makes more sense to have the calling machine process the chunk instead
 of sending it over the wire.
 '''
 CHUNK_SIZE = 6
+PORT = 1100
 
 def p_map(foo, data):
-	'''
-	Map a function foo() over chunks of data (of type list) and 
-	join the mapped chunks before returning back to the caller. 
+    '''
+    Map a function foo() over chunks of data (of type list) and
+    join the mapped chunks before returning back to the caller.
 
-	This mapping will likely not be done on a single machine (unless the data 
-	to be mapped over is so small that sending it over a network would be 
-	inefficient.)
-	'''
-	result = []
-	chunks = helpers._chunk_list(data, CHUNK_SIZE)
-	for index, chunk in enumerate(chunks):
-		mapped_chunk = helpers._single_map(foo, chunk)
-		result.extend(mapped_chunk)
-		# ideally, we'd like to pop the chunk after processing 
+    This mapping will likely not be done on a single machine (unless the data
+    to be mapped over is so small that sending it over a network would be
+    inefficient.)
+    :param foo:
+    :param data:
+    :return:
+    '''
+    result = []
+    chunks = helpers._chunk_list(data, CHUNK_SIZE)
+    result = [None] * len(chunks)
+    compute_threads = [None] * len(chunks)
+    for index, chunk in enumerate(chunks):
+        compute_threads[index] = threading.Thread(target = helpers._send_op, args = (result, foo, chunk, 'map', index, PORT))
+        compute_threads[index].start()
+		# ideally, we'd like to pop the chunk after processing
 		# it to preserve memory, but this messes up the loop
 		# chunks.pop(index)
-	return result
+    #start all threads, and then block on completion of all threads
+    for thread in compute_threads:
+        thread.join()
+    return list(itertools.chain.from_iterable(result)) #flattens list
 
 def p_filter(foo, data):
 	'''
