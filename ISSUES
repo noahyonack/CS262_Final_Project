@@ -1,2 +1,3 @@
-Didn't benchmark it, but cloudpickle is probably really slow compared to cPickling the dataset and then cloudpickling the function...do we care?
-We also might get speedup from caching the pickled function if we expect repeated chunks to be passed, but that adds additional overhead
+1. Didn't benchmark it, but cloudpickle is probably really slow compared to cPickling the dataset and then cloudpickling the function...do we care?
+2. We also might get speedup from caching the pickled function if we expect repeated chunks to be passed, but that adds additional overhead
+3. We have to decide if this is to be run on an open or closed system. In an open system, we can't ensure that other machines on the network have the same packages installed, so the functions that we pickle will either have to be really small (and call no other functions) or we will have to send GBs of data over the wire. In a closed system, we can ensure that everyone has the same packages, so we can call whatever.
