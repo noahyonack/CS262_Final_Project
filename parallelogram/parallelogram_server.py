@@ -25,6 +25,7 @@ class Server(threading.Thread):
                 chunk = dict_received['chunk']
                 func = dict_received['func']
                 op = dict_received['op']
+
                 if op == 'map':
                     processed_chunk = helpers._single_map(func, chunk)
                 elif op == 'filter':
@@ -41,7 +42,8 @@ class Server(threading.Thread):
 
                 self.ssts = threading.Thread(
                     target = helpers._server_socket_thread_send, 
-                    args = (self.port+1, pickle.dumps(dict_sent)))
+                    args = (self.port + 1, pickle.dumps(dict_sent))
+                )
                 self.ssts.start()
 
 if __name__ == '__main__':
