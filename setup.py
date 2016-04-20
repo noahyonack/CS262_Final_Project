@@ -14,7 +14,7 @@ setup(name='parallelogram',
       packages=['parallelogram'],
       # this parameter holds a list of 3rd-party 
       # packages that our module depends on
-      install_requires= [],
+      install_requires= ['cloudpickle'],
       test_suite='nose.collector',
     	tests_require=['nose'],
       zip_safe=False)
