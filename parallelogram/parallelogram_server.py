@@ -13,7 +13,8 @@ class Server(threading.Thread):
     def run(self):
         self.sstr = threading.Thread(
             target = helpers._server_socket_thread_receive, 
-            args = (self.port, self.queue))
+            args = (self.port, self.queue)
+        )
         # makes sure the thread exits when the server exits so the 
         # whole program can exit. Doesn't elegantly shut down, but
         # seems to have no effect on the resources
