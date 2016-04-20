@@ -22,17 +22,17 @@ class Server(threading.Thread):
         while True:
             if not self.queue.empty():
                 dict_received = pickle.loads(self.queue.get())
-                if dict_received['op'] == 'map':
-                    processed_chunk = helpers._single_map(
-                        dict_received['func'], dict_received['chunk'])
-                elif dict_received['op'] == 'filter':
-                    processed_chunk = helpers._single_filter(
-                        dict_received['func'], dict_received['chunk'])
-                elif dict_received['op'] == 'reduce':
-                    processed_chunk = helpers._single_reduce(
-                        dict_received['func'], dict_received['chunk'])
+                chunk = dict_received['chunk']
+                func = dict_received['func']
+                op = dict_received['op']
+                if op == 'map':
+                    processed_chunk = helpers._single_map(func, chunk)
+                elif op == 'filter':
+                    processed_chunk = helpers._single_filter(func, chunk)
+                elif op == 'reduce':
+                    processed_chunk = helpers._single_reduce(func, chunk)
                 else:
-                    processed_chunk = 'This operation does not exist'
+                    processed_chunk = 'This operation does not exist.'
                 
                 dict_sent = {
                     'chunk': processed_chunk, 
