@@ -5,7 +5,7 @@ Ensures correctness for p_filter() using the PyUnit (unittest) package
 import unittest
 from parallelogram import parallelogram
 
-class TestFilter(unittest.TestCase):
+class TestFilter_Distributed(unittest.TestCase):
 
 	def test_filter(self):
 

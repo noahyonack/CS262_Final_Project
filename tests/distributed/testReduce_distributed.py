@@ -5,7 +5,7 @@ Ensures correctness for p_reduce() using the PyUnit (unittest) package
 import unittest
 from parallelogram import parallelogram
 
-class TestReduce(unittest.TestCase):
+class TestReduce_Distributed(unittest.TestCase):
 
 	def test_reduce(self):
 

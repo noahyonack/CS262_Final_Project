@@ -5,7 +5,7 @@ Ensures correctness for p_map() using the PyUnit (unittest) package
 import unittest
 from parallelogram import parallelogram
 
-class TestMap(unittest.TestCase):
+class TestMap_Distributed(unittest.TestCase):
 
 	def test_map(self):
 
