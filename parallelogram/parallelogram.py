@@ -40,7 +40,9 @@ def p_map(foo, data):
     result = [None] * len(chunks)
     compute_threads = [None] * len(chunks)
     for index, chunk in enumerate(chunks):
-        compute_threads[index] = threading.Thread(target = helpers._send_op, args = (result, foo, chunk, 'map', index, PORT))
+        compute_threads[index] = threading.Thread(
+            target = helpers._send_op, 
+            args = (result, foo, chunk, 'map', index, PORT))
         compute_threads[index].start()
 		# ideally, we'd like to pop the chunk after processing
 		# it to preserve memory, but this messes up the loop
@@ -67,7 +69,9 @@ def p_filter(foo, data):
     result = [None] * len(chunks)
     compute_threads = [None] * len(chunks)
     for index, chunk in enumerate(chunks):
-        compute_threads[index] = threading.Thread(target = helpers._send_op, args = (result, foo, chunk, 'filter', index, PORT))
+        compute_threads[index] = threading.Thread(
+            target = helpers._send_op, 
+            args = (result, foo, chunk, 'filter', index, PORT))
         compute_threads[index].start()
 		# ideally, we'd like to pop the chunk after processing
 		# it to preserve memory, but this messes up the loop
@@ -98,7 +102,9 @@ def p_reduce(foo, data):
     result = [None] * len(chunks)
     compute_threads = [None] * len(chunks)
     for index, chunk in enumerate(chunks):
-        compute_threads[index] = threading.Thread(target = helpers._send_op, args = (result, foo, chunk, 'reduce', index, PORT))
+        compute_threads[index] = threading.Thread(
+            target = helpers._send_op, 
+            args = (result, foo, chunk, 'reduce', index, PORT))
         compute_threads[index].start()
 		# ideally, we'd like to pop the chunk after processing
 		# it to preserve memory, but this messes up the loop
