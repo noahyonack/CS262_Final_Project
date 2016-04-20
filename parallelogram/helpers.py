@@ -107,10 +107,7 @@ def _send_op(result, foo, chunk, op, index, port):
     cstr.start()
     cstr.join(timeout = None)
     response = pickle.loads(queue.get())
-    print(response)
-    print('here')
     result[response['index']] = response['chunk']
-    print(result)
 
 def _server_socket_thread_send(target_port, msg):
     '''

@@ -19,11 +19,7 @@ class Server(threading.Thread):
         while True:
             if not self.queue.empty():
                 dict_received = pickle.loads(self.queue.get())
-                print(dict_received['op'])
-                print(dict_received['chunk'])
-                print(dict_received['func'])
                 if dict_received['op'] == 'map':
-                    print('here')
                     processed_chunk = helpers._single_map(dict_received['func'], dict_received['chunk'])
                 elif dict_received['op'] == 'filter':
                     processed_chunk = helpers._single_filter(dict_received['func'], dict_received['chunk'])
@@ -31,9 +27,7 @@ class Server(threading.Thread):
                     processed_chunk = helpers._single_reduce(dict_received['func'], dict_received['chunk'])
                 else:
                     processed_chunk = 'This operation does not exist'
-                print(processed_chunk)
                 dict_sent = {'chunk': processed_chunk, 'index': dict_received['index']}
-                print(dict_sent)
                 self.ssts = threading.Thread(target = helpers._server_socket_thread_send, args=(self.port+1, pickle.dumps(dict_sent)))
                 self.ssts.start()
 

@@ -12,7 +12,6 @@ import helpers
 import threading
 import itertools
 
-
 '''
 Our minimum chunk size in terms of number of elements. When asked to map(),
 filter(), or reduce() a presumably large list, we chunk it in pieces of 
@@ -37,7 +36,6 @@ def p_map(foo, data):
     :param data:
     :return:
     '''
-    result = []
     chunks = helpers._chunk_list(data, CHUNK_SIZE)
     result = [None] * len(chunks)
     compute_threads = [None] * len(chunks)
@@ -47,53 +45,75 @@ def p_map(foo, data):
 		# ideally, we'd like to pop the chunk after processing
 		# it to preserve memory, but this messes up the loop
 		# chunks.pop(index)
-    #start all threads, and then block on completion of all threads
+    #all threads started above, then we block on completion of all threads
     for thread in compute_threads:
         thread.join()
     return list(itertools.chain.from_iterable(result)) #flattens list
 
 def p_filter(foo, data):
-	'''
-	Filter a function foo() over chunks of data (of type list) and 
-	join the filtered chunks before returning back to the caller. 
+    '''
+    Filter a function foo() over chunks of data (of type list) and
+    join the filtered chunks before returning back to the caller.
 
-	This filtering will likely not be done on a single machine (unless the data 
-	to be filtered over is so small that sending it over a network would be 
+	This filtering will likely not be done on a single machine (unless the data
+	to be filtered over is so small that sending it over a network would be
 	inefficient.)
+
+	:param foo:
+	:param data:
+	:return:
 	'''
-	result = []
-	chunks = helpers._chunk_list(data, CHUNK_SIZE)
-	for index, chunk in enumerate(chunks):
-		filtered_chunk = helpers._single_filter(foo, chunk)
-		result.extend(filtered_chunk)
-		# ideally, we'd like to pop the chunk after processing 
+    chunks = helpers._chunk_list(data, CHUNK_SIZE)
+    result = [None] * len(chunks)
+    compute_threads = [None] * len(chunks)
+    for index, chunk in enumerate(chunks):
+        compute_threads[index] = threading.Thread(target = helpers._send_op, args = (result, foo, chunk, 'filter', index, PORT))
+        compute_threads[index].start()
+		# ideally, we'd like to pop the chunk after processing
 		# it to preserve memory, but this messes up the loop
 		# chunks.pop(index)
-	return result
+    #all threads started above, then we block on completion of all threads
+    for thread in compute_threads:
+        thread.join()
+    return list(itertools.chain.from_iterable(result)) #flattens list
 
 def p_reduce(foo, data):
-	'''
-	Reduce a function foo() over chunks of data (of type list) and 
-	then reduce the results before returning back to the caller. 
+    '''
+    Reduce a function foo() over chunks of data (of type list) and
+	then reduce the results before returning back to the caller.
 
-	This reduction will likely not be done on a single machine (unless the data 
-	to be reduced over is so small that sending it over a network would be 
+	This reduction will likely not be done on a single machine (unless the data
+	to be reduced over is so small that sending it over a network would be
 	inefficient.)
 
 	After the intial chunks have been reduced, we still need to reduce
 	the results of the initial reduction, so we call our function again
 	and either redistribute the initial results or simply locally-process
 	chunks, depending on the size of the initial results array.
-	'''
-	results = []
-	chunks = helpers._chunk_list(data, CHUNK_SIZE)
-	for index, chunk in enumerate(chunks):
-		reduced_chunk = helpers._single_reduce(foo, chunk)
-		results.append(reduced_chunk)
-		# ideally, we'd like to pop the chunk after processing 
+    :param foo:
+    :param data:
+    :return:
+    '''
+    chunks = helpers._chunk_list(data, CHUNK_SIZE)
+    result = [None] * len(chunks)
+    compute_threads = [None] * len(chunks)
+    for index, chunk in enumerate(chunks):
+        compute_threads[index] = threading.Thread(target = helpers._send_op, args = (result, foo, chunk, 'reduce', index, PORT))
+        compute_threads[index].start()
+		# ideally, we'd like to pop the chunk after processing
 		# it to preserve memory, but this messes up the loop
 		# chunks.pop(index)
-	if (len(results) <= CHUNK_SIZE):
-		return helpers._single_reduce(foo, results)
-	else:
-		return p_reduce(foo, results)
+    #all threads started above, then we block on completion of all threads
+    for thread in compute_threads:
+        thread.join()
+    print(result)
+    #checks if single value is returned, as then reduce is done
+    if (len(result) == 1):
+        return(result[0])
+    else:
+        result =  list(itertools.chain.from_iterable(result)) #flattens list
+
+        if (len(result) <= CHUNK_SIZE):
+            return helpers._single_reduce(foo, result)
+        else:
+            return p_reduce(foo, result)
