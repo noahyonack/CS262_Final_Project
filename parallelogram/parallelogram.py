@@ -32,6 +32,7 @@ def p_map(foo, data):
     This mapping will likely not be done on a single machine (unless the data
     to be mapped over is so small that sending it over a network would be
     inefficient.)
+
     :param foo:
     :param data:
     :return:
@@ -94,6 +95,7 @@ def p_reduce(foo, data):
 	the results of the initial reduction, so we call our function again
 	and either redistribute the initial results or simply locally-process
 	chunks, depending on the size of the initial results array.
+    
     :param foo:
     :param data:
     :return:
