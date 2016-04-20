@@ -100,10 +100,14 @@ def _single_reduce(foo, data):
 
 def _send_op(result, foo, chunk, op, index, port):
     dict_sending = {'func': foo, 'chunk': chunk, 'op': op, 'index': index}
-    csts = threading.Thread(target = _client_socket_thread_send, args = (port, pickle.dumps(dict_sending)))
+    csts = threading.Thread(
+        target = _client_socket_thread_send, 
+        args = (port, pickle.dumps(dict_sending)))
     csts.start()
     queue = Queue.Queue()
-    cstr = threading.Thread(target = _client_socket_thread_receive, args = (port+1, queue))
+    cstr = threading.Thread(
+        target = _client_socket_thread_receive, 
+        args = (port+1, queue))
     cstr.start()
     cstr.join(timeout = None)
     response = pickle.loads(queue.get())
@@ -128,7 +132,8 @@ def _server_socket_thread_send(target_port, msg):
 # based on examples from https://docs.python.org/2/howto/sockets.html
 def _server_socket_thread_receive(port, queue):
     '''
-    Starts a server socket that listens on the input port and writes received messages to the queue. Has a blocking
+    Starts a server socket that listens on the input port and writes 
+    received messages to the queue. Has a blocking
     infinite loop, so should be run as a separate thread
     :param port: Port on which to listen for messages
     :param queue: Queue to add messages to
@@ -166,7 +171,8 @@ def _client_socket_thread_send(target_port, msg):
     # based on examples from https://docs.python.org/2/howto/sockets.html
 def _client_socket_thread_receive(port, queue):
     '''
-    Starts a server socket that listens on the input port and writes received messages to the queue. Has a blocking
+    Starts a server socket that listens on the input port and writes 
+    received messages to the queue. Has a blocking
     infinite loop, so should be run as a separate thread
     :param port: Port on which to listen for messages
     :param queue: Queue to add messages to
