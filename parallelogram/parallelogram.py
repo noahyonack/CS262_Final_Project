@@ -22,9 +22,8 @@ it makes more sense to have the calling machine process the chunk instead
 of sending it over the wire.
 '''
 CHUNK_SIZE = 6
-PORT = 1100
 
-def p_map(foo, data):
+def p_map(foo, data, port):
     '''
     Map a function foo() over chunks of data (of type list) and
     join the mapped chunks before returning back to the caller.
@@ -38,22 +37,23 @@ def p_map(foo, data):
     :return:
     '''
     chunks = helpers._chunk_list(data, CHUNK_SIZE)
-    result = [None] * len(chunks)
-    compute_threads = [None] * len(chunks)
+    result = [None] * len(chunks) #data read into this list
+    compute_threads = [None] * len(chunks) #list of threads corresponding to sent chunks
     for index, chunk in enumerate(chunks):
+        #spawns separate thread to distribute each chunk and collect results
         compute_threads[index] = threading.Thread(
             target = helpers._send_op, 
-            args = (result, foo, chunk, 'map', index, PORT))
+            args = (result, foo, chunk, 'map', index, port))
         compute_threads[index].start()
 		# ideally, we'd like to pop the chunk after processing
 		# it to preserve memory, but this messes up the loop
 		# chunks.pop(index)
-    #all threads started above, then we block on completion of all threads
+    #wait for all threads to finish, and thus for all results to come in
     for thread in compute_threads:
         thread.join()
     return list(itertools.chain.from_iterable(result)) #flattens list
 
-def p_filter(foo, data):
+def p_filter(foo, data, port):
     '''
     Filter a function foo() over chunks of data (of type list) and
     join the filtered chunks before returning back to the caller.
@@ -67,22 +67,23 @@ def p_filter(foo, data):
 	:return:
 	'''
     chunks = helpers._chunk_list(data, CHUNK_SIZE)
-    result = [None] * len(chunks)
-    compute_threads = [None] * len(chunks)
+    result = [None] * len(chunks) #data read into this list
+    compute_threads = [None] * len(chunks) #list of threads corresponding to sent chunks
     for index, chunk in enumerate(chunks):
+        #spawns separate thread to distribute each chunk and collect results
         compute_threads[index] = threading.Thread(
             target = helpers._send_op, 
-            args = (result, foo, chunk, 'filter', index, PORT))
+            args = (result, foo, chunk, 'filter', index, port))
         compute_threads[index].start()
 		# ideally, we'd like to pop the chunk after processing
 		# it to preserve memory, but this messes up the loop
 		# chunks.pop(index)
-    #all threads started above, then we block on completion of all threads
+    #wait for all threads to finish, and thus for all results to come in
     for thread in compute_threads:
         thread.join()
     return list(itertools.chain.from_iterable(result)) #flattens list
 
-def p_reduce(foo, data):
+def p_reduce(foo, data, port):
     '''
     Reduce a function foo() over chunks of data (of type list) and
 	then reduce the results before returning back to the caller.
@@ -101,20 +102,20 @@ def p_reduce(foo, data):
     :return:
     '''
     chunks = helpers._chunk_list(data, CHUNK_SIZE)
-    result = [None] * len(chunks)
-    compute_threads = [None] * len(chunks)
+    result = [None] * len(chunks) #data read into this list
+    compute_threads = [None] * len(chunks) #list of threads corresponding to sent chunks
     for index, chunk in enumerate(chunks):
+        #spawns separate thread to distribute each chunk and collect results
         compute_threads[index] = threading.Thread(
             target = helpers._send_op, 
-            args = (result, foo, chunk, 'reduce', index, PORT))
+            args = (result, foo, chunk, 'reduce', index, port))
         compute_threads[index].start()
 		# ideally, we'd like to pop the chunk after processing
 		# it to preserve memory, but this messes up the loop
 		# chunks.pop(index)
-    #all threads started above, then we block on completion of all threads
+    #wait for all threads to finish, and thus for all results to come in
     for thread in compute_threads:
         thread.join()
-    print(result)
     #checks if single value is returned, as then reduce is done
     if (len(result) == 1):
         return(result[0])
