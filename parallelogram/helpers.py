@@ -109,7 +109,7 @@ def _send_op(result, foo, chunk, op, index, port):
 
     :param result: empty list passed by reference which will contain the result. 
         Necessary because threads don't allow standard return values
-    :param foo: function to use for map, filter, or reduce
+    :param foo: function to use for map, filter, or reduce calls
     :param chunk: chunk to perform operation on
     :param op: string corresponding to operation to perform: 
         'map', 'filter', 'reduce'
@@ -132,17 +132,19 @@ def _send_op(result, foo, chunk, op, index, port):
 
 def _server_socket_thread_send(target_port, msg):
     '''
-    Starts a client thread to send a message to the target port
+    Starts a server thread to send a message to the target port
+    
     :param target_port: The port to which the message should be sent
     :param msg: The message to send
     '''
     socket.setdefaulttimeout(DEFAULT_TIMEOUT)
+    #defines socket as internet, streaming socket
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     target_port = target_port
     clientsocket.connect((IP_ADDRESS, target_port))
     sent = clientsocket.send(msg)
     if sent == 0:
-        raise RuntimeError("socket connection broken")
+        raise RuntimeError("Socket connection broken!")
     clientsocket.close()
 
 class _Server_Socket_Thread_Receive(threading.Thread):
@@ -161,11 +163,13 @@ class _Server_Socket_Thread_Receive(threading.Thread):
         socket.setdefaulttimeout(DEFAULT_TIMEOUT)
         #defines socket as internet, streaming socket
         self.serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #prevents socket waiting for additional packets after end of channel to allow quick reuse
+        #prevents socket waiting for additional packets 
+        #after end of channel to allow quick reuse
         self.serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         #bind socket to given ip address and port
         self.serversocket.bind((IP_ADDRESS, port))
-        #allows up to MAX_CONNECT_REQUESTS requests before refusing outside connections
+        #allows up to MAX_CONNECT_REQUESTS requests 
+        #before refusing outside connections
         self.serversocket.listen(MAX_CONNECT_REQUESTS)
         self.queue = queue
         self._abort = False
@@ -186,7 +190,7 @@ class _Server_Socket_Thread_Receive(threading.Thread):
                 continue
             msg = clientsocket.recv(NETWORK_CHUNK_SIZE)
             if msg == '':
-                raise RuntimeError("socket connection broken")
+                raise RuntimeError("Socket connection broken!")
             self.queue.put(msg)
             clientsocket.close()
 
@@ -220,6 +224,7 @@ class _Server_Socket_Thread_Receive(threading.Thread):
 def _client_socket_thread_send(target_port, msg):
     '''
     Starts a client thread to send a message to the target port
+
     :param target_port: The port to which the message should be sent
     :param msg: The message to send
     :return:
@@ -228,18 +233,19 @@ def _client_socket_thread_send(target_port, msg):
     socket.setdefaulttimeout(DEFAULT_TIMEOUT)
     #defines socket as internet, streaming socket
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # WHY ARE WE DOING HTIS?
     target_port = target_port
     #connects to given ip address and port
     clientsocket.connect((IP_ADDRESS, target_port))
     sent = clientsocket.send(msg)
     if sent == 0:
-        raise RuntimeError("socket connection broken")
+        raise RuntimeError("Socket connection broken!")
     clientsocket.close()
 
-    # based on examples from https://docs.python.org/2/howto/sockets.html
+# based on examples from https://docs.python.org/2/howto/sockets.html
 def _client_socket_thread_receive(port, queue):
     '''
-    Starts a server socket that listens on the input port and writes
+    Starts a client socket that listens on the input port and writes
     received messages to the queue. Is blocking, so should be run on a 
     separate thread
     
@@ -251,7 +257,7 @@ def _client_socket_thread_receive(port, queue):
     #defines socket as internet, streaming socket
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     #prevents socket waiting for additional packets after end of 
-    # channel to allow quick reuse
+    #channel to allow quick reuse
     serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     #bind socket to given ip address and port
     serversocket.bind((IP_ADDRESS, port))
@@ -261,6 +267,7 @@ def _client_socket_thread_receive(port, queue):
     clientsocket, _ = serversocket.accept()
     msg = clientsocket.recv(NETWORK_CHUNK_SIZE)
     if msg == '':
-        raise RuntimeError("socket connection broken")
+        raise RuntimeError("Socket connection broken!")
     queue.put(msg)
     clientsocket.close()
+    
