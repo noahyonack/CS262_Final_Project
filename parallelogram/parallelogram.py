@@ -53,7 +53,7 @@ def p_map(foo, data, port):
     #wait for all threads to finish, and thus for all results to come in
     for thread in compute_threads:
         thread.join()
-    return list(itertools.chain.from_iterable(result)) #flattens list
+    return flatten(result)
 
 def p_filter(foo, data, port):
     '''
@@ -84,7 +84,7 @@ def p_filter(foo, data, port):
     #wait for all threads to finish, and thus for all results to come in
     for thread in compute_threads:
         thread.join()
-    return list(itertools.chain.from_iterable(result)) #flattens list
+    return flatten(result)
 
 def p_reduce(foo, data, port):
     '''
@@ -124,7 +124,7 @@ def p_reduce(foo, data, port):
     if (len(result) == 1):
         return result[0]
     else:
-        result =  list(itertools.chain.from_iterable(result)) #flattens list
+        result = flatten(result)
         if (len(result) <= CHUNK_SIZE):
             return helpers._single_reduce(foo, result)
         else:

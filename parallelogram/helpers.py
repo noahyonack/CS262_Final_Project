@@ -18,6 +18,14 @@ IP_ADDRESS = 'localhost' #run sockets on localhost
 MAX_CONNECT_REQUESTS = 5 #max queue for socket requests
 NETWORK_CHUNK_SIZE = 8192 #max buffer size to read
 
+def flatten(multiarray):
+    '''
+    Flattens a 2D array into a 1D array. Ex:
+
+    flatten([[1,2,3],[4,5,6],[7,8,9]]) = [1,2,3,4,5,6,7,8,9]
+    '''
+    return list(itertools.chain.from_iterable(multiarray))
+
 def _chunk_list(data, sz):
     '''
     Creates chunks of size `sz` from data. Returns a list of chunks, 
@@ -270,4 +278,3 @@ def _client_socket_thread_receive(port, queue):
         raise RuntimeError("Socket connection broken!")
     queue.put(msg)
     clientsocket.close()
-    
