@@ -37,8 +37,10 @@ def p_map(foo, data, port):
     :return:
     '''
     chunks = helpers._chunk_list(data, CHUNK_SIZE)
-    result = [None] * len(chunks) #data read into this list
-    compute_threads = [None] * len(chunks) #list of threads corresponding to sent chunks
+    #data read into this list
+    result = [None] * len(chunks)
+    #list of threads corresponding to sent chunks
+    compute_threads = [None] * len(chunks)
     for index, chunk in enumerate(chunks):
         #spawns separate thread to distribute each chunk and collect results
         compute_threads[index] = threading.Thread(
@@ -68,7 +70,8 @@ def p_filter(foo, data, port):
 	'''
     chunks = helpers._chunk_list(data, CHUNK_SIZE)
     result = [None] * len(chunks) #data read into this list
-    compute_threads = [None] * len(chunks) #list of threads corresponding to sent chunks
+    #list of threads corresponding to sent chunks
+    compute_threads = [None] * len(chunks)
     for index, chunk in enumerate(chunks):
         #spawns separate thread to distribute each chunk and collect results
         compute_threads[index] = threading.Thread(
@@ -103,7 +106,8 @@ def p_reduce(foo, data, port):
     '''
     chunks = helpers._chunk_list(data, CHUNK_SIZE)
     result = [None] * len(chunks) #data read into this list
-    compute_threads = [None] * len(chunks) #list of threads corresponding to sent chunks
+    #list of threads corresponding to sent chunks
+    compute_threads = [None] * len(chunks)
     for index, chunk in enumerate(chunks):
         #spawns separate thread to distribute each chunk and collect results
         compute_threads[index] = threading.Thread(

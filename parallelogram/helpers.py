@@ -103,12 +103,16 @@ def _single_reduce(foo, data):
 
 def _send_op(result, foo, chunk, op, index, port):
     '''
-    Sends an operation over the network for a server to process, and receives the result. Since we want each chunk
-    to be sent in parallel, this should be threaded
-    :param result: empty list passed by reference which will contain the result. Necessary because threads don't allow standard return values
+    Sends an operation over the network for a server to process, and 
+    receives the result. Since we want each chunk to be sent in 
+    parallel, this should be threaded
+
+    :param result: empty list passed by reference which will contain the result. 
+        Necessary because threads don't allow standard return values
     :param foo: function to use for map, filter, or reduce
     :param chunk: chunk to perform operation on
-    :param op: string corresponding to operation to perform: 'map', 'filter', 'reduce'
+    :param op: string corresponding to operation to perform: 
+        'map', 'filter', 'reduce'
     :param index: chunk number to allow ordering of processed chunks
     :param port: port of server
     '''
@@ -146,7 +150,9 @@ class _Server_Socket_Thread_Receive(threading.Thread):
     Starts a server socket that listens on the input port and writes
     received messages to the queue. Has a blocking
     infinite loop, so should be run as a separate thread
-    A class rather than a function to make it stopable and allow cleaner socket closing in infinite loop
+    A class rather than a function to make it stopable and allow 
+    cleaner socket closing in infinite loop
+    
     :param port: Port on which to listen for messages
     :param queue: Queue to add messages to
     '''
@@ -167,7 +173,9 @@ class _Server_Socket_Thread_Receive(threading.Thread):
 
     def run(self):
         '''
-        Loop that listens for messages and processes them if they arrive, adding them to the queue
+        Loop that listens for messages and processes them if they arrive, 
+        adding them to the queue
+
         :return:
         '''
         while not self._abort:
@@ -232,7 +240,9 @@ def _client_socket_thread_send(target_port, msg):
 def _client_socket_thread_receive(port, queue):
     '''
     Starts a server socket that listens on the input port and writes
-    received messages to the queue. Is blocking, so should be run on a separate thread
+    received messages to the queue. Is blocking, so should be run on a 
+    separate thread
+    
     :param port: Port on which to listen for messages
     :param queue: Queue to add messages to
     '''
@@ -240,11 +250,13 @@ def _client_socket_thread_receive(port, queue):
     socket.setdefaulttimeout(DEFAULT_TIMEOUT)
     #defines socket as internet, streaming socket
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #prevents socket waiting for additional packets after end of channel to allow quick reuse
+    #prevents socket waiting for additional packets after end of 
+    # channel to allow quick reuse
     serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     #bind socket to given ip address and port
     serversocket.bind((IP_ADDRESS, port))
-    #allows up to MAX_CONNECT_REQUESTS requests before refusing outside connections
+    #allows up to MAX_CONNECT_REQUESTS requests before 
+    # refusing outside connections
     serversocket.listen(MAX_CONNECT_REQUESTS)
     clientsocket, _ = serversocket.accept()
     msg = clientsocket.recv(NETWORK_CHUNK_SIZE)

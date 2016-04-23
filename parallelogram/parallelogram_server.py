@@ -6,8 +6,9 @@ import time
 
 class Server(threading.Thread):
     '''
-    Server class that should be run on each machine that wants to act as a computational entity for the system.
-    Extends threading.Thread to make the server threaded and thus nonblocking
+    Server class that should be run on each machine that wants to act as a 
+    computational entity for the system. Extends threading.Thread to make the 
+    server threaded and thus nonblocking
     '''
     def __init__(self, port):
         '''
@@ -21,13 +22,16 @@ class Server(threading.Thread):
 
     def run(self):
         '''
-        Runs core loop of server. It continually listens on a port and waits until it receives a message, which is added to the
-        queue. The server then determines the type of operation wanted, processes the chunk, and sends the results back
-        to the calling client. It continues to process these commands until the queue is empty, at which point it returns
-        to waiting
+        Runs core loop of server. It continually listens on a port and waits 
+        until it receives a message, which is added to the queue. The server 
+        then determines the type of operation wanted, processes the chunk, 
+        and sends the results back to the calling client. It continues to 
+        process these commands until the queue is empty, at which point it 
+        returns to waiting
         '''
         #infinite looping listening thread
-        self.sstr = helpers._Server_Socket_Thread_Receive(self.port, self.queue)
+        self.sstr = 
+            helpers._Server_Socket_Thread_Receive(self.port, self.queue)
         self.sstr.start()
         #infinitely loops until calling process calls stop()
         while not self._abort:
