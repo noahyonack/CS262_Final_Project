@@ -122,10 +122,9 @@ def p_reduce(foo, data, port):
         thread.join()
     #checks if single value is returned, as then reduce is done
     if (len(result) == 1):
-        return(result[0])
+        return result[0]
     else:
         result =  list(itertools.chain.from_iterable(result)) #flattens list
-
         if (len(result) <= CHUNK_SIZE):
             return helpers._single_reduce(foo, result)
         else:
