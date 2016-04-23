@@ -10,7 +10,6 @@ Imports helpers.py, which contains 'private' helper functions
 
 import helpers
 import threading
-import itertools
 
 '''
 Our minimum chunk size in terms of number of elements. When asked to map(),
