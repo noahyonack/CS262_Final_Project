@@ -7,7 +7,7 @@ import time
 class Server(threading.Thread):
     '''
     Server class that should be run on each machine that wants to act as a 
-    computational entity for the system. Extends threading.Thread to make the 
+    computational entity for the system. Extends threading. Thread to make the 
     server threaded and thus nonblocking
     '''
     def __init__(self, port):
@@ -47,6 +47,7 @@ class Server(threading.Thread):
                     processed_chunk = helpers._single_filter(func, chunk)
                 elif op == 'reduce':
                     processed_chunk = helpers._single_reduce(func, chunk)
+                # TODO: raise an error here
                 else:
                     processed_chunk = 'This operation does not exist.'
                 
