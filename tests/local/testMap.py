@@ -7,10 +7,32 @@ from parallelogram import helpers
 
 class TestMap(unittest.TestCase):
 
-	def test_map(self):
-		
-		def test1(elt, index):
-			return elt + 1
-		
-		output = helpers._single_map(test1, [1,2,3])
-		self.assertEqual(output, [2,3,4])
+	def foo_1(self, elt, index):
+		'''
+		Increments an element by 1
+		'''
+		return elt + 1
+
+	def test_map_1(self):
+		'''
+		Test a basic map case by mapping an incremental function over a
+		'''
+		# ensure correct output when mapping over a small list
+		output_1 = helpers._single_map(self.foo_1, [1,2,3,4,5,6])
+		self.assertEqual(output_1, range(2, 8))
+	
+	def test_map_2(self):
+		'''
+		Test a basic map case by mapping an incremental function over a big list
+		'''
+			# ensure correct output when mapping over a big list
+		output_2 = helpers._single_map(self.foo_1, range(10000))
+		self.assertEqual(output_2, range(1, 10001))		
+
+	def test_map_3(self):
+		'''
+		Ensure that map operates correctly on empty lists.
+		'''
+		# ensure correct output when mapping over empty lists
+		output_3 = helpers._single_map(self.foo_1, [])
+		self.assertEqual(output_3, [])
