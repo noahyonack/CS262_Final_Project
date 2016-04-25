@@ -20,28 +20,28 @@ MAX_CONNECT_REQUESTS = 5 #max queue for socket requests
 NETWORK_CHUNK_SIZE = 8192 #max buffer size to read
 
 def flatten(multiarray):
-    '''
-    Flattens a 2D array into a 1D array using the itertools package. Ex:
+	'''
+	Flattens a 2D array into a 1D array using the itertools package. Ex:
 
-    flatten([[1,2,3],[4,5,6],[7,8,9]]) = [1,2,3,4,5,6,7,8,9]
-    '''
-    return list(itertools.chain.from_iterable(multiarray))
+	flatten([[1,2,3],[4,5,6],[7,8,9]]) = [1,2,3,4,5,6,7,8,9]
+	'''
+	return list(itertools.chain.from_iterable(multiarray))
 
 def _chunk_list(data, sz):
-    '''
-    Creates chunks of size `sz` from data. Returns a list of chunks, 
-    which are also lists.
+	'''
+	Creates chunks of size `sz` from data. Returns a list of chunks, 
+	which are also lists.
 
-    These chunks will be sent to other machines on the network for processing.
-    '''
-    chunks = []
-    for i in xrange(0, len(data), sz):
-    	chunk = data[i:i + sz]
-    	chunks.append(chunk)
-    	# ideally, we could remove the chunked elements from the 
-    	# list so we don't clog memory, but this messes up the loop
-    	# data[i:i + sz] = []
-    return chunks
+	These chunks will be sent to other machines on the network for processing.
+	'''
+	chunks = []
+	for i in xrange(0, len(data), sz):
+		chunk = data[i:i + sz]
+		chunks.append(chunk)
+		# ideally, we could remove the chunked elements from the 
+		# list so we don't clog memory, but this messes up the loop
+		# data[i:i + sz] = []
+	return chunks
 
 def _single_map(foo, data):
 	'''
@@ -102,11 +102,11 @@ def _single_reduce(foo, data):
 	a list designated for a single machine. This function is called by 
 	parallelogram.p_reduce()
 
-    Note: this function assumes non-empty data. An exception will be thrown
-    if an empty list is passed in.
+	Note: this function assumes non-empty data. An exception will be thrown
+	if an empty list is passed in.
 	'''
-  # ensure that data actually exists
-  assert(len(data) > 0)
+	# ensure that data actually exists
+	assert(len(data) > 0)
 
 	# as explained above, we need to apply foo() N-1 times
 	for _ in range(len(data) - 1):
@@ -116,100 +116,100 @@ def _single_reduce(foo, data):
 	return data[0]
 
 def _send_op(result, foo, chunk, op, index, port):
-    '''
-    Sends an operation over the network for a server to process, and 
-    receives the result. Since we want each chunk to be sent in 
-    parallel, this should be threaded
+	'''
+	Sends an operation over the network for a server to process, and 
+	receives the result. Since we want each chunk to be sent in 
+	parallel, this should be threaded
 
-    :param result: empty list passed by reference which will contain the result. 
-        Necessary because threads don't allow standard return values
-    :param foo: function to use for map, filter, or reduce calls
-    :param chunk: chunk to perform operation on
-    :param op: string corresponding to operation to perform: 
-        'map', 'filter', 'reduce'
-    :param index: chunk number to allow ordering of processed chunks
-    :param port: port of server
-    '''
-    dict_sending = {'func': foo, 'chunk': chunk, 'op': op, 'index': index}
-    csts = threading.Thread(
-        target = _client_socket_thread_send, 
-        args = (port, pickle.dumps(dict_sending)))
-    csts.start()
-    queue = Queue.Queue()
-    cstr = threading.Thread(
-        target = _client_socket_thread_receive, 
-        args = (port+1, queue))
-    cstr.start()
-    cstr.join(timeout = None)
-    response = pickle.loads(queue.get())
-    result[response['index']] = response['chunk']
+	:param result: empty list passed by reference which will contain the result. 
+		Necessary because threads don't allow standard return values
+	:param foo: function to use for map, filter, or reduce calls
+	:param chunk: chunk to perform operation on
+	:param op: string corresponding to operation to perform: 
+		'map', 'filter', 'reduce'
+	:param index: chunk number to allow ordering of processed chunks
+	:param port: port of server
+	'''
+	dict_sending = {'func': foo, 'chunk': chunk, 'op': op, 'index': index}
+	csts = threading.Thread(
+		target = _client_socket_thread_send, 
+		args = (port, pickle.dumps(dict_sending)))
+	csts.start()
+	queue = Queue.Queue()
+	cstr = threading.Thread(
+		target = _client_socket_thread_receive, 
+		args = (port+1, queue))
+	cstr.start()
+	cstr.join(timeout = None)
+	response = pickle.loads(queue.get())
+	result[response['index']] = response['chunk']
 
 def _server_socket_thread_send(target_port, msg):
-    '''
-    Starts a server thread to send a message to the target port
-    
-    :param target_port: The port to which the message should be sent
-    :param msg: The message to send
-    '''
-    socket.setdefaulttimeout(DEFAULT_TIMEOUT)
-    #defines socket as internet, streaming socket
-    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    target_port = target_port
-    clientsocket.connect((IP_ADDRESS, target_port))
-    sent = clientsocket.send(msg)
-    if sent == 0:
-        raise RuntimeError("Socket connection broken!")
-    clientsocket.close()
+	'''
+	Starts a server thread to send a message to the target port
+	
+	:param target_port: The port to which the message should be sent
+	:param msg: The message to send
+	'''
+	socket.setdefaulttimeout(DEFAULT_TIMEOUT)
+	#defines socket as internet, streaming socket
+	clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	target_port = target_port
+	clientsocket.connect((IP_ADDRESS, target_port))
+	sent = clientsocket.send(msg)
+	if sent == 0:
+		raise RuntimeError("Socket connection broken!")
+	clientsocket.close()
 
 class _Server_Socket_Thread_Receive(threading.Thread):
-    '''
-    Starts a server socket that listens on the input port and writes
-    received messages to the queue. Has a blocking
-    infinite loop, so should be run as a separate thread
-    A class rather than a function to make it stopable and allow 
-    cleaner socket closing in infinite loop
-    
-    :param port: Port on which to listen for messages
-    :param queue: Queue to add messages to
-    '''
-    def __init__(self, port, queue):
-        #socket setup
-        socket.setdefaulttimeout(DEFAULT_TIMEOUT)
-        #defines socket as internet, streaming socket
-        self.serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #prevents socket waiting for additional packets 
-        #after end of channel to allow quick reuse
-        self.serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        #bind socket to given ip address and port
-        self.serversocket.bind((IP_ADDRESS, port))
-        #allows up to MAX_CONNECT_REQUESTS requests 
-        #before refusing outside connections
-        self.serversocket.listen(MAX_CONNECT_REQUESTS)
-        self.queue = queue
-        self._abort = False
-        threading.Thread.__init__(self)
+	'''
+	Starts a server socket that listens on the input port and writes
+	received messages to the queue. Has a blocking
+	infinite loop, so should be run as a separate thread
+	A class rather than a function to make it stopable and allow 
+	cleaner socket closing in infinite loop
+	
+	:param port: Port on which to listen for messages
+	:param queue: Queue to add messages to
+	'''
+	def __init__(self, port, queue):
+		#socket setup
+		socket.setdefaulttimeout(DEFAULT_TIMEOUT)
+		#defines socket as internet, streaming socket
+		self.serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		#prevents socket waiting for additional packets 
+		#after end of channel to allow quick reuse
+		self.serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+		#bind socket to given ip address and port
+		self.serversocket.bind((IP_ADDRESS, port))
+		#allows up to MAX_CONNECT_REQUESTS requests 
+		#before refusing outside connections
+		self.serversocket.listen(MAX_CONNECT_REQUESTS)
+		self.queue = queue
+		self._abort = False
+		threading.Thread.__init__(self)
 
-    def run(self):
-        '''
-        Loop that listens for messages and processes them if they arrive, 
-        adding them to the queue
+	def run(self):
+		'''
+		Loop that listens for messages and processes them if they arrive, 
+		adding them to the queue
 
-        :return:
-        '''
-        while not self._abort:
-            try:
-                clientsocket, _ = self.serversocket.accept()
-            except socket.timeout:
-                #reset blocking client on timeout
-                continue
-            msg = clientsocket.recv(NETWORK_CHUNK_SIZE)
-            if msg == '':
-                raise RuntimeError("Socket connection broken!")
-            self.queue.put(msg)
-            clientsocket.close()
+		:return:
+		'''
+		while not self._abort:
+			try:
+				clientsocket, _ = self.serversocket.accept()
+			except socket.timeout:
+				#reset blocking client on timeout
+				continue
+			msg = clientsocket.recv(NETWORK_CHUNK_SIZE)
+			if msg == '':
+				raise RuntimeError("Socket connection broken!")
+			self.queue.put(msg)
+			clientsocket.close()
 
-    def stop(self):
-        self._abort = True
+	def stop(self):
+		self._abort = True
 
 # # based on examples from https://docs.python.org/2/howto/sockets.html
 # def _server_socket_thread_receive(port, queue):
@@ -236,51 +236,51 @@ class _Server_Socket_Thread_Receive(threading.Thread):
 
 # based on examples from https://docs.python.org/2/howto/sockets.html
 def _client_socket_thread_send(target_port, msg):
-    '''
-    Starts a client thread to send a message to the target port
+	'''
+	Starts a client thread to send a message to the target port
 
-    :param target_port: The port to which the message should be sent
-    :param msg: The message to send
-    :return:
-    '''
-    #socket setup
-    socket.setdefaulttimeout(DEFAULT_TIMEOUT)
-    #defines socket as internet, streaming socket
-    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # WHY ARE WE DOING HTIS?
-    target_port = target_port
-    #connects to given ip address and port
-    clientsocket.connect((IP_ADDRESS, target_port))
-    sent = clientsocket.send(msg)
-    if sent == 0:
-        raise RuntimeError("Socket connection broken!")
-    clientsocket.close()
+	:param target_port: The port to which the message should be sent
+	:param msg: The message to send
+	:return:
+	'''
+	#socket setup
+	socket.setdefaulttimeout(DEFAULT_TIMEOUT)
+	#defines socket as internet, streaming socket
+	clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	# WHY ARE WE DOING HTIS?
+	target_port = target_port
+	#connects to given ip address and port
+	clientsocket.connect((IP_ADDRESS, target_port))
+	sent = clientsocket.send(msg)
+	if sent == 0:
+		raise RuntimeError("Socket connection broken!")
+	clientsocket.close()
 
 # based on examples from https://docs.python.org/2/howto/sockets.html
 def _client_socket_thread_receive(port, queue):
-    '''
-    Starts a client socket that listens on the input port and writes
-    received messages to the queue. Is blocking, so should be run on a 
-    separate thread
-    
-    :param port: Port on which to listen for messages
-    :param queue: Queue to add messages to
-    '''
-    #socket setup
-    socket.setdefaulttimeout(DEFAULT_TIMEOUT)
-    #defines socket as internet, streaming socket
-    serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #prevents socket waiting for additional packets after end of 
-    #channel to allow quick reuse
-    serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    #bind socket to given ip address and port
-    serversocket.bind((IP_ADDRESS, port))
-    #allows up to MAX_CONNECT_REQUESTS requests before 
-    # refusing outside connections
-    serversocket.listen(MAX_CONNECT_REQUESTS)
-    clientsocket, _ = serversocket.accept()
-    msg = clientsocket.recv(NETWORK_CHUNK_SIZE)
-    if msg == '':
-        raise RuntimeError("Socket connection broken!")
-    queue.put(msg)
-    clientsocket.close()
+	'''
+	Starts a client socket that listens on the input port and writes
+	received messages to the queue. Is blocking, so should be run on a 
+	separate thread
+	
+	:param port: Port on which to listen for messages
+	:param queue: Queue to add messages to
+	'''
+	#socket setup
+	socket.setdefaulttimeout(DEFAULT_TIMEOUT)
+	#defines socket as internet, streaming socket
+	serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	#prevents socket waiting for additional packets after end of 
+	#channel to allow quick reuse
+	serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+	#bind socket to given ip address and port
+	serversocket.bind((IP_ADDRESS, port))
+	#allows up to MAX_CONNECT_REQUESTS requests before 
+	# refusing outside connections
+	serversocket.listen(MAX_CONNECT_REQUESTS)
+	clientsocket, _ = serversocket.accept()
+	msg = clientsocket.recv(NETWORK_CHUNK_SIZE)
+	if msg == '':
+		raise RuntimeError("Socket connection broken!")
+	queue.put(msg)
+	clientsocket.close()
