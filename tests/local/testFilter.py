@@ -18,8 +18,8 @@ class TestFilter(unittest.TestCase):
 		Test a basic filtering case by filtering out odd numbers a small list
 		'''
 		# ensure correct output when filtering out odd numbers from small list
-		output_1 = helpers._single_filter(self.foo_1, [1,2,3,4,5,6])
-		self.assertEqual(output_1, [2,4,6])
+		output_1 = helpers._single_filter(self.foo_1, range(6))
+		self.assertEqual(output_1, range(0, 6, 2))
 
 	def test_filter_2(self):
 		'''
