@@ -101,7 +101,13 @@ def _single_reduce(foo, data):
 	This function is meant to be used on a chunk, which is a portion of 
 	a list designated for a single machine. This function is called by 
 	parallelogram.p_reduce()
+
+    Note: this function assumes non-empty data. An exception will be thrown
+    if an empty list is passed in.
 	'''
+    # ensure that data actually exists
+    assert(len(data) > 0)
+
 	# as explained above, we need to apply foo() N-1 times
 	for _ in range(len(data) - 1):
 		data[0] = foo(data[0], data[1])

@@ -18,21 +18,21 @@ class TestMap(unittest.TestCase):
 		Test a basic map case by mapping an incremental function over a
 		'''
 		# ensure correct output when mapping over a small list
-		output_1 = helpers._single_map(self.foo_1, [1,2,3,4,5,6])
-		self.assertEqual(output_1, range(2, 8))
+		output = helpers._single_map(self.foo_1, [1,2,3,4,5,6])
+		self.assertEqual(output, range(2, 8))
 	
 	def test_map_2(self):
 		'''
 		Test a basic map case by mapping an incremental function over a big list
 		'''
-			# ensure correct output when mapping over a big list
-		output_2 = helpers._single_map(self.foo_1, range(10000))
-		self.assertEqual(output_2, range(1, 10001))		
+		# ensure correct output when mapping over a big list
+		output = helpers._single_map(self.foo_1, range(10000))
+		self.assertEqual(output, range(1, 10001))		
 
 	def test_map_3(self):
 		'''
 		Ensure that map operates correctly on empty lists.
 		'''
 		# ensure correct output when mapping over empty lists
-		output_3 = helpers._single_map(self.foo_1, [])
-		self.assertEqual(output_3, [])
+		output = helpers._single_map(self.foo_1, [])
+		self.assertEqual(output, [])
