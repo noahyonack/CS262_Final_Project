@@ -21,7 +21,7 @@ NETWORK_CHUNK_SIZE = 8192 #max buffer size to read
 
 def flatten(multiarray):
     '''
-    Flattens a 2D array into a 1D array. Ex:
+    Flattens a 2D array into a 1D array using the itertools package. Ex:
 
     flatten([[1,2,3],[4,5,6],[7,8,9]]) = [1,2,3,4,5,6,7,8,9]
     '''
@@ -65,16 +65,15 @@ def _single_filter(foo, data):
 		[1, 2, 3, ..., N]
 
 	And you'd like to filter this list so that it contains only even numbers, 
-	then simply define foo() to be:
+	then simply define foo(elt, index) to be:
 
-		def foo(elt, index):
-			return elt % 2 == 0
+		return elt % 2 == 0
 
 	This function is meant to be used on a chunk, which is a portion of 
 	a list designated for a single machine. This function is called by 
 	parallelogram.p_filter()
 	'''
-	for index, elt in enumerate(data):
+	for index, elt in reversed(list(enumerate(data))):
 		if not foo(elt, index):
 			data.pop(index)
 	return data

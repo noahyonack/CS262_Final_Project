@@ -30,8 +30,7 @@ class Server(threading.Thread):
         returns to waiting
         '''
         #infinite looping listening thread
-        self.sstr = 
-            helpers._Server_Socket_Thread_Receive(self.port, self.queue)
+        self.sstr = helpers._Server_Socket_Thread_Receive(self.port, self.queue)
         self.sstr.start()
         #infinitely loops until calling process calls stop()
         while not self._abort:
