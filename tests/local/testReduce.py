@@ -4,6 +4,7 @@ Ensures correctness for _single_reduce() using the PyUnit (unittest) package
 
 import unittest
 from parallelogram import helpers
+from nose.tools import assert_raises
 
 class TestReduce(unittest.TestCase):
 
@@ -29,8 +30,6 @@ class TestReduce(unittest.TestCase):
 
 	def test_reduce_3(self):
 		'''
-		Ensure reduce actually fails when an empty list is passed in.
+		Ensure that _single_reduce() assertion fails when an empty list is used.
 		'''
-		import inspect
-		print inspect.getsource(helpers._single_reduce)
-		output = helpers._single_reduce(self.foo_1, [])
+		assert_raises(AssertionError, helpers._single_reduce, self.foo_1, [])

@@ -105,8 +105,8 @@ def _single_reduce(foo, data):
     Note: this function assumes non-empty data. An exception will be thrown
     if an empty list is passed in.
 	'''
-    # ensure that data actually exists
-    assert(len(data) > 0)
+  # ensure that data actually exists
+  assert(len(data) > 0)
 
 	# as explained above, we need to apply foo() N-1 times
 	for _ in range(len(data) - 1):
