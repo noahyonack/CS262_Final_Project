@@ -23,6 +23,9 @@ class TestFilter(unittest.TestCase):
 
 		def test2(elt, index):
 			return elt == -1 
+			
+		# import inspect
+		# print inspect.getsource(helpers._single_filter)
 
 		big_list = range(10000)
 		output_3 = helpers._single_filter(test2, big_list)
