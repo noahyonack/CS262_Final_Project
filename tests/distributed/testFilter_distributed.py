@@ -6,8 +6,7 @@ import unittest
 from parallelogram import parallelogram
 from parallelogram.parallelogram_server import Server
 import time
-
-PORT = 1001
+from config import PORT
 
 class TestFilter_Distributed(unittest.TestCase):
 	#setUp and tearDown BROKEN
@@ -15,7 +14,7 @@ class TestFilter_Distributed(unittest.TestCase):
 	# 	self.server = Server(PORT)
 	# 	self.server.start()
 	# 	print('started')
-    #
+ #    #
 	# def tearDown(self):
 	# 	self.server.stop()
 	# 	print('stopped')

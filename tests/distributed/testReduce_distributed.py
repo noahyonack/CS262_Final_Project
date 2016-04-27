@@ -6,8 +6,7 @@ import unittest
 from parallelogram import parallelogram
 from parallelogram.parallelogram_server import Server
 import time
-
-PORT = 1001
+from config import PORT
 
 class TestReduce_Distributed(unittest.TestCase):
     #setUp and tearDown BROKEN

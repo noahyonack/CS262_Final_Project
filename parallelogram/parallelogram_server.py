@@ -3,6 +3,7 @@ import threading
 import Queue
 import cloudpickle as pickle
 import time
+from config import PORT
 
 class Server(threading.Thread):
     '''
@@ -69,5 +70,5 @@ class Server(threading.Thread):
         self._abort = True
 
 if __name__ == '__main__':
-    a = Server(1001)
+    a = Server(PORT)
     a.start()

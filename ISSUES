@@ -10,3 +10,4 @@ Deal with networking issues, such as efficiently broadcasting/testing with every
 add uber behavior
 debug setup/teardown for testing when all are on the same port
 add fault tolerance: network failures, lots of timeouts, etc
+Work on broadcasting (subnet?) -- how can we get everyone an IP? we want to be able to sned to everyone in the initial broadcasting step.
