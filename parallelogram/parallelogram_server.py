@@ -2,11 +2,11 @@ import helpers
 import threading
 import Queue
 import cloudpickle as pickle
-import time
 from config import PORT, MULTICAST_PORT, MULTICAST_GROUP_IP
 import socket
 
 # IP_ADDRESS = 'localhost' #run sockets on localhost
+# gets ip address of machine on network
 IP_ADDRESS = socket.gethostbyname(socket.gethostname())
 
 class Server(threading.Thread):
@@ -75,6 +75,9 @@ class Server(threading.Thread):
 
 
     def stop(self):
+        '''
+        stops server and ensures proper cleanup of sockets
+        '''
         self._abort = True
 
 if __name__ == '__main__':

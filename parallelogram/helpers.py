@@ -4,7 +4,6 @@ import threading
 import itertools
 import Queue
 import struct
-import sys
 
 '''
 This file contains helper functions for use in our parallelized 
@@ -167,17 +166,17 @@ def _server_socket_thread_send(ip, target_port, msg):
     clientsocket.close()
 
 class _Server_Socket_Thread_Receive(threading.Thread):
-    '''
-    Starts a server socket that listens on the input port and writes
-    received messages to the queue. Has a blocking
-    infinite loop, so should be run as a separate thread
-    A class rather than a function to make it stopable and allow 
-    cleaner socket closing in infinite loop
-    
-    :param port: Port on which to listen for messages
-    :param queue: Queue to add messages to
-    '''
     def __init__(self, ip, port, queue):
+        '''
+        Starts a server socket that listens on the input port and writes
+        received messages to the queue. Has a blocking
+        infinite loop, so should be run as a separate thread
+        A class rather than a function to make it stopable and allow
+        cleaner socket closing in infinite loop
+
+        :param port: Port on which to listen for messages
+        :param queue: Queue to add messages to
+        '''
         #socket setup
         socket.setdefaulttimeout(DEFAULT_TIMEOUT)
         #defines socket as internet, streaming socket
@@ -198,8 +197,6 @@ class _Server_Socket_Thread_Receive(threading.Thread):
         '''
         Loop that listens for messages and processes them if they arrive, 
         adding them to the queue
-
-        :return:
         '''
         while not self._abort:
             try:
@@ -214,39 +211,20 @@ class _Server_Socket_Thread_Receive(threading.Thread):
             clientsocket.close()
 
     def stop(self):
+        '''
+        stop server and nicely close sockets
+        '''
         self._abort = True
-
-# # based on examples from https://docs.python.org/2/howto/sockets.html
-# def _server_socket_thread_receive(port, queue):
-#     '''
-#     Starts a server socket that listens on the input port and writes
-#     received messages to the queue. Has a blocking
-#     infinite loop, so should be run as a separate thread
-#     :param port: Port on which to listen for messages
-#     :param queue: Queue to add messages to
-#     '''
-#     socket.setdefaulttimeout(DEFAULT_TIMEOUT)
-#     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#     serversocket.bind((IP_ADDRESS, port))
-#     serversocket.listen(5)
-#     queue = queue
-#     while(True):
-#         clientsocket, _ = serversocket.accept()
-#         msg = clientsocket.recv(NETWORK_CHUNK_SIZE)
-#         if msg == '':
-#             raise RuntimeError("socket connection broken")
-#         queue.put(msg)
-#         clientsocket.close()
-
 
 # based on examples from https://docs.python.org/2/howto/sockets.html
 def _client_socket_thread_send(target_ip, target_port, msg, timeout):
     '''
     Starts a client thread to send a message to the target port
 
+    :param target_ip: The ip address to which the message should be sent
     :param target_port: The port to which the message should be sent
     :param msg: The message to send
-    :return:
+    :return: how long in seconds to wait before giving up on sending
     '''
     #socket setup
     socket.setdefaulttimeout(timeout)
@@ -267,9 +245,11 @@ def _client_socket_thread_receive(ip, port, queue, timeout):
     Starts a client socket that listens on the input port and writes
     received messages to the queue. Is blocking, so should be run on a 
     separate thread
-    
+
+    :param ip: The ip address on which to listen
     :param port: Port on which to listen for messages
     :param queue: Queue to add messages to
+    :param timeout: how long in seconds to wait before giving up on receiving
     '''
     #socket setup
     socket.setdefaulttimeout(timeout)
@@ -296,11 +276,13 @@ def _client_socket_thread_receive(ip, port, queue, timeout):
 #based on sample code from https://pymotw.com/2/socket/multicast.html
 def _broadcast_client_thread(mult_group_ip, mult_port, server_list):
     '''
+    Function run by client that broadcasts that there is a job it wants servers
+    to perform, and returns a list of tuples of avaliable servers and how
+    'avaliable' and willing to take new chunks each of them are
 
-    :param mult_group_ip:
-    :param mult_port:
-    :param queue:
-    :return:
+    :param mult_group_ip: multicast group ip address on which to broadcast
+    :param mult_port: multicast port to send to
+    :param server_list: empty list to add to avaliable server/server avaliability metric tuples
     '''
     message = str('job')
     multicast_group = (mult_group_ip, mult_port)
@@ -344,11 +326,13 @@ def _broadcast_client_thread(mult_group_ip, mult_port, server_list):
 class _Broadcast_Server_Thread(threading.Thread):
     def __init__(self, mult_group_ip, mult_port, chunk_queue):
         '''
+        Function run by server to listen on the multicast channel for new
+        clients, and to send back that the machine is avaliable and how
+        avaliable/busy it is
 
-        :param mult_group_ip:
-        :param mult_port:
-        :param avaliability:
-        :return:
+        :param mult_group_ip: multicast group ip address on which to broadcast
+        :param mult_port: multicast port to send to
+        :param chunk_queue: queue of chunks that are waiting to be processed
         '''
         self.chunk_queue = chunk_queue
         self._abort = False
@@ -367,7 +351,9 @@ class _Broadcast_Server_Thread(threading.Thread):
         self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
     def run(self):
-        # Receive/respond loop
+        '''
+        starts receive and respond loop
+        '''
         while not self._abort:
             msg, address = self.sock.recvfrom(NETWORK_CHUNK_SIZE)
             avaliability = self.calc_avaliability()
@@ -376,24 +362,39 @@ class _Broadcast_Server_Thread(threading.Thread):
         self.sock.close()
 
     def calc_avaliability(self):
+        '''
+        Function to calculate avaliability of given machine. Change this
+        function to customize the metric for your application/network
+        :return:
+        '''
         avaliability = self.chunk_queue.qsize()
         return avaliability
 
     def stop(self):
+        '''
+        stop server and nicely close sockets
+        '''
         self._abort = True
 
 
-#first attempt: give each chunk to minimum avaliability server, then increment avaliability of that server
-#modify this function to change how chunks are assigned
-#todo: maybe this should pass in a function? Then can send assignment algorithm from top level instead of editing this function?
+#first attempt: give each chunk to minimum avaliability server, then increment
+#avaliability of that server modify this function to change how chunks are
+#assigned
+#todo: maybe this should pass in a function? Then can send assignment algorithm
+#      from top level instead of editing this function?
 def _get_chunk_assignments(avaliable_servers, num_chunks):
     '''
+    Given a certain number of chunks, assigns each of them to a server
+    based on the number of servers who identified themselves and what
+    each of their avaliabilities are
 
-    :param avaliable_servers:
-    :param num_chunks:
-    :return:
+    :param avaliable_servers: list of tuples with ip address of avaliable
+           servers and each of their avaliability metrics
+    :param num_chunks: number of chunks to assign
+    :return: list of len(num_chunks) in which each index is the ip address
+             of the server to send the given chunk to
     '''
-
+    print(avaliable_servers)
     zipped_avaliable_servers = zip(*avaliable_servers)
     server_list = list(zipped_avaliable_servers[0])
     avaliability_list = list(zipped_avaliable_servers[1])

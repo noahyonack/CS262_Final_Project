@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>parallelogram.config module &mdash; Parallelogram 0.1.1 documentation</title>
+    <title>parallelogram.parallelogram module &mdash; Parallelogram 0.1.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -56,9 +56,133 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-parallelogram.config">
-<span id="parallelogram-config-module"></span><h1>parallelogram.config module<a class="headerlink" href="#module-parallelogram.config" title="Permalink to this headline">¶</a></h1>
-<p>This file contains config values (like the port numbers) used by our library</p>
+  <div class="section" id="module-parallelogram.parallelogram">
+<span id="parallelogram-parallelogram-module"></span><h1>parallelogram.parallelogram module<a class="headerlink" href="#module-parallelogram.parallelogram" title="Permalink to this headline">¶</a></h1>
+<p>This file contains our library&#8217;s implementations of p_map(), p_filter(), and
+p_reduce().</p>
+<p>We use the letter &#8220;p&#8221; because it indicates that the method is paralellized
+and because doing so ensures that our functions are properly namespaced</p>
+<p>Imports helpers.py, which contains &#8216;private&#8217; helper functions</p>
+<dl class="function">
+<dt id="parallelogram.parallelogram.p_filter">
+<code class="descclassname">parallelogram.parallelogram.</code><code class="descname">p_filter</code><span class="sig-paren">(</span><em>foo</em>, <em>data</em>, <em>port</em>, <em>timeout</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/parallelogram.html#p_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.parallelogram.p_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter a function foo() over chunks of data (of type list) and
+join the filtered chunks before returning back to the caller.</p>
+<blockquote>
+<div><p>This filtering will likely not be done on a single machine (unless the data
+to be filtered over is so small that sending it over a network would be
+inefficient.)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param foo:</th><td class="field-body">function to filter over data</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> &#8211; a list of data to be filtered</li>
+<li><strong>port</strong> &#8211; a port by which to send over distributed operations</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the filtered results</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.parallelogram.p_func">
+<code class="descclassname">parallelogram.parallelogram.</code><code class="descname">p_func</code><span class="sig-paren">(</span><em>foo</em>, <em>data</em>, <em>port</em>, <em>op</em>, <em>timeout</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/parallelogram.html#p_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.parallelogram.p_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs network operations for parallel map, filter, and reduce functions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>foo</strong> &#8211; function to reduce over data</li>
+<li><strong>data</strong> &#8211; a list of data to be reduced</li>
+<li><strong>port</strong> &#8211; a port by which to send over distributed operations</li>
+<li><strong>op</strong> &#8211; operation to perform, can be &#8216;map&#8217;, &#8216;reduce&#8217;, or &#8216;filter</li>
+<li><strong>timeout</strong> &#8211; timeout, in seconds, that function should wait for chunks to be returned</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.parallelogram.p_map">
+<code class="descclassname">parallelogram.parallelogram.</code><code class="descname">p_map</code><span class="sig-paren">(</span><em>foo</em>, <em>data</em>, <em>port</em>, <em>timeout</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/parallelogram.html#p_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.parallelogram.p_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map a function foo() over chunks of data (of type list) and
+join the mapped chunks before returning back to the caller.</p>
+<p>This mapping will likely not be done on a single machine (unless the data
+to be mapped over is so small that sending it over a network would be
+inefficient.)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>foo</strong> &#8211; function to map over data</li>
+<li><strong>data</strong> &#8211; a list of data to be mapped over</li>
+<li><strong>port</strong> &#8211; a port by which to send over distributed operations</li>
+<li><strong>timeout</strong> &#8211; timeout, in seconds, that function should wait for chunks to be returned</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the mapped results</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.parallelogram.p_reduce">
+<code class="descclassname">parallelogram.parallelogram.</code><code class="descname">p_reduce</code><span class="sig-paren">(</span><em>foo</em>, <em>data</em>, <em>port</em>, <em>timeout</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/parallelogram.html#p_reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.parallelogram.p_reduce" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Reduce a function foo() over chunks of data (of type list) and</dt>
+<dd><p class="first">then reduce the results before returning back to the caller.</p>
+<p>This reduction will likely not be done on a single machine (unless the data
+to be reduced over is so small that sending it over a network would be
+inefficient.)</p>
+<p class="last">After the intial chunks have been reduced, we still need to reduce
+the results of the initial reduction, so we call our function again
+and either redistribute the initial results or simply locally-process
+chunks, depending on the size of the initial results array.</p>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>foo</strong> &#8211; function to reduce over data</li>
+<li><strong>data</strong> &#8211; a list of data to be reduced</li>
+<li><strong>port</strong> &#8211; a port by which to send over distributed operations</li>
+<li><strong>timeout</strong> &#8211; timeout, in seconds, that function should wait for chunks to be returned</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the reduced result (a single value!)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 

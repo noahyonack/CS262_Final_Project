@@ -54,7 +54,6 @@
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">Queue</span>
 <span class="kn">import</span> <span class="nn">struct</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">This file contains helper functions for use in our parallelized </span>
@@ -217,17 +216,17 @@
     <span class="n">clientsocket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="_Server_Socket_Thread_Receive"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Server_Socket_Thread_Receive">[docs]</a><span class="k">class</span> <span class="nc">_Server_Socket_Thread_Receive</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Starts a server socket that listens on the input port and writes</span>
-<span class="sd">    received messages to the queue. Has a blocking</span>
-<span class="sd">    infinite loop, so should be run as a separate thread</span>
-<span class="sd">    A class rather than a function to make it stopable and allow </span>
-<span class="sd">    cleaner socket closing in infinite loop</span>
-<span class="sd">    </span>
-<span class="sd">    :param port: Port on which to listen for messages</span>
-<span class="sd">    :param queue: Queue to add messages to</span>
-<span class="sd">    &#39;&#39;&#39;</span>
 <div class="viewcode-block" id="_Server_Socket_Thread_Receive.__init__"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Server_Socket_Thread_Receive.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">queue</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Starts a server socket that listens on the input port and writes</span>
+<span class="sd">        received messages to the queue. Has a blocking</span>
+<span class="sd">        infinite loop, so should be run as a separate thread</span>
+<span class="sd">        A class rather than a function to make it stopable and allow</span>
+<span class="sd">        cleaner socket closing in infinite loop</span>
+
+<span class="sd">        :param port: Port on which to listen for messages</span>
+<span class="sd">        :param queue: Queue to add messages to</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="c">#socket setup</span>
         <span class="n">socket</span><span class="o">.</span><span class="n">setdefaulttimeout</span><span class="p">(</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">)</span>
         <span class="c">#defines socket as internet, streaming socket</span>
@@ -248,8 +247,6 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Loop that listens for messages and processes them if they arrive, </span>
 <span class="sd">        adding them to the queue</span>
-
-<span class="sd">        :return:</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_abort</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -264,39 +261,20 @@
             <span class="n">clientsocket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="_Server_Socket_Thread_Receive.stop"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Server_Socket_Thread_Receive.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        stop server and nicely close sockets</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_abort</span> <span class="o">=</span> <span class="bp">True</span>
-
-<span class="c"># # based on examples from https://docs.python.org/2/howto/sockets.html</span>
-<span class="c"># def _server_socket_thread_receive(port, queue):</span>
-<span class="c">#     &#39;&#39;&#39;</span>
-<span class="c">#     Starts a server socket that listens on the input port and writes</span>
-<span class="c">#     received messages to the queue. Has a blocking</span>
-<span class="c">#     infinite loop, so should be run as a separate thread</span>
-<span class="c">#     :param port: Port on which to listen for messages</span>
-<span class="c">#     :param queue: Queue to add messages to</span>
-<span class="c">#     &#39;&#39;&#39;</span>
-<span class="c">#     socket.setdefaulttimeout(DEFAULT_TIMEOUT)</span>
-<span class="c">#     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span>
-<span class="c">#     serversocket.bind((IP_ADDRESS, port))</span>
-<span class="c">#     serversocket.listen(5)</span>
-<span class="c">#     queue = queue</span>
-<span class="c">#     while(True):</span>
-<span class="c">#         clientsocket, _ = serversocket.accept()</span>
-<span class="c">#         msg = clientsocket.recv(NETWORK_CHUNK_SIZE)</span>
-<span class="c">#         if msg == &#39;&#39;:</span>
-<span class="c">#             raise RuntimeError(&quot;socket connection broken&quot;)</span>
-<span class="c">#         queue.put(msg)</span>
-<span class="c">#         clientsocket.close()</span>
-
 
 <span class="c"># based on examples from https://docs.python.org/2/howto/sockets.html</span></div></div>
 <div class="viewcode-block" id="_client_socket_thread_send"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._client_socket_thread_send">[docs]</a><span class="k">def</span> <span class="nf">_client_socket_thread_send</span><span class="p">(</span><span class="n">target_ip</span><span class="p">,</span> <span class="n">target_port</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Starts a client thread to send a message to the target port</span>
 
+<span class="sd">    :param target_ip: The ip address to which the message should be sent</span>
 <span class="sd">    :param target_port: The port to which the message should be sent</span>
 <span class="sd">    :param msg: The message to send</span>
-<span class="sd">    :return:</span>
+<span class="sd">    :return: how long in seconds to wait before giving up on sending</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c">#socket setup</span>
     <span class="n">socket</span><span class="o">.</span><span class="n">setdefaulttimeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
@@ -317,9 +295,11 @@
 <span class="sd">    Starts a client socket that listens on the input port and writes</span>
 <span class="sd">    received messages to the queue. Is blocking, so should be run on a </span>
 <span class="sd">    separate thread</span>
-<span class="sd">    </span>
+
+<span class="sd">    :param ip: The ip address on which to listen</span>
 <span class="sd">    :param port: Port on which to listen for messages</span>
 <span class="sd">    :param queue: Queue to add messages to</span>
+<span class="sd">    :param timeout: how long in seconds to wait before giving up on receiving</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c">#socket setup</span>
     <span class="n">socket</span><span class="o">.</span><span class="n">setdefaulttimeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
@@ -346,11 +326,13 @@
 <span class="c">#based on sample code from https://pymotw.com/2/socket/multicast.html</span></div>
 <div class="viewcode-block" id="_broadcast_client_thread"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._broadcast_client_thread">[docs]</a><span class="k">def</span> <span class="nf">_broadcast_client_thread</span><span class="p">(</span><span class="n">mult_group_ip</span><span class="p">,</span> <span class="n">mult_port</span><span class="p">,</span> <span class="n">server_list</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function run by client that broadcasts that there is a job it wants servers</span>
+<span class="sd">    to perform, and returns a list of tuples of avaliable servers and how</span>
+<span class="sd">    &#39;avaliable&#39; and willing to take new chunks each of them are</span>
 
-<span class="sd">    :param mult_group_ip:</span>
-<span class="sd">    :param mult_port:</span>
-<span class="sd">    :param queue:</span>
-<span class="sd">    :return:</span>
+<span class="sd">    :param mult_group_ip: multicast group ip address on which to broadcast</span>
+<span class="sd">    :param mult_port: multicast port to send to</span>
+<span class="sd">    :param server_list: empty list to add to avaliable server/server avaliability metric tuples</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s">&#39;job&#39;</span><span class="p">)</span>
     <span class="n">multicast_group</span> <span class="o">=</span> <span class="p">(</span><span class="n">mult_group_ip</span><span class="p">,</span> <span class="n">mult_port</span><span class="p">)</span>
@@ -394,11 +376,13 @@
 <div class="viewcode-block" id="_Broadcast_Server_Thread"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Broadcast_Server_Thread">[docs]</a><span class="k">class</span> <span class="nc">_Broadcast_Server_Thread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
 <div class="viewcode-block" id="_Broadcast_Server_Thread.__init__"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Broadcast_Server_Thread.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mult_group_ip</span><span class="p">,</span> <span class="n">mult_port</span><span class="p">,</span> <span class="n">chunk_queue</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Function run by server to listen on the multicast channel for new</span>
+<span class="sd">        clients, and to send back that the machine is avaliable and how</span>
+<span class="sd">        avaliable/busy it is</span>
 
-<span class="sd">        :param mult_group_ip:</span>
-<span class="sd">        :param mult_port:</span>
-<span class="sd">        :param avaliability:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param mult_group_ip: multicast group ip address on which to broadcast</span>
+<span class="sd">        :param mult_port: multicast port to send to</span>
+<span class="sd">        :param chunk_queue: queue of chunks that are waiting to be processed</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chunk_queue</span> <span class="o">=</span> <span class="n">chunk_queue</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_abort</span> <span class="o">=</span> <span class="bp">False</span>
@@ -417,7 +401,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_IP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">IP_ADD_MEMBERSHIP</span><span class="p">,</span> <span class="n">mreq</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="_Broadcast_Server_Thread.run"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Broadcast_Server_Thread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c"># Receive/respond loop</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        starts receive and respond loop</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_abort</span><span class="p">:</span>
             <span class="n">msg</span><span class="p">,</span> <span class="n">address</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">recvfrom</span><span class="p">(</span><span class="n">NETWORK_CHUNK_SIZE</span><span class="p">)</span>
             <span class="n">avaliability</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_avaliability</span><span class="p">()</span>
@@ -426,24 +412,39 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="_Broadcast_Server_Thread.calc_avaliability"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Broadcast_Server_Thread.calc_avaliability">[docs]</a>    <span class="k">def</span> <span class="nf">calc_avaliability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Function to calculate avaliability of given machine. Change this</span>
+<span class="sd">        function to customize the metric for your application/network</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">avaliability</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunk_queue</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">avaliability</span>
 </div>
 <div class="viewcode-block" id="_Broadcast_Server_Thread.stop"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Broadcast_Server_Thread.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        stop server and nicely close sockets</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_abort</span> <span class="o">=</span> <span class="bp">True</span>
 
 
-<span class="c">#first attempt: give each chunk to minimum avaliability server, then increment avaliability of that server</span>
-<span class="c">#modify this function to change how chunks are assigned</span>
-<span class="c">#todo: maybe this should pass in a function? Then can send assignment algorithm from top level instead of editing this function?</span></div></div>
+<span class="c">#first attempt: give each chunk to minimum avaliability server, then increment</span>
+<span class="c">#avaliability of that server modify this function to change how chunks are</span>
+<span class="c">#assigned</span>
+<span class="c">#todo: maybe this should pass in a function? Then can send assignment algorithm</span>
+<span class="c">#      from top level instead of editing this function?</span></div></div>
 <div class="viewcode-block" id="_get_chunk_assignments"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._get_chunk_assignments">[docs]</a><span class="k">def</span> <span class="nf">_get_chunk_assignments</span><span class="p">(</span><span class="n">avaliable_servers</span><span class="p">,</span> <span class="n">num_chunks</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given a certain number of chunks, assigns each of them to a server</span>
+<span class="sd">    based on the number of servers who identified themselves and what</span>
+<span class="sd">    each of their avaliabilities are</span>
 
-<span class="sd">    :param avaliable_servers:</span>
-<span class="sd">    :param num_chunks:</span>
-<span class="sd">    :return:</span>
+<span class="sd">    :param avaliable_servers: list of tuples with ip address of avaliable</span>
+<span class="sd">           servers and each of their avaliability metrics</span>
+<span class="sd">    :param num_chunks: number of chunks to assign</span>
+<span class="sd">    :return: list of len(num_chunks) in which each index is the ip address</span>
+<span class="sd">             of the server to send the given chunk to</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-
+    <span class="k">print</span><span class="p">(</span><span class="n">avaliable_servers</span><span class="p">)</span>
     <span class="n">zipped_avaliable_servers</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">avaliable_servers</span><span class="p">)</span>
     <span class="n">server_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">zipped_avaliable_servers</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">avaliability_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">zipped_avaliable_servers</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>

@@ -26,7 +26,7 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Parallelogram 0.1.1 documentation" href="../index.html" />
     <link rel="up" title="parallelogram package" href="parallelogram.html" />
-    <link rel="next" title="parallelogram.config module" href="parallelogram.parallelogram.html" />
+    <link rel="next" title="parallelogram.parallelogram module" href="parallelogram.parallelogram.html" />
     <link rel="prev" title="parallelogram.config module" href="parallelogram.config.html" /> 
   </head>
   <body role="document">
@@ -40,7 +40,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="parallelogram.parallelogram.html" title="parallelogram.config module"
+          <a href="parallelogram.parallelogram.html" title="parallelogram.parallelogram module"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="parallelogram.config.html" title="parallelogram.config module"
@@ -65,18 +65,18 @@
 <dl class="method">
 <dt id="parallelogram.helpers._Broadcast_Server_Thread.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>mult_group_ip</em>, <em>mult_port</em>, <em>chunk_queue</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Broadcast_Server_Thread.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Broadcast_Server_Thread.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Function run by server to listen on the multicast channel for new
+clients, and to send back that the machine is avaliable and how
+avaliable/busy it is</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mult_group_ip</strong> &#8211; </li>
-<li><strong>mult_port</strong> &#8211; </li>
-<li><strong>avaliability</strong> &#8211; </li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mult_group_ip</strong> &#8211; multicast group ip address on which to broadcast</li>
+<li><strong>mult_port</strong> &#8211; multicast port to send to</li>
+<li><strong>chunk_queue</strong> &#8211; queue of chunks that are waiting to be processed</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
 </td>
 </tr>
 </tbody>
@@ -91,17 +91,22 @@
 <dl class="method">
 <dt id="parallelogram.helpers._Broadcast_Server_Thread.calc_avaliability">
 <code class="descname">calc_avaliability</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Broadcast_Server_Thread.calc_avaliability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Broadcast_Server_Thread.calc_avaliability" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Function to calculate avaliability of given machine. Change this
+function to customize the metric for your application/network
+:return:</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="parallelogram.helpers._Broadcast_Server_Thread.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Broadcast_Server_Thread.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Broadcast_Server_Thread.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>starts receive and respond loop</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="parallelogram.helpers._Broadcast_Server_Thread.stop">
 <code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Broadcast_Server_Thread.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Broadcast_Server_Thread.stop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>stop server and nicely close sockets</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -109,7 +114,10 @@
 <dt id="parallelogram.helpers._Server_Socket_Thread_Receive">
 <em class="property">class </em><code class="descclassname">parallelogram.helpers.</code><code class="descname">_Server_Socket_Thread_Receive</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>queue</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Server_Socket_Thread_Receive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Server_Socket_Thread_Receive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
-<p>Starts a server socket that listens on the input port and writes
+<dl class="method">
+<dt id="parallelogram.helpers._Server_Socket_Thread_Receive.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>queue</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Server_Socket_Thread_Receive.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Server_Socket_Thread_Receive.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts a server socket that listens on the input port and writes
 received messages to the queue. Has a blocking
 infinite loop, so should be run as a separate thread
 A class rather than a function to make it stopable and allow
@@ -126,10 +134,7 @@ cleaner socket closing in infinite loop</p>
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="parallelogram.helpers._Server_Socket_Thread_Receive.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>queue</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Server_Socket_Thread_Receive.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Server_Socket_Thread_Receive.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="parallelogram.helpers._Server_Socket_Thread_Receive.__module__">
@@ -141,38 +146,31 @@ cleaner socket closing in infinite loop</p>
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Server_Socket_Thread_Receive.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Server_Socket_Thread_Receive.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loop that listens for messages and processes them if they arrive,
 adding them to the queue</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="parallelogram.helpers._Server_Socket_Thread_Receive.stop">
 <code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Server_Socket_Thread_Receive.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Server_Socket_Thread_Receive.stop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>stop server and nicely close sockets</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="parallelogram.helpers._broadcast_client_thread">
 <code class="descclassname">parallelogram.helpers.</code><code class="descname">_broadcast_client_thread</code><span class="sig-paren">(</span><em>mult_group_ip</em>, <em>mult_port</em>, <em>server_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_broadcast_client_thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._broadcast_client_thread" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Function run by client that broadcasts that there is a job it wants servers
+to perform, and returns a list of tuples of avaliable servers and how
+&#8216;avaliable&#8217; and willing to take new chunks each of them are</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mult_group_ip</strong> &#8211; </li>
-<li><strong>mult_port</strong> &#8211; </li>
-<li><strong>queue</strong> &#8211; </li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mult_group_ip</strong> &#8211; multicast group ip address on which to broadcast</li>
+<li><strong>mult_port</strong> &#8211; multicast port to send to</li>
+<li><strong>server_list</strong> &#8211; empty list to add to avaliable server/server avaliability metric tuples</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
 </td>
 </tr>
 </tbody>
@@ -198,8 +196,10 @@ separate thread</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ip</strong> &#8211; The ip address on which to listen</li>
 <li><strong>port</strong> &#8211; Port on which to listen for messages</li>
 <li><strong>queue</strong> &#8211; Queue to add messages to</li>
+<li><strong>timeout</strong> &#8211; how long in seconds to wait before giving up on receiving</li>
 </ul>
 </td>
 </tr>
@@ -216,12 +216,13 @@ separate thread</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>target_ip</strong> &#8211; The ip address to which the message should be sent</li>
 <li><strong>target_port</strong> &#8211; The port to which the message should be sent</li>
 <li><strong>msg</strong> &#8211; The message to send</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">how long in seconds to wait before giving up on sending</p>
 </td>
 </tr>
 </tbody>
@@ -238,17 +239,22 @@ separate thread</p>
 <dl class="function">
 <dt id="parallelogram.helpers._get_chunk_assignments">
 <code class="descclassname">parallelogram.helpers.</code><code class="descname">_get_chunk_assignments</code><span class="sig-paren">(</span><em>avaliable_servers</em>, <em>num_chunks</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_get_chunk_assignments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._get_chunk_assignments" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Given a certain number of chunks, assigns each of them to a server
+based on the number of servers who identified themselves and what
+each of their avaliabilities are</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>avaliable_servers</strong> &#8211; </li>
-<li><strong>num_chunks</strong> &#8211; </li>
+<li><strong>avaliable_servers</strong> &#8211; list of tuples with ip address of avaliable
+servers and each of their avaliability metrics</li>
+<li><strong>num_chunks</strong> &#8211; number of chunks to assign</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of len(num_chunks) in which each index is the ip address
+of the server to send the given chunk to</p>
 </td>
 </tr>
 </tbody>
@@ -370,7 +376,7 @@ if an empty list is passed in.</p>
                         title="previous chapter">parallelogram.config module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="parallelogram.parallelogram.html"
-                        title="next chapter">parallelogram.config module</a></p>
+                        title="next chapter">parallelogram.parallelogram module</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -405,7 +411,7 @@ if an empty list is passed in.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="parallelogram.parallelogram.html" title="parallelogram.config module"
+          <a href="parallelogram.parallelogram.html" title="parallelogram.parallelogram module"
              >next</a> |</li>
         <li class="right" >
           <a href="parallelogram.config.html" title="parallelogram.config module"

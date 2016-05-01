@@ -26,6 +26,7 @@ of sending it over the wire.
 '''
 CHUNK_SIZE = 6
 # IP_ADDRESS = 'localhost' #run sockets on localhost
+# gets ip address of machine on network
 IP_ADDRESS = socket.gethostbyname(socket.gethostname())
 
 def p_map(foo, data, port, timeout):
@@ -40,6 +41,7 @@ def p_map(foo, data, port, timeout):
     :param foo: function to map over data
     :param data: a list of data to be mapped over
     :param port: a port by which to send over distributed operations
+    :param timeout: timeout, in seconds, that function should wait for chunks to be returned
     :return: the mapped results
     '''
     result = p_func(foo, data, port, 'map', timeout)
@@ -79,6 +81,7 @@ def p_reduce(foo, data, port, timeout):
     :param foo: function to reduce over data
     :param data: a list of data to be reduced
     :param port: a port by which to send over distributed operations
+    :param timeout: timeout, in seconds, that function should wait for chunks to be returned
     :return: the reduced result (a single value!)
     '''
 
@@ -98,7 +101,17 @@ def p_reduce(foo, data, port, timeout):
             return p_reduce(foo, result, port, timeout)
 
 def p_func(foo, data, port, op, timeout):
-        # get list of avaliable servers to send to
+    '''
+    Performs network operations for parallel map, filter, and reduce functions
+
+    :param foo: function to reduce over data
+    :param data: a list of data to be reduced
+    :param port: a port by which to send over distributed operations
+    :param op: operation to perform, can be 'map', 'reduce', or 'filter
+    :param timeout: timeout, in seconds, that function should wait for chunks to be returned
+    :return:
+    '''
+    # get list of avaliable servers to send to
     # can block since we need list of machines to continue, don't need to thread
     avaliable_servers = list()
     helpers._broadcast_client_thread(MULTICAST_GROUP_IP, MULTICAST_PORT, avaliable_servers)

@@ -1,7 +1,7 @@
-parallelogram.config module
-===============================
+parallelogram.parallelogram module
+===================================
 
-.. automodule:: parallelogram.config
+.. automodule:: parallelogram.parallelogram
     :members:
     :undoc-members:
     :show-inheritance:
