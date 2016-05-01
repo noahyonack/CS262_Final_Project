@@ -1,0 +1,22 @@
+parallelogram package
+=========================
+
+Submodules
+----------
+
+.. toctree::
+
+   parallelogram.config
+   parallelogram.helpers
+   parallelogram.parallelogram
+   parallelogram.parallelogram_server
+
+Module contents
+---------------
+
+.. automodule:: parallelogram
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :private-members:
+

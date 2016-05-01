@@ -1,0 +1,8 @@
+parallelogram.helpers module
+=================================
+
+.. automodule:: parallelogram.helpers
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :private-members:

@@ -1,0 +1,423 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>parallelogram.helpers module &mdash; Parallelogram 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Parallelogram 0.1.1 documentation" href="../index.html" />
+    <link rel="up" title="parallelogram package" href="parallelogram.html" />
+    <link rel="next" title="parallelogram.config module" href="parallelogram.parallelogram.html" />
+    <link rel="prev" title="parallelogram.config module" href="parallelogram.config.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="parallelogram.parallelogram.html" title="parallelogram.config module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="parallelogram.config.html" title="parallelogram.config module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Parallelogram 0.1.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="code.html" >Code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="parallelogram.html" accesskey="U">parallelogram package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-parallelogram.helpers">
+<span id="parallelogram-helpers-module"></span><h1>parallelogram.helpers module<a class="headerlink" href="#module-parallelogram.helpers" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="parallelogram.helpers._Broadcast_Server_Thread">
+<em class="property">class </em><code class="descclassname">parallelogram.helpers.</code><code class="descname">_Broadcast_Server_Thread</code><span class="sig-paren">(</span><em>mult_group_ip</em>, <em>mult_port</em>, <em>chunk_queue</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Broadcast_Server_Thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Broadcast_Server_Thread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<dl class="method">
+<dt id="parallelogram.helpers._Broadcast_Server_Thread.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>mult_group_ip</em>, <em>mult_port</em>, <em>chunk_queue</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Broadcast_Server_Thread.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Broadcast_Server_Thread.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mult_group_ip</strong> &#8211; </li>
+<li><strong>mult_port</strong> &#8211; </li>
+<li><strong>avaliability</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="parallelogram.helpers._Broadcast_Server_Thread.__module__">
+<code class="descname">__module__</code><em class="property"> = 'parallelogram.helpers'</em><a class="headerlink" href="#parallelogram.helpers._Broadcast_Server_Thread.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="parallelogram.helpers._Broadcast_Server_Thread.calc_avaliability">
+<code class="descname">calc_avaliability</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Broadcast_Server_Thread.calc_avaliability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Broadcast_Server_Thread.calc_avaliability" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="parallelogram.helpers._Broadcast_Server_Thread.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Broadcast_Server_Thread.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Broadcast_Server_Thread.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="parallelogram.helpers._Broadcast_Server_Thread.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Broadcast_Server_Thread.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Broadcast_Server_Thread.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="parallelogram.helpers._Server_Socket_Thread_Receive">
+<em class="property">class </em><code class="descclassname">parallelogram.helpers.</code><code class="descname">_Server_Socket_Thread_Receive</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>queue</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Server_Socket_Thread_Receive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Server_Socket_Thread_Receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<p>Starts a server socket that listens on the input port and writes
+received messages to the queue. Has a blocking
+infinite loop, so should be run as a separate thread
+A class rather than a function to make it stopable and allow
+cleaner socket closing in infinite loop</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>port</strong> &#8211; Port on which to listen for messages</li>
+<li><strong>queue</strong> &#8211; Queue to add messages to</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="parallelogram.helpers._Server_Socket_Thread_Receive.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>queue</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Server_Socket_Thread_Receive.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Server_Socket_Thread_Receive.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="parallelogram.helpers._Server_Socket_Thread_Receive.__module__">
+<code class="descname">__module__</code><em class="property"> = 'parallelogram.helpers'</em><a class="headerlink" href="#parallelogram.helpers._Server_Socket_Thread_Receive.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="parallelogram.helpers._Server_Socket_Thread_Receive.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Server_Socket_Thread_Receive.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Server_Socket_Thread_Receive.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loop that listens for messages and processes them if they arrive,
+adding them to the queue</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="parallelogram.helpers._Server_Socket_Thread_Receive.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_Server_Socket_Thread_Receive.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._Server_Socket_Thread_Receive.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.helpers._broadcast_client_thread">
+<code class="descclassname">parallelogram.helpers.</code><code class="descname">_broadcast_client_thread</code><span class="sig-paren">(</span><em>mult_group_ip</em>, <em>mult_port</em>, <em>server_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_broadcast_client_thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._broadcast_client_thread" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mult_group_ip</strong> &#8211; </li>
+<li><strong>mult_port</strong> &#8211; </li>
+<li><strong>queue</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.helpers._chunk_list">
+<code class="descclassname">parallelogram.helpers.</code><code class="descname">_chunk_list</code><span class="sig-paren">(</span><em>data</em>, <em>sz</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_chunk_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._chunk_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates chunks of size <cite>sz</cite> from data. Returns a list of chunks,
+which are also lists.</p>
+<p>These chunks will be sent to other machines on the network for processing.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.helpers._client_socket_thread_receive">
+<code class="descclassname">parallelogram.helpers.</code><code class="descname">_client_socket_thread_receive</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>queue</em>, <em>timeout</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_client_socket_thread_receive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._client_socket_thread_receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts a client socket that listens on the input port and writes
+received messages to the queue. Is blocking, so should be run on a
+separate thread</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>port</strong> &#8211; Port on which to listen for messages</li>
+<li><strong>queue</strong> &#8211; Queue to add messages to</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.helpers._client_socket_thread_send">
+<code class="descclassname">parallelogram.helpers.</code><code class="descname">_client_socket_thread_send</code><span class="sig-paren">(</span><em>target_ip</em>, <em>target_port</em>, <em>msg</em>, <em>timeout</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_client_socket_thread_send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._client_socket_thread_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts a client thread to send a message to the target port</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>target_port</strong> &#8211; The port to which the message should be sent</li>
+<li><strong>msg</strong> &#8211; The message to send</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.helpers._flatten">
+<code class="descclassname">parallelogram.helpers.</code><code class="descname">_flatten</code><span class="sig-paren">(</span><em>multiarray</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_flatten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._flatten" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flattens a 2D array into a 1D array using the itertools package. Ex:</p>
+<p>flatten([[1,2,3],[4,5,6],[7,8,9]]) = [1,2,3,4,5,6,7,8,9]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.helpers._get_chunk_assignments">
+<code class="descclassname">parallelogram.helpers.</code><code class="descname">_get_chunk_assignments</code><span class="sig-paren">(</span><em>avaliable_servers</em>, <em>num_chunks</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_get_chunk_assignments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._get_chunk_assignments" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>avaliable_servers</strong> &#8211; </li>
+<li><strong>num_chunks</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.helpers._send_op">
+<code class="descclassname">parallelogram.helpers.</code><code class="descname">_send_op</code><span class="sig-paren">(</span><em>result</em>, <em>foo</em>, <em>chunk</em>, <em>op</em>, <em>index</em>, <em>ip</em>, <em>port</em>, <em>timeout</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_send_op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._send_op" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends an operation over the network for a server to process, and
+receives the result. Since we want each chunk to be sent in
+parallel, this should be threaded</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>result</strong> &#8211; empty list passed by reference which will contain the result.
+Necessary because threads don&#8217;t allow standard return values</li>
+<li><strong>foo</strong> &#8211; function to use for map, filter, or reduce calls</li>
+<li><strong>chunk</strong> &#8211; chunk to perform operation on</li>
+<li><strong>op</strong> &#8211; string corresponding to operation to perform:
+&#8216;map&#8217;, &#8216;filter&#8217;, &#8216;reduce&#8217;</li>
+<li><strong>index</strong> &#8211; chunk number to allow ordering of processed chunks</li>
+<li><strong>port</strong> &#8211; port of server</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.helpers._server_socket_thread_send">
+<code class="descclassname">parallelogram.helpers.</code><code class="descname">_server_socket_thread_send</code><span class="sig-paren">(</span><em>ip</em>, <em>target_port</em>, <em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_server_socket_thread_send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._server_socket_thread_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts a server thread to send a message to the target port</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>target_port</strong> &#8211; The port to which the message should be sent</li>
+<li><strong>msg</strong> &#8211; The message to send</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.helpers._single_filter">
+<code class="descclassname">parallelogram.helpers.</code><code class="descname">_single_filter</code><span class="sig-paren">(</span><em>foo</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_single_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._single_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter data (of type list) via a predicate formatted as a function. For
+example, if data is a list of natural numbers from 1 to N:</p>
+<blockquote>
+<div>[1, 2, 3, ..., N]</div></blockquote>
+<p>And you&#8217;d like to filter this list so that it contains only even numbers,
+then simply define foo(elt, index) to be:</p>
+<blockquote>
+<div>return elt % 2 == 0</div></blockquote>
+<p>This function is meant to be used on a chunk, which is a portion of
+a list designated for a single machine. This function is called by
+parallelogram.p_filter()</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.helpers._single_map">
+<code class="descclassname">parallelogram.helpers.</code><code class="descname">_single_map</code><span class="sig-paren">(</span><em>foo</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_single_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._single_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map a function foo() over data (of type list). Map modifies data in place
+and supplies foo() with both the current element of the list and its
+respective index.</p>
+<p>This function is meant to be used on a chunk, which is a portion of
+a list designated for a single machine. This function is called by
+parallelogram.p_map()</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="parallelogram.helpers._single_reduce">
+<code class="descclassname">parallelogram.helpers.</code><code class="descname">_single_reduce</code><span class="sig-paren">(</span><em>foo</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/parallelogram/helpers.html#_single_reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parallelogram.helpers._single_reduce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce data (of type list) by continually applying foo() to subsequent
+elements of data. For exmaple, if data is a list of elements e_1 to e_N:</p>
+<blockquote>
+<div>[e_1, e_2, e_3, ..., e_N]</div></blockquote>
+<p>And you&#8217;d like to reduce this list to the sum of all the elements, then
+simply define foo() to be:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>def foo(elt1, elt2):</dt>
+<dd>return elt1 + elt2</dd>
+</dl>
+</div></blockquote>
+<p>foo() is applied to data in the following way:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>[foo(e_1, e_2), e_3, ..., e_N]</li>
+</ol>
+<p>2. [foo(foo(e_1, e_2), e_3), ..., e_N]
+...
+N - 1. [foo(foo(foo(e_1, e_2), e_3), ..., e_N)]</p>
+</div></blockquote>
+<p>This function is meant to be used on a chunk, which is a portion of
+a list designated for a single machine. This function is called by
+parallelogram.p_reduce()</p>
+<p>Note: this function assumes non-empty data. An exception will be thrown
+if an empty list is passed in.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="parallelogram.config.html"
+                        title="previous chapter">parallelogram.config module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="parallelogram.parallelogram.html"
+                        title="next chapter">parallelogram.config module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/src/parallelogram.helpers.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="parallelogram.parallelogram.html" title="parallelogram.config module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="parallelogram.config.html" title="parallelogram.config module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Parallelogram 0.1.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="code.html" >Code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="parallelogram.html" >parallelogram package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Aaron Kabcenell, Noah Yonack, Jack Murtagh.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

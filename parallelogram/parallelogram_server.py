@@ -35,7 +35,7 @@ class Server(threading.Thread):
         returns to waiting
         '''
         #infinite looping listening thread to identify itself to clients
-        self.bst = helpers.Broadcast_Server_Thread(MULTICAST_GROUP_IP, MULTICAST_PORT, self.chunk_queue)
+        self.bst = helpers._Broadcast_Server_Thread(MULTICAST_GROUP_IP, MULTICAST_PORT, self.chunk_queue)
         self.bst.start()
 
         #infinite looping listening thread for chunks

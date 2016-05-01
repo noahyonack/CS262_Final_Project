@@ -43,7 +43,7 @@ def p_map(foo, data, port, timeout):
     :return: the mapped results
     '''
     result = p_func(foo, data, port, 'map', timeout)
-    return helpers.flatten(result)
+    return helpers._flatten(result)
 
 def p_filter(foo, data, port, timeout):
     '''
@@ -60,7 +60,7 @@ def p_filter(foo, data, port, timeout):
     :return: the filtered results
 	'''
     result = p_func(foo, data, port, 'filter', timeout)
-    return helpers.flatten(result)
+    return helpers._flatten(result)
 
 def p_reduce(foo, data, port, timeout):
     '''
@@ -89,7 +89,7 @@ def p_reduce(foo, data, port, timeout):
     if (len(result) == 1):
         return result[0]
     else:
-        result = helpers.flatten(result)
+        result = helpers._flatten(result)
         # if we have less than CHUNK_SIZE elements, just locally compute.
         # otherwise, call a new round of distributed reduction!
         if (len(result) <= CHUNK_SIZE):
@@ -107,7 +107,7 @@ def p_func(foo, data, port, op, timeout):
     chunks = helpers._chunk_list(data, CHUNK_SIZE)
 
     #list of length len(chunks) with the address to send each chunk to
-    chunk_assignments = helpers.get_chunk_assignments(avaliable_servers, len(chunks))
+    chunk_assignments = helpers._get_chunk_assignments(avaliable_servers, len(chunks))
 
     # placeholder for data to be read into
     result = [None] * len(chunks)
@@ -140,7 +140,7 @@ def p_func(foo, data, port, op, timeout):
             avaliable_servers.remove(server)
         #check if list is empty. If not, reassign to remaining machines. If yes, ask for machines again
         if avaliable_servers:
-            chunk_assignments = helpers.get_chunk_assignments(avaliable_servers, len(chunks))
+            chunk_assignments = helpers._get_chunk_assignments(avaliable_servers, len(chunks))
         else:
             avaliable_servers = list()
             bst = helpers._broadcast_client_thread(MULTICAST_GROUP_IP, MULTICAST_PORT, avaliable_servers)

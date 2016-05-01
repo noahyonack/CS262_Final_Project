@@ -21,7 +21,7 @@ IP_ADDRESS = 'localhost' #run sockets on localhost
 MAX_CONNECT_REQUESTS = 5 #max queue for socket requests
 NETWORK_CHUNK_SIZE = 8192 #max buffer size to read
 
-def flatten(multiarray):
+def _flatten(multiarray):
     '''
     Flattens a 2D array into a 1D array using the itertools package. Ex:
 
@@ -341,7 +341,7 @@ def _broadcast_client_thread(mult_group_ip, mult_port, server_list):
         sock.close()
 
 #based on sample code from https://pymotw.com/2/socket/multicast.html
-class Broadcast_Server_Thread(threading.Thread):
+class _Broadcast_Server_Thread(threading.Thread):
     def __init__(self, mult_group_ip, mult_port, chunk_queue):
         '''
 
@@ -356,10 +356,8 @@ class Broadcast_Server_Thread(threading.Thread):
 
         server_address = ('', mult_port)
 
-        # Create the socket
+        # Create the socket and bind it to the server address
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-        # Bind to the server address
         self.sock.bind(server_address)
 
         # Tell the operating system to add the socket to the multicast group
@@ -388,7 +386,7 @@ class Broadcast_Server_Thread(threading.Thread):
 #first attempt: give each chunk to minimum avaliability server, then increment avaliability of that server
 #modify this function to change how chunks are assigned
 #todo: maybe this should pass in a function? Then can send assignment algorithm from top level instead of editing this function?
-def get_chunk_assignments(avaliable_servers, num_chunks):
+def _get_chunk_assignments(avaliable_servers, num_chunks):
     '''
 
     :param avaliable_servers:

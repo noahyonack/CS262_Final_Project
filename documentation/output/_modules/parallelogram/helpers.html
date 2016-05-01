@@ -1,0 +1,498 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>parallelogram.helpers &mdash; Parallelogram 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Parallelogram 0.1.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Parallelogram 0.1.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for parallelogram.helpers</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">cloudpickle</span> <span class="kn">as</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">Queue</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This file contains helper functions for use in our parallelized </span>
+<span class="sd">implementations  of p_map(), p_filter(), and p_reduce()</span>
+
+<span class="sd">Three of the methods in this file are prefixed by &quot;_single_&quot;, indicating</span>
+<span class="sd">that they will be used as helper functions for single chunks of data (as</span>
+<span class="sd">opposed to large lists that comprise multiple chunks)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">DEFAULT_TIMEOUT</span> <span class="o">=</span> <span class="mi">5</span> <span class="c">#socket timeout</span>
+<span class="n">IP_ADDRESS</span> <span class="o">=</span> <span class="s">&#39;localhost&#39;</span> <span class="c">#run sockets on localhost</span>
+<span class="c">#replace with socket.gethostname() for external access</span>
+<span class="n">MAX_CONNECT_REQUESTS</span> <span class="o">=</span> <span class="mi">5</span> <span class="c">#max queue for socket requests</span>
+<span class="n">NETWORK_CHUNK_SIZE</span> <span class="o">=</span> <span class="mi">8192</span> <span class="c">#max buffer size to read</span>
+
+<div class="viewcode-block" id="_flatten"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._flatten">[docs]</a><span class="k">def</span> <span class="nf">_flatten</span><span class="p">(</span><span class="n">multiarray</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Flattens a 2D array into a 1D array using the itertools package. Ex:</span>
+
+<span class="sd">    flatten([[1,2,3],[4,5,6],[7,8,9]]) = [1,2,3,4,5,6,7,8,9]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">multiarray</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="_chunk_list"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._chunk_list">[docs]</a><span class="k">def</span> <span class="nf">_chunk_list</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sz</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Creates chunks of size `sz` from data. Returns a list of chunks, </span>
+<span class="sd">    which are also lists.</span>
+
+<span class="sd">    These chunks will be sent to other machines on the network for processing.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">chunks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">sz</span><span class="p">):</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">sz</span><span class="p">]</span>
+        <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+        <span class="c"># ideally, we could remove the chunked elements from the </span>
+        <span class="c"># list so we don&#39;t clog memory, but this messes up the loop</span>
+        <span class="c"># data[i:i + sz] = []</span>
+    <span class="k">return</span> <span class="n">chunks</span>
+</div>
+<div class="viewcode-block" id="_single_map"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._single_map">[docs]</a><span class="k">def</span> <span class="nf">_single_map</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Map a function foo() over data (of type list). Map modifies data in place</span>
+<span class="sd">    and supplies foo() with both the current element of the list and its</span>
+<span class="sd">    respective index.</span>
+
+<span class="sd">    This function is meant to be used on a chunk, which is a portion of </span>
+<span class="sd">    a list designated for a single machine. This function is called by </span>
+<span class="sd">    parallelogram.p_map()</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">elt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="n">elt</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="_single_filter"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._single_filter">[docs]</a><span class="k">def</span> <span class="nf">_single_filter</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Filter data (of type list) via a predicate formatted as a function. For </span>
+<span class="sd">    example, if data is a list of natural numbers from 1 to N:</span>
+
+<span class="sd">        [1, 2, 3, ..., N]</span>
+
+<span class="sd">    And you&#39;d like to filter this list so that it contains only even numbers, </span>
+<span class="sd">    then simply define foo(elt, index) to be:</span>
+
+<span class="sd">        return elt % 2 == 0</span>
+
+<span class="sd">    This function is meant to be used on a chunk, which is a portion of </span>
+<span class="sd">    a list designated for a single machine. This function is called by </span>
+<span class="sd">    parallelogram.p_filter()</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">elt</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">))):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">foo</span><span class="p">(</span><span class="n">elt</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="_single_reduce"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._single_reduce">[docs]</a><span class="k">def</span> <span class="nf">_single_reduce</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Reduce data (of type list) by continually applying foo() to subsequent</span>
+<span class="sd">    elements of data. For exmaple, if data is a list of elements e_1 to e_N:</span>
+
+<span class="sd">        [e_1, e_2, e_3, ..., e_N]</span>
+
+<span class="sd">    And you&#39;d like to reduce this list to the sum of all the elements, then </span>
+<span class="sd">    simply define foo() to be:</span>
+
+<span class="sd">        def foo(elt1, elt2):</span>
+<span class="sd">            return elt1 + elt2</span>
+
+<span class="sd">    foo() is applied to data in the following way:</span>
+
+<span class="sd">        1. [foo(e_1, e_2), e_3, ..., e_N]</span>
+<span class="sd">        2. [foo(foo(e_1, e_2), e_3), ..., e_N]</span>
+<span class="sd">        ...</span>
+<span class="sd">        N - 1. [foo(foo(foo(e_1, e_2), e_3), ..., e_N)]</span>
+
+<span class="sd">    This function is meant to be used on a chunk, which is a portion of </span>
+<span class="sd">    a list designated for a single machine. This function is called by </span>
+<span class="sd">    parallelogram.p_reduce()</span>
+
+<span class="sd">    Note: this function assumes non-empty data. An exception will be thrown</span>
+<span class="sd">    if an empty list is passed in.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c"># ensure that data actually exists</span>
+    <span class="c"># assert(len(data) &gt; 0)</span>
+
+    <span class="c"># as explained above, we need to apply foo() N-1 times</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c"># once the function has been applied, remove the old element</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="_send_op"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._send_op">[docs]</a><span class="k">def</span> <span class="nf">_send_op</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">foo</span><span class="p">,</span> <span class="n">chunk</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Sends an operation over the network for a server to process, and </span>
+<span class="sd">    receives the result. Since we want each chunk to be sent in </span>
+<span class="sd">    parallel, this should be threaded</span>
+
+<span class="sd">    :param result: empty list passed by reference which will contain the result. </span>
+<span class="sd">        Necessary because threads don&#39;t allow standard return values</span>
+<span class="sd">    :param foo: function to use for map, filter, or reduce calls</span>
+<span class="sd">    :param chunk: chunk to perform operation on</span>
+<span class="sd">    :param op: string corresponding to operation to perform: </span>
+<span class="sd">        &#39;map&#39;, &#39;filter&#39;, &#39;reduce&#39;</span>
+<span class="sd">    :param index: chunk number to allow ordering of processed chunks</span>
+<span class="sd">    :param port: port of server</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dict_sending</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;func&#39;</span><span class="p">:</span> <span class="n">foo</span><span class="p">,</span> <span class="s">&#39;chunk&#39;</span><span class="p">:</span> <span class="n">chunk</span><span class="p">,</span> <span class="s">&#39;op&#39;</span><span class="p">:</span> <span class="n">op</span><span class="p">,</span> <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="n">index</span><span class="p">}</span>
+        <span class="n">csts</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_client_socket_thread_send</span><span class="p">,</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dict_sending</span><span class="p">),</span> <span class="n">timeout</span><span class="p">))</span>
+        <span class="n">csts</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="n">cstr</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">_client_socket_thread_receive</span><span class="p">,</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span>
+        <span class="n">cstr</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">cstr</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span> <span class="o">=</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">response</span><span class="p">[</span><span class="s">&#39;index&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;chunk&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
+        <span class="k">return</span> <span class="c">#do nothing on error, just end and the client will restart the sending protocol</span>
+</div>
+<div class="viewcode-block" id="_server_socket_thread_send"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._server_socket_thread_send">[docs]</a><span class="k">def</span> <span class="nf">_server_socket_thread_send</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">target_port</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Starts a server thread to send a message to the target port</span>
+<span class="sd">    </span>
+<span class="sd">    :param target_port: The port to which the message should be sent</span>
+<span class="sd">    :param msg: The message to send</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">setdefaulttimeout</span><span class="p">(</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">)</span>
+    <span class="c">#defines socket as internet, streaming socket</span>
+    <span class="n">clientsocket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+    <span class="n">target_port</span> <span class="o">=</span> <span class="n">target_port</span>
+    <span class="n">clientsocket</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">ip</span><span class="p">,</span> <span class="n">target_port</span><span class="p">))</span>
+    <span class="n">sent</span> <span class="o">=</span> <span class="n">clientsocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sent</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;Socket connection broken!&quot;</span><span class="p">)</span>
+    <span class="n">clientsocket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="_Server_Socket_Thread_Receive"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Server_Socket_Thread_Receive">[docs]</a><span class="k">class</span> <span class="nc">_Server_Socket_Thread_Receive</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Starts a server socket that listens on the input port and writes</span>
+<span class="sd">    received messages to the queue. Has a blocking</span>
+<span class="sd">    infinite loop, so should be run as a separate thread</span>
+<span class="sd">    A class rather than a function to make it stopable and allow </span>
+<span class="sd">    cleaner socket closing in infinite loop</span>
+<span class="sd">    </span>
+<span class="sd">    :param port: Port on which to listen for messages</span>
+<span class="sd">    :param queue: Queue to add messages to</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="_Server_Socket_Thread_Receive.__init__"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Server_Socket_Thread_Receive.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">queue</span><span class="p">):</span>
+        <span class="c">#socket setup</span>
+        <span class="n">socket</span><span class="o">.</span><span class="n">setdefaulttimeout</span><span class="p">(</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">)</span>
+        <span class="c">#defines socket as internet, streaming socket</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serversocket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+        <span class="c">#prevents socket waiting for additional packets </span>
+        <span class="c">#after end of channel to allow quick reuse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serversocket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c">#bind socket to given ip address and port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serversocket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+        <span class="c">#allows up to MAX_CONNECT_REQUESTS requests </span>
+        <span class="c">#before refusing outside connections</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serversocket</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">MAX_CONNECT_REQUESTS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_abort</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="_Server_Socket_Thread_Receive.run"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Server_Socket_Thread_Receive.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Loop that listens for messages and processes them if they arrive, </span>
+<span class="sd">        adding them to the queue</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_abort</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">clientsocket</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serversocket</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
+                <span class="c">#reset blocking client on timeout</span>
+                <span class="k">continue</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">clientsocket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">NETWORK_CHUNK_SIZE</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">msg</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;Socket connection broken!&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">clientsocket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="_Server_Socket_Thread_Receive.stop"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Server_Socket_Thread_Receive.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_abort</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="c"># # based on examples from https://docs.python.org/2/howto/sockets.html</span>
+<span class="c"># def _server_socket_thread_receive(port, queue):</span>
+<span class="c">#     &#39;&#39;&#39;</span>
+<span class="c">#     Starts a server socket that listens on the input port and writes</span>
+<span class="c">#     received messages to the queue. Has a blocking</span>
+<span class="c">#     infinite loop, so should be run as a separate thread</span>
+<span class="c">#     :param port: Port on which to listen for messages</span>
+<span class="c">#     :param queue: Queue to add messages to</span>
+<span class="c">#     &#39;&#39;&#39;</span>
+<span class="c">#     socket.setdefaulttimeout(DEFAULT_TIMEOUT)</span>
+<span class="c">#     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span>
+<span class="c">#     serversocket.bind((IP_ADDRESS, port))</span>
+<span class="c">#     serversocket.listen(5)</span>
+<span class="c">#     queue = queue</span>
+<span class="c">#     while(True):</span>
+<span class="c">#         clientsocket, _ = serversocket.accept()</span>
+<span class="c">#         msg = clientsocket.recv(NETWORK_CHUNK_SIZE)</span>
+<span class="c">#         if msg == &#39;&#39;:</span>
+<span class="c">#             raise RuntimeError(&quot;socket connection broken&quot;)</span>
+<span class="c">#         queue.put(msg)</span>
+<span class="c">#         clientsocket.close()</span>
+
+
+<span class="c"># based on examples from https://docs.python.org/2/howto/sockets.html</span></div></div>
+<div class="viewcode-block" id="_client_socket_thread_send"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._client_socket_thread_send">[docs]</a><span class="k">def</span> <span class="nf">_client_socket_thread_send</span><span class="p">(</span><span class="n">target_ip</span><span class="p">,</span> <span class="n">target_port</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Starts a client thread to send a message to the target port</span>
+
+<span class="sd">    :param target_port: The port to which the message should be sent</span>
+<span class="sd">    :param msg: The message to send</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c">#socket setup</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">setdefaulttimeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+    <span class="c">#defines socket as internet, streaming socket</span>
+    <span class="n">clientsocket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+    <span class="c">#connects to given ip address and port</span>
+    <span class="n">clientsocket</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">target_ip</span><span class="p">,</span> <span class="n">target_port</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sent</span> <span class="o">=</span> <span class="n">clientsocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sent</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;Socket connection broken!&quot;</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">clientsocket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c"># based on examples from https://docs.python.org/2/howto/sockets.html</span></div>
+<div class="viewcode-block" id="_client_socket_thread_receive"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._client_socket_thread_receive">[docs]</a><span class="k">def</span> <span class="nf">_client_socket_thread_receive</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Starts a client socket that listens on the input port and writes</span>
+<span class="sd">    received messages to the queue. Is blocking, so should be run on a </span>
+<span class="sd">    separate thread</span>
+<span class="sd">    </span>
+<span class="sd">    :param port: Port on which to listen for messages</span>
+<span class="sd">    :param queue: Queue to add messages to</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c">#socket setup</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">setdefaulttimeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+    <span class="c">#defines socket as internet, streaming socket</span>
+    <span class="n">serversocket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+    <span class="c">#prevents socket waiting for additional packets after end of </span>
+    <span class="c">#channel to allow quick reuse</span>
+    <span class="n">serversocket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="c">#bind socket to given ip address and port</span>
+    <span class="n">serversocket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+    <span class="c">#allows up to MAX_CONNECT_REQUESTS requests before </span>
+    <span class="c"># refusing outside connections</span>
+    <span class="n">serversocket</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">MAX_CONNECT_REQUESTS</span><span class="p">)</span>
+    <span class="c">#want to make sure to close clientsocket on timeout, which throws a socket.timeout exception</span>
+    <span class="n">clientsocket</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">serversocket</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">clientsocket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">NETWORK_CHUNK_SIZE</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">msg</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;Socket connection broken!&quot;</span><span class="p">)</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">clientsocket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c">#based on sample code from https://pymotw.com/2/socket/multicast.html</span></div>
+<div class="viewcode-block" id="_broadcast_client_thread"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._broadcast_client_thread">[docs]</a><span class="k">def</span> <span class="nf">_broadcast_client_thread</span><span class="p">(</span><span class="n">mult_group_ip</span><span class="p">,</span> <span class="n">mult_port</span><span class="p">,</span> <span class="n">server_list</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">    :param mult_group_ip:</span>
+<span class="sd">    :param mult_port:</span>
+<span class="sd">    :param queue:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s">&#39;job&#39;</span><span class="p">)</span>
+    <span class="n">multicast_group</span> <span class="o">=</span> <span class="p">(</span><span class="n">mult_group_ip</span><span class="p">,</span> <span class="n">mult_port</span><span class="p">)</span>
+
+    <span class="c"># Create the datagram socket</span>
+    <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+
+    <span class="c"># Set a timeout so the socket does not block indefinitely when trying</span>
+    <span class="c"># to receive data.</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+
+    <span class="c"># Standard time-to-live value scopes:</span>
+    <span class="c"># 0    Restricted to the same host</span>
+    <span class="c"># 1    Restricted to the same subnet</span>
+    <span class="c"># &lt;32  Restricted to the same site</span>
+    <span class="c"># &lt;64  Restricted to the same region</span>
+    <span class="c"># &lt;128 Restricted to the same continent</span>
+    <span class="c"># &lt;255 Global</span>
+    <span class="n">ttl</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_IP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">IP_MULTICAST_TTL</span><span class="p">,</span> <span class="n">ttl</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c"># Send data to the multicast group</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">multicast_group</span><span class="p">)</span>
+
+
+        <span class="c"># Look for responses from all recipients</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">avaliability</span><span class="p">,</span> <span class="n">address</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">recvfrom</span><span class="p">(</span><span class="n">NETWORK_CHUNK_SIZE</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c">#only want ip address from address tuple, not port</span>
+                <span class="n">server_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">address</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">avaliability</span><span class="p">)))</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c">#based on sample code from https://pymotw.com/2/socket/multicast.html</span></div>
+<div class="viewcode-block" id="_Broadcast_Server_Thread"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Broadcast_Server_Thread">[docs]</a><span class="k">class</span> <span class="nc">_Broadcast_Server_Thread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+<div class="viewcode-block" id="_Broadcast_Server_Thread.__init__"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Broadcast_Server_Thread.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mult_group_ip</span><span class="p">,</span> <span class="n">mult_port</span><span class="p">,</span> <span class="n">chunk_queue</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">        :param mult_group_ip:</span>
+<span class="sd">        :param mult_port:</span>
+<span class="sd">        :param avaliability:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunk_queue</span> <span class="o">=</span> <span class="n">chunk_queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_abort</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">server_address</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">mult_port</span><span class="p">)</span>
+
+        <span class="c"># Create the socket and bind it to the server address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">server_address</span><span class="p">)</span>
+
+        <span class="c"># Tell the operating system to add the socket to the multicast group</span>
+        <span class="c"># on all interfaces.</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="n">mult_group_ip</span><span class="p">)</span>
+        <span class="n">mreq</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&#39;4sL&#39;</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">INADDR_ANY</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_IP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">IP_ADD_MEMBERSHIP</span><span class="p">,</span> <span class="n">mreq</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="_Broadcast_Server_Thread.run"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Broadcast_Server_Thread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># Receive/respond loop</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_abort</span><span class="p">:</span>
+            <span class="n">msg</span><span class="p">,</span> <span class="n">address</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">recvfrom</span><span class="p">(</span><span class="n">NETWORK_CHUNK_SIZE</span><span class="p">)</span>
+            <span class="n">avaliability</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_avaliability</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">msg</span> <span class="o">==</span> <span class="s">&#39;job&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">avaliability</span><span class="p">),</span> <span class="n">address</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="_Broadcast_Server_Thread.calc_avaliability"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Broadcast_Server_Thread.calc_avaliability">[docs]</a>    <span class="k">def</span> <span class="nf">calc_avaliability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">avaliability</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunk_queue</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">avaliability</span>
+</div>
+<div class="viewcode-block" id="_Broadcast_Server_Thread.stop"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._Broadcast_Server_Thread.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_abort</span> <span class="o">=</span> <span class="bp">True</span>
+
+
+<span class="c">#first attempt: give each chunk to minimum avaliability server, then increment avaliability of that server</span>
+<span class="c">#modify this function to change how chunks are assigned</span>
+<span class="c">#todo: maybe this should pass in a function? Then can send assignment algorithm from top level instead of editing this function?</span></div></div>
+<div class="viewcode-block" id="_get_chunk_assignments"><a class="viewcode-back" href="../../src/parallelogram.helpers.html#parallelogram.helpers._get_chunk_assignments">[docs]</a><span class="k">def</span> <span class="nf">_get_chunk_assignments</span><span class="p">(</span><span class="n">avaliable_servers</span><span class="p">,</span> <span class="n">num_chunks</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">    :param avaliable_servers:</span>
+<span class="sd">    :param num_chunks:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">zipped_avaliable_servers</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">avaliable_servers</span><span class="p">)</span>
+    <span class="n">server_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">zipped_avaliable_servers</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">avaliability_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">zipped_avaliable_servers</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">chunk_address_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">num_chunks</span><span class="p">):</span>
+        <span class="n">min_avaliable</span> <span class="o">=</span> <span class="n">avaliability_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">avaliability_list</span><span class="p">))</span>
+        <span class="n">chunk_address_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">server_list</span><span class="p">[</span><span class="n">min_avaliable</span><span class="p">])</span>
+        <span class="n">avaliability_list</span><span class="p">[</span><span class="n">min_avaliable</span><span class="p">]</span> <span class="o">=</span>  <span class="n">avaliability_list</span><span class="p">[</span><span class="n">min_avaliable</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">chunk_address_list</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Parallelogram 0.1.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Aaron Kabcenell, Noah Yonack, Jack Murtagh.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>
