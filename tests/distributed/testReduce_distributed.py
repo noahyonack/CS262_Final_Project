@@ -6,7 +6,7 @@ import unittest
 from parallelogram import parallelogram
 from parallelogram.parallelogram_server import Server
 import time
-from config import PORT
+from parallelogram.config import PORT
 
 class TestReduce_Distributed(unittest.TestCase):
     #setUp and tearDown BROKEN
@@ -25,5 +25,5 @@ class TestReduce_Distributed(unittest.TestCase):
             return elt1 + elt2
 
         print('reduce')
-        output = parallelogram.p_reduce(test1, [1,2,3,4,5,6], PORT)
+        output = parallelogram.p_reduce(test1, [1,2,3,4,5,6], PORT, 10)
         self.assertEqual(output, 21)

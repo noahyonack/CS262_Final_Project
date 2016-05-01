@@ -11,6 +11,9 @@ Imports helpers.py, which contains 'private' helper functions
 import helpers
 import threading
 import Queue
+import socket
+from config import MULTICAST_PORT, MULTICAST_GROUP_IP
+
 
 '''
 Our minimum chunk size in terms of number of elements. When asked to map(),
@@ -22,9 +25,8 @@ it makes more sense to have the calling machine process the chunk instead
 of sending it over the wire.
 '''
 CHUNK_SIZE = 6
-IP_ADDRESS = 'localhost' #run sockets on localhost
-MULTICAST_GROUP_IP = '224.3.29.71'
-MULTICAST_PORT = 10000
+# IP_ADDRESS = 'localhost' #run sockets on localhost
+IP_ADDRESS = socket.gethostbyname(socket.gethostname())
 
 def p_map(foo, data, port, timeout):
     '''
@@ -40,12 +42,66 @@ def p_map(foo, data, port, timeout):
     :param port: a port by which to send over distributed operations
     :return: the mapped results
     '''
+    result = p_func(foo, data, port, 'map', timeout)
+    return helpers.flatten(result)
 
-    # get list of avaliable servers to send to
+def p_filter(foo, data, port, timeout):
+    '''
+    Filter a function foo() over chunks of data (of type list) and
+    join the filtered chunks before returning back to the caller.
+
+	This filtering will likely not be done on a single machine (unless the data
+	to be filtered over is so small that sending it over a network would be
+	inefficient.)
+
+	:param foo: function to filter over data
+    :param data: a list of data to be filtered
+    :param port: a port by which to send over distributed operations
+    :return: the filtered results
+	'''
+    result = p_func(foo, data, port, 'filter', timeout)
+    return helpers.flatten(result)
+
+def p_reduce(foo, data, port, timeout):
+    '''
+    Reduce a function foo() over chunks of data (of type list) and
+	then reduce the results before returning back to the caller.
+
+	This reduction will likely not be done on a single machine (unless the data
+	to be reduced over is so small that sending it over a network would be
+	inefficient.)
+
+	After the intial chunks have been reduced, we still need to reduce
+	the results of the initial reduction, so we call our function again
+	and either redistribute the initial results or simply locally-process
+	chunks, depending on the size of the initial results array.
+    
+    :param foo: function to reduce over data
+    :param data: a list of data to be reduced
+    :param port: a port by which to send over distributed operations
+    :return: the reduced result (a single value!)
+    '''
+
+    result = p_func(foo, data, port, 'reduce', timeout)
+
+    # checks if single value is returned, which means reduce is done.
+    # this case will only occur when our initial data is <= than CHUNK_SIZE
+    if (len(result) == 1):
+        return result[0]
+    else:
+        result = helpers.flatten(result)
+        # if we have less than CHUNK_SIZE elements, just locally compute.
+        # otherwise, call a new round of distributed reduction!
+        if (len(result) <= CHUNK_SIZE):
+            return helpers._single_reduce(foo, result)
+        else:
+            return p_reduce(foo, result, port, timeout)
+
+def p_func(foo, data, port, op, timeout):
+        # get list of avaliable servers to send to
     # can block since we need list of machines to continue, don't need to thread
     avaliable_servers = list()
-    bst = helpers._broadcast_client_thread(MULTICAST_GROUP_IP, MULTICAST_PORT, avaliable_servers)
-    bst.start()
+    helpers._broadcast_client_thread(MULTICAST_GROUP_IP, MULTICAST_PORT, avaliable_servers)
 
     # chunk the data so it can be sent out in pieces
     chunks = helpers._chunk_list(data, CHUNK_SIZE)
@@ -66,7 +122,7 @@ def p_map(foo, data, port, timeout):
             # spawns separate thread to distribute each chunk and collect results
             compute_threads[index] = threading.Thread(
                 target = helpers._send_op,
-                args = (result, foo, chunk, 'map', index, chunk_assignments[index], port, timeout))
+                args = (result, foo, chunk, op, index, chunk_assignments[index], port, timeout))
             compute_threads[index].start()
             # ideally, we'd like to pop the chunk after processing
             # it to preserve memory, but this messes up the loop
@@ -90,108 +146,4 @@ def p_map(foo, data, port, timeout):
             bst = helpers._broadcast_client_thread(MULTICAST_GROUP_IP, MULTICAST_PORT, avaliable_servers)
             bst.start()
 
-    return helpers.flatten(result)
-
-def p_filter(foo, data, port, timeout):
-    '''
-    Filter a function foo() over chunks of data (of type list) and
-    join the filtered chunks before returning back to the caller.
-
-	This filtering will likely not be done on a single machine (unless the data
-	to be filtered over is so small that sending it over a network would be
-	inefficient.)
-
-	:param foo: function to filter over data
-    :param data: a list of data to be filtered
-    :param port: a port by which to send over distributed operations
-    :return: the filtered results
-	'''
-    # get list of avaliable servers to send to
-    # can block since we need list of machines to continue, don't need to thread
-    avaliable_servers = Queue.Queue()
-    bst = helpers._broadcast_send_thread(MULTICAST_GROUP_IP, MULTICAST_PORT, avaliable_servers)
-    bst.start()
-
-    # chunk the data so it can be sent out in pieces
-    chunks = helpers._chunk_list(data, CHUNK_SIZE)
-
-    #list of length len(chunks) with the address to send each chunk to
-    chunk_assignments = helpers.get_chunk_assignments(avaliable_servers, len(chunks))
-
-    # placeholder for data to be read into
-    result = [None] * len(chunks)
-    # list of threads corresponding to sent chunks
-    compute_threads = [None] * len(chunks)
-    for index, chunk in enumerate(chunks):
-        # spawns separate thread to distribute each chunk and collect results
-        compute_threads[index] = threading.Thread(
-            target = helpers._send_op, 
-            args = (result, foo, chunk, 'filter', index, chunk_assignments[index], port))
-        compute_threads[index].start()
-		# ideally, we'd like to pop the chunk after processing
-		# it to preserve memory, but this messes up the loop
-		# chunks.pop(index)
-    # wait for all threads to finish, so we know all results are in
-    for thread in compute_threads:
-        thread.join()
-    return helpers.flatten(result)
-
-def p_reduce(foo, data, port):
-    '''
-    Reduce a function foo() over chunks of data (of type list) and
-	then reduce the results before returning back to the caller.
-
-	This reduction will likely not be done on a single machine (unless the data
-	to be reduced over is so small that sending it over a network would be
-	inefficient.)
-
-	After the intial chunks have been reduced, we still need to reduce
-	the results of the initial reduction, so we call our function again
-	and either redistribute the initial results or simply locally-process
-	chunks, depending on the size of the initial results array.
-    
-    :param foo: function to reduce over data
-    :param data: a list of data to be reduced
-    :param port: a port by which to send over distributed operations
-    :return: the reduced result (a single value!)
-    '''
-
-    # get list of avaliable servers to send to
-    # can block since we need list of machines to continue, don't need to thread
-    avaliable_servers = Queue.Queue()
-    bst = helpers._broadcast_send_thread(MULTICAST_GROUP_IP, MULTICAST_PORT, avaliable_servers)
-    bst.start()
-
-    # chunk the data so it can be sent out in pieces
-    chunks = helpers._chunk_list(data, CHUNK_SIZE)
-
-    #list of length len(chunks) with the address to send each chunk to
-    chunk_assignments = helpers.get_chunk_assignments(avaliable_servers, len(chunks))
-    # placeholder for data to be read into
-    result = [None] * len(chunks) #data read into this list
-    # list of threads corresponding to sent chunks
-    compute_threads = [None] * len(chunks)
-    for index, chunk in enumerate(chunks):
-        # spawns separate thread to distribute each chunk and collect results
-        compute_threads[index] = threading.Thread(
-            target = helpers._send_op, 
-            args = (result, foo, chunk, 'reduce', index, chunk_assignments[index], port))
-        compute_threads[index].start()
-		# ideally, we'd like to pop the chunk after processing
-		# it to preserve memory, but this messes up the loop
-		# chunks.pop(index)
-    # wait for all threads to finish, so we know all results are in
-    for thread in compute_threads:
-        thread.join()
-    # checks if single value is returned, which means reduce is done.
-    # this case will only occur when our initial data is <= than CHUNK_SIZE
-    if (len(result) == 1):
-        return result[0]
-    else:
-        result = helpers.flatten(result)
-        # if we have less than CHUNK_SIZE elements, just locally compute.
-        # otherwise, call a new round of distributed reduction!
-        if (len(result) <= CHUNK_SIZE):
-            return helpers._single_reduce(foo, result)
-        else:
-            return p_reduce(foo, result)
+    return result

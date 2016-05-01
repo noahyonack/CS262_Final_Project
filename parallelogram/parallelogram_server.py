@@ -3,11 +3,11 @@ import threading
 import Queue
 import cloudpickle as pickle
 import time
-from config import PORT
+from config import PORT, MULTICAST_PORT, MULTICAST_GROUP_IP
+import socket
 
-IP_ADDRESS = 'localhost' #run sockets on localhost
-MULTICAST_GROUP_IP = '224.3.29.71'
-MULTICAST_PORT = 10000
+# IP_ADDRESS = 'localhost' #run sockets on localhost
+IP_ADDRESS = socket.gethostbyname(socket.gethostname())
 
 class Server(threading.Thread):
     '''
@@ -43,8 +43,8 @@ class Server(threading.Thread):
         self.sstr.start()
         #infinitely loops until calling process calls stop()
         while not self._abort:
-            if not self.queue.empty():
-                dict_received = pickle.loads(self.queue.get())
+            if not self.chunk_queue.empty():
+                dict_received = pickle.loads(self.chunk_queue.get())
                 chunk = dict_received['chunk']
                 func = dict_received['func']
                 op = dict_received['op']

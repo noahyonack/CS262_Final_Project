@@ -283,8 +283,8 @@ def _client_socket_thread_receive(ip, port, queue, timeout):
     #allows up to MAX_CONNECT_REQUESTS requests before 
     # refusing outside connections
     serversocket.listen(MAX_CONNECT_REQUESTS)
-    clientsocket, _ = serversocket.accept()
     #want to make sure to close clientsocket on timeout, which throws a socket.timeout exception
+    clientsocket, _ = serversocket.accept()
     try:
         msg = clientsocket.recv(NETWORK_CHUNK_SIZE)
         if msg == '':
@@ -332,10 +332,10 @@ def _broadcast_client_thread(mult_group_ip, mult_port, server_list):
             try:
                 avaliability, address = sock.recvfrom(NETWORK_CHUNK_SIZE)
             except socket.timeout:
-                print >>sys.stderr, 'timed out, no more responses'
                 break
             else:
-                server_list.append((address, int(avaliability)))
+                #only want ip address from address tuple, not port
+                server_list.append((address[0], int(avaliability)))
 
     finally:
         sock.close()
@@ -372,13 +372,13 @@ class Broadcast_Server_Thread(threading.Thread):
         # Receive/respond loop
         while not self._abort:
             msg, address = self.sock.recvfrom(NETWORK_CHUNK_SIZE)
-            avaliability = self.calc_avaliabilty()
+            avaliability = self.calc_avaliability()
             if msg == 'job':
                 self.sock.sendto(str(avaliability), address)
         self.sock.close()
 
     def calc_avaliability(self):
-        avaliability = len(self.chunk_queue)
+        avaliability = self.chunk_queue.qsize()
         return avaliability
 
     def stop(self):
@@ -397,10 +397,10 @@ def get_chunk_assignments(avaliable_servers, num_chunks):
     '''
 
     zipped_avaliable_servers = zip(*avaliable_servers)
-    server_list = zipped_avaliable_servers[0]
-    avaliability_list = zipped_avaliable_servers[1]
+    server_list = list(zipped_avaliable_servers[0])
+    avaliability_list = list(zipped_avaliable_servers[1])
     chunk_address_list = list()
-    for i in num_chunks:
+    for i in xrange(0,num_chunks):
         min_avaliable = avaliability_list.index(min(avaliability_list))
         chunk_address_list.append(server_list[min_avaliable])
         avaliability_list[min_avaliable] =  avaliability_list[min_avaliable] + 1

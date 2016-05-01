@@ -7,7 +7,7 @@ from parallelogram import parallelogram
 from parallelogram.parallelogram_server import Server
 import time
 import numpy as np
-from config import PORT
+from parallelogram.config import PORT
 
 class TestMap_Distributed(unittest.TestCase):
     #setUp and tearDown BROKEN
@@ -26,7 +26,7 @@ class TestMap_Distributed(unittest.TestCase):
             return elt + 1
 
         print('map')
-        output = parallelogram.p_map(test1, [1,2,3], PORT)
+        output = parallelogram.p_map(test1, [1,2,3], PORT, 10)
         self.assertEqual(output, [2,3,4])
 
     #check if cloudpickle can handle libraries that aren't imported
@@ -37,7 +37,7 @@ class TestMap_Distributed(unittest.TestCase):
             return np.sum(np.arange(elt, 5))
 
         print('map')
-        output = parallelogram.p_map(test1, [1,2,3], PORT)
+        output = parallelogram.p_map(test1, [1,2,3], PORT, 10)
         self.assertEqual(output, [10,9,7])
 
 
@@ -68,5 +68,5 @@ class TestMap_Distributed(unittest.TestCase):
             return a.add()
 
         print('map')
-        output = parallelogram.p_map(test1, [1,2,3], PORT)
+        output = parallelogram.p_map(test1, [1,2,3], PORT, 10)
         self.assertEqual(output, [2,3,4])
