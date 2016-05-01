@@ -3,6 +3,8 @@ import cloudpickle as pickle
 import threading
 import itertools
 import Queue
+import struct
+import sys
 
 '''
 This file contains helper functions for use in our parallelized 
@@ -115,7 +117,7 @@ def _single_reduce(foo, data):
         data.pop(1)
     return data[0]
 
-def _send_op(result, foo, chunk, op, index, port):
+def _send_op(result, foo, chunk, op, index, ip, port, timeout):
     '''
     Sends an operation over the network for a server to process, and 
     receives the result. Since we want each chunk to be sent in 
@@ -130,21 +132,24 @@ def _send_op(result, foo, chunk, op, index, port):
     :param index: chunk number to allow ordering of processed chunks
     :param port: port of server
     '''
-    dict_sending = {'func': foo, 'chunk': chunk, 'op': op, 'index': index}
-    csts = threading.Thread(
-        target = _client_socket_thread_send, 
-        args = (port, pickle.dumps(dict_sending)))
-    csts.start()
-    queue = Queue.Queue()
-    cstr = threading.Thread(
-        target = _client_socket_thread_receive, 
-        args = (port+1, queue))
-    cstr.start()
-    cstr.join(timeout = None)
-    response = pickle.loads(queue.get())
-    result[response['index']] = response['chunk']
+    try:
+        dict_sending = {'func': foo, 'chunk': chunk, 'op': op, 'index': index}
+        csts = threading.Thread(
+            target = _client_socket_thread_send,
+            args = (ip, port, pickle.dumps(dict_sending), timeout))
+        csts.start()
+        queue = Queue.Queue()
+        cstr = threading.Thread(
+            target = _client_socket_thread_receive,
+            args = (ip, port+1, queue, timeout))
+        cstr.start()
+        cstr.join(timeout = None)
+        response = pickle.loads(queue.get())
+        result[response['index']] = response['chunk']
+    except RuntimeError, socket.timeout:
+        return #do nothing on error, just end and the client will restart the sending protocol
 
-def _server_socket_thread_send(target_port, msg):
+def _server_socket_thread_send(ip, target_port, msg):
     '''
     Starts a server thread to send a message to the target port
     
@@ -155,7 +160,7 @@ def _server_socket_thread_send(target_port, msg):
     #defines socket as internet, streaming socket
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     target_port = target_port
-    clientsocket.connect((IP_ADDRESS, target_port))
+    clientsocket.connect((ip, target_port))
     sent = clientsocket.send(msg)
     if sent == 0:
         raise RuntimeError("Socket connection broken!")
@@ -172,7 +177,7 @@ class _Server_Socket_Thread_Receive(threading.Thread):
     :param port: Port on which to listen for messages
     :param queue: Queue to add messages to
     '''
-    def __init__(self, port, queue):
+    def __init__(self, ip, port, queue):
         #socket setup
         socket.setdefaulttimeout(DEFAULT_TIMEOUT)
         #defines socket as internet, streaming socket
@@ -181,7 +186,7 @@ class _Server_Socket_Thread_Receive(threading.Thread):
         #after end of channel to allow quick reuse
         self.serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         #bind socket to given ip address and port
-        self.serversocket.bind((IP_ADDRESS, port))
+        self.serversocket.bind((ip, port))
         #allows up to MAX_CONNECT_REQUESTS requests 
         #before refusing outside connections
         self.serversocket.listen(MAX_CONNECT_REQUESTS)
@@ -235,7 +240,7 @@ class _Server_Socket_Thread_Receive(threading.Thread):
 
 
 # based on examples from https://docs.python.org/2/howto/sockets.html
-def _client_socket_thread_send(target_port, msg):
+def _client_socket_thread_send(target_ip, target_port, msg, timeout):
     '''
     Starts a client thread to send a message to the target port
 
@@ -244,20 +249,20 @@ def _client_socket_thread_send(target_port, msg):
     :return:
     '''
     #socket setup
-    socket.setdefaulttimeout(DEFAULT_TIMEOUT)
+    socket.setdefaulttimeout(timeout)
     #defines socket as internet, streaming socket
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # WHY ARE WE DOING HTIS?
-    target_port = target_port
     #connects to given ip address and port
-    clientsocket.connect((IP_ADDRESS, target_port))
-    sent = clientsocket.send(msg)
-    if sent == 0:
-        raise RuntimeError("Socket connection broken!")
-    clientsocket.close()
+    clientsocket.connect((target_ip, target_port))
+    try:
+        sent = clientsocket.send(msg)
+        if sent == 0:
+            raise RuntimeError("Socket connection broken!")
+    finally:
+        clientsocket.close()
 
 # based on examples from https://docs.python.org/2/howto/sockets.html
-def _client_socket_thread_receive(port, queue):
+def _client_socket_thread_receive(ip, port, queue, timeout):
     '''
     Starts a client socket that listens on the input port and writes
     received messages to the queue. Is blocking, so should be run on a 
@@ -267,20 +272,136 @@ def _client_socket_thread_receive(port, queue):
     :param queue: Queue to add messages to
     '''
     #socket setup
-    socket.setdefaulttimeout(DEFAULT_TIMEOUT)
+    socket.setdefaulttimeout(timeout)
     #defines socket as internet, streaming socket
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     #prevents socket waiting for additional packets after end of 
     #channel to allow quick reuse
     serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     #bind socket to given ip address and port
-    serversocket.bind((IP_ADDRESS, port))
+    serversocket.bind((ip, port))
     #allows up to MAX_CONNECT_REQUESTS requests before 
     # refusing outside connections
     serversocket.listen(MAX_CONNECT_REQUESTS)
     clientsocket, _ = serversocket.accept()
-    msg = clientsocket.recv(NETWORK_CHUNK_SIZE)
-    if msg == '':
-        raise RuntimeError("Socket connection broken!")
-    queue.put(msg)
-    clientsocket.close()
+    #want to make sure to close clientsocket on timeout, which throws a socket.timeout exception
+    try:
+        msg = clientsocket.recv(NETWORK_CHUNK_SIZE)
+        if msg == '':
+            raise RuntimeError("Socket connection broken!")
+        queue.put(msg)
+    finally:
+        clientsocket.close()
+
+#based on sample code from https://pymotw.com/2/socket/multicast.html
+def _broadcast_client_thread(mult_group_ip, mult_port, server_list):
+    '''
+
+    :param mult_group_ip:
+    :param mult_port:
+    :param queue:
+    :return:
+    '''
+    message = str('job')
+    multicast_group = (mult_group_ip, mult_port)
+
+    # Create the datagram socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    # Set a timeout so the socket does not block indefinitely when trying
+    # to receive data.
+    sock.settimeout(0.2)
+
+    # Standard time-to-live value scopes:
+    # 0    Restricted to the same host
+    # 1    Restricted to the same subnet
+    # <32  Restricted to the same site
+    # <64  Restricted to the same region
+    # <128 Restricted to the same continent
+    # <255 Global
+    ttl = struct.pack('b', 1)
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
+
+    try:
+        # Send data to the multicast group
+        sock.sendto(message, multicast_group)
+
+
+        # Look for responses from all recipients
+        while True:
+            try:
+                avaliability, address = sock.recvfrom(NETWORK_CHUNK_SIZE)
+            except socket.timeout:
+                print >>sys.stderr, 'timed out, no more responses'
+                break
+            else:
+                server_list.append((address, int(avaliability)))
+
+    finally:
+        sock.close()
+
+#based on sample code from https://pymotw.com/2/socket/multicast.html
+class Broadcast_Server_Thread(threading.Thread):
+    def __init__(self, mult_group_ip, mult_port, chunk_queue):
+        '''
+
+        :param mult_group_ip:
+        :param mult_port:
+        :param avaliability:
+        :return:
+        '''
+        self.chunk_queue = chunk_queue
+        self._abort = False
+        threading.Thread.__init__(self)
+
+        server_address = ('', mult_port)
+
+        # Create the socket
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+        # Bind to the server address
+        self.sock.bind(server_address)
+
+        # Tell the operating system to add the socket to the multicast group
+        # on all interfaces.
+        group = socket.inet_aton(mult_group_ip)
+        mreq = struct.pack('4sL', group, socket.INADDR_ANY)
+        self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+
+    def run(self):
+        # Receive/respond loop
+        while not self._abort:
+            msg, address = self.sock.recvfrom(NETWORK_CHUNK_SIZE)
+            avaliability = self.calc_avaliabilty()
+            if msg == 'job':
+                self.sock.sendto(str(avaliability), address)
+        self.sock.close()
+
+    def calc_avaliability(self):
+        avaliability = len(self.chunk_queue)
+        return avaliability
+
+    def stop(self):
+        self._abort = True
+
+
+#first attempt: give each chunk to minimum avaliability server, then increment avaliability of that server
+#modify this function to change how chunks are assigned
+#todo: maybe this should pass in a function? Then can send assignment algorithm from top level instead of editing this function?
+def get_chunk_assignments(avaliable_servers, num_chunks):
+    '''
+
+    :param avaliable_servers:
+    :param num_chunks:
+    :return:
+    '''
+
+    zipped_avaliable_servers = zip(*avaliable_servers)
+    server_list = zipped_avaliable_servers[0]
+    avaliability_list = zipped_avaliable_servers[1]
+    chunk_address_list = list()
+    for i in num_chunks:
+        min_avaliable = avaliability_list.index(min(avaliability_list))
+        chunk_address_list.append(server_list[min_avaliable])
+        avaliability_list[min_avaliable] =  avaliability_list[min_avaliable] + 1
+    return chunk_address_list

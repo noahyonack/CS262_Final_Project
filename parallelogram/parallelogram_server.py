@@ -5,6 +5,10 @@ import cloudpickle as pickle
 import time
 from config import PORT
 
+IP_ADDRESS = 'localhost' #run sockets on localhost
+MULTICAST_GROUP_IP = '224.3.29.71'
+MULTICAST_PORT = 10000
+
 class Server(threading.Thread):
     '''
     Server class that should be run on each machine that wants to act as a 
@@ -16,7 +20,7 @@ class Server(threading.Thread):
         Initializes server listening on given port
         :param port: port that server should listen on
         '''
-        self.queue = Queue.Queue()
+        self.chunk_queue = Queue.Queue()
         self.port = port
         self._abort = False
         threading.Thread.__init__(self)
@@ -30,8 +34,12 @@ class Server(threading.Thread):
         process these commands until the queue is empty, at which point it 
         returns to waiting
         '''
-        #infinite looping listening thread
-        self.sstr = helpers._Server_Socket_Thread_Receive(self.port, self.queue)
+        #infinite looping listening thread to identify itself to clients
+        self.bst = helpers.Broadcast_Server_Thread(MULTICAST_GROUP_IP, MULTICAST_PORT, self.chunk_queue)
+        self.bst.start()
+
+        #infinite looping listening thread for chunks
+        self.sstr = helpers._Server_Socket_Thread_Receive(IP_ADDRESS, self.port, self.chunk_queue)
         self.sstr.start()
         #infinitely loops until calling process calls stop()
         while not self._abort:
@@ -60,7 +68,7 @@ class Server(threading.Thread):
                 #todo: find more elegant way of agreeing on a response port
                 self.ssts = threading.Thread(
                     target = helpers._server_socket_thread_send, 
-                    args = (self.port + 1, pickle.dumps(dict_sent))
+                    args = (IP_ADDRESS, self.port + 1, pickle.dumps(dict_sent))
                 )
                 self.ssts.start()
         self.sstr.stop() #nicely close sockets at the end
