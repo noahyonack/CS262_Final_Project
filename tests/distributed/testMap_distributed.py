@@ -31,14 +31,14 @@ class TestMap_Distributed(unittest.TestCase):
 
     #check if cloudpickle can handle libraries that aren't imported
     #success, seems to be able to import and deal with modules it knows
-    def test_cloudpickle_library(self):
-
-        def test1(elt, index):
-            return np.sum(np.arange(elt, 5))
-
-        print('map')
-        output = parallelogram.p_map(test1, [1,2,3], PORT, 10)
-        self.assertEqual(output, [10,9,7])
+    # def test_cloudpickle_library(self):
+    #
+    #     def test1(elt, index):
+    #         return np.sum(np.arange(elt, 5))
+    #
+    #     print('map')
+    #     output = parallelogram.p_map(test1, [1,2,3], PORT, 10)
+    #     self.assertEqual(output, [10,9,7])
 
 
     # #check if cloudpickle can handle externally defined classes
@@ -54,19 +54,19 @@ class TestMap_Distributed(unittest.TestCase):
     #     self.assertEqual(output, [2,3,4])
 
     #check if cloudpickle can handle internally defined classes
-    def test_cloudpickle_class(self):
-
-        class testClass():
-            def __init__(self, value):
-                self.value = value
-
-            def add(self):
-                return(self.value + 1)
-
-        def test1(elt, index):
-            a = testClass(elt)
-            return a.add()
-
-        print('map')
-        output = parallelogram.p_map(test1, [1,2,3], PORT, 10)
-        self.assertEqual(output, [2,3,4])
+    # def test_cloudpickle_class(self):
+    #
+    #     class testClass():
+    #         def __init__(self, value):
+    #             self.value = value
+    #
+    #         def add(self):
+    #             return(self.value + 1)
+    #
+    #     def test1(elt, index):
+    #         a = testClass(elt)
+    #         return a.add()
+    #
+    #     print('map')
+    #     output = parallelogram.p_map(test1, [1,2,3], PORT, 10)
+    #     self.assertEqual(output, [2,3,4])

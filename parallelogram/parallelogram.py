@@ -135,7 +135,7 @@ def p_func(foo, data, port, op, timeout):
             # spawns separate thread to distribute each chunk and collect results
             compute_threads[index] = threading.Thread(
                 target = helpers._send_op,
-                args = (result, foo, chunk, op, index, chunk_assignments[index], port, timeout))
+                args = (result, foo, chunk, op, index, chunk_assignments[index], IP_ADDRESS, port, timeout))
             compute_threads[index].start()
             # ideally, we'd like to pop the chunk after processing
             # it to preserve memory, but this messes up the loop

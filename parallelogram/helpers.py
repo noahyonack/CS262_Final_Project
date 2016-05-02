@@ -15,7 +15,7 @@ opposed to large lists that comprise multiple chunks)
 '''
 
 DEFAULT_TIMEOUT = 5 #socket timeout
-IP_ADDRESS = 'localhost' #run sockets on localhost
+#IP_ADDRESS = 'localhost' #run sockets on localhost
 #replace with socket.gethostname() for external access
 MAX_CONNECT_REQUESTS = 5 #max queue for socket requests
 NETWORK_CHUNK_SIZE = 8192 #max buffer size to read
@@ -116,7 +116,7 @@ def _single_reduce(foo, data):
         data.pop(1)
     return data[0]
 
-def _send_op(result, foo, chunk, op, index, ip, port, timeout):
+def _send_op(result, foo, chunk, op, index, target_ip, own_ip, port, timeout):
     '''
     Sends an operation over the network for a server to process, and 
     receives the result. Since we want each chunk to be sent in 
@@ -135,12 +135,12 @@ def _send_op(result, foo, chunk, op, index, ip, port, timeout):
         dict_sending = {'func': foo, 'chunk': chunk, 'op': op, 'index': index}
         csts = threading.Thread(
             target = _client_socket_thread_send,
-            args = (ip, port, pickle.dumps(dict_sending), timeout))
+            args = (target_ip, port, pickle.dumps(dict_sending), timeout))
         csts.start()
         queue = Queue.Queue()
         cstr = threading.Thread(
             target = _client_socket_thread_receive,
-            args = (ip, port+1, queue, timeout))
+            args = (own_ip, port+1, queue, timeout))
         cstr.start()
         cstr.join(timeout = None)
         response = pickle.loads(queue.get())
@@ -204,10 +204,10 @@ class _Server_Socket_Thread_Receive(threading.Thread):
             except socket.timeout:
                 #reset blocking client on timeout
                 continue
-            msg = clientsocket.recv(NETWORK_CHUNK_SIZE)
+            msg, address = clientsocket.recvfrom(NETWORK_CHUNK_SIZE)
             if msg == '':
                 raise RuntimeError("Socket connection broken!")
-            self.queue.put(msg)
+            self.queue.put((msg, address))
             clientsocket.close()
 
     def stop(self):
@@ -259,6 +259,7 @@ def _client_socket_thread_receive(ip, port, queue, timeout):
     #channel to allow quick reuse
     serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     #bind socket to given ip address and port
+    print(ip)
     serversocket.bind((ip, port))
     #allows up to MAX_CONNECT_REQUESTS requests before 
     # refusing outside connections
