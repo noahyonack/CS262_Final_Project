@@ -200,14 +200,14 @@ class _Server_Socket_Thread_Receive(threading.Thread):
         '''
         while not self._abort:
             try:
-                clientsocket, _ = self.serversocket.accept()
+                clientsocket, address = self.serversocket.accept()
             except socket.timeout:
                 #reset blocking client on timeout
                 continue
-            msg, address = clientsocket.recvfrom(NETWORK_CHUNK_SIZE)
+            msg = clientsocket.recv(NETWORK_CHUNK_SIZE)
             if msg == '':
                 raise RuntimeError("Socket connection broken!")
-            self.queue.put((msg, address))
+            self.queue.put((msg, address[0]))
             clientsocket.close()
 
     def stop(self):

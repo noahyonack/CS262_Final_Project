@@ -44,8 +44,8 @@ class Server(threading.Thread):
         #infinitely loops until calling process calls stop()
         while not self._abort:
             if not self.chunk_queue.empty():
-                chunk = self.chunk_queue.get()
-                dict_received = pickle.loads(chunk[0])
+                full_chunk = self.chunk_queue.get()
+                dict_received = pickle.loads(full_chunk[0])
                 chunk = dict_received['chunk']
                 func = dict_received['func']
                 op = dict_received['op']
@@ -69,7 +69,7 @@ class Server(threading.Thread):
                 #todo: find more elegant way of agreeing on a response port
                 self.ssts = threading.Thread(
                     target = helpers._server_socket_thread_send, 
-                    args = (chunk[1][0], self.port + 1, pickle.dumps(dict_sent))
+                    args = (full_chunk[1], self.port + 1, pickle.dumps(dict_sent))
                 )
                 self.ssts.start()
         self.sstr.stop() #nicely close sockets at the end
