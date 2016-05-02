@@ -12,11 +12,11 @@ import helpers
 import threading
 import Queue
 import socket
+
+# from config import MULTICAST_PORT, MULTICAST_GROUP_IP
 import config
-print "Asds", config.DEFAULT_TIMEOUT
 MULTICAST_PORT = config.MULTICAST_PORT
 MULTICAST_GROUP_IP = config.MULTICAST_GROUP_IP
-# from parallelogram.config import MULTICAST_PORT, MULTICAST_GROUP_IP
 
 '''
 Our minimum chunk size in terms of number of elements. When asked to map(),
@@ -95,6 +95,9 @@ def p_reduce(foo, data, port, timeout):
     :param timeout: timeout, in seconds, that function should wait for chunks to be returned
     :return: the reduced result (a single value!)
     '''
+    # ensure that data is present
+    assert(len(data) > 0)
+
     try:
         result = p_func(foo, data, port, 'reduce', timeout)
 

@@ -4,12 +4,12 @@ import threading
 import itertools
 import Queue
 import struct
-import config
 
+# from config import DEFAULT_TIMEOUT, MAX_CONNECT_REQUESTS, NETWORK_CHUNK_SIZE
+import config
 DEFAULT_TIMEOUT = config.DEFAULT_TIMEOUT
 MAX_CONNECT_REQUESTS = config.MAX_CONNECT_REQUESTS
 NETWORK_CHUNK_SIZE = config.NETWORK_CHUNK_SIZE
-# from config import DEFAULT_TIMEOUT, MAX_CONNECT_REQUESTS, NETWORK_CHUNK_SIZE
 
 '''
 This file contains helper functions for use in our parallelized 
@@ -107,7 +107,7 @@ def _single_reduce(foo, data):
     if an empty list is passed in.
     '''
     # ensure that data actually exists
-    # assert(len(data) > 0)
+    assert(len(data) > 0)
 
     # as explained above, we need to apply foo() N-1 times
     for _ in range(len(data) - 1):
@@ -404,8 +404,9 @@ def _get_chunk_assignments(avaliable_servers, num_chunks):
     avaliability_list = list(zipped_avaliable_servers[1])
 
     chunk_address_list = list()
-    for i in xrange(0,num_chunks):
-        min_avaliable = avaliability_list.index(min(avaliability_list))
-        chunk_address_list.append(server_list[min_avaliable])
-        avaliability_list[min_avaliable] =  avaliability_list[min_avaliable] + 1
+    for i in xrange(0, num_chunks):
+        # grab the server processing the least number of chunks
+        min_available = avaliability_list.index(min(avaliability_list))
+        chunk_address_list.append(server_list[min_available])
+        avaliability_list[min_available] =  avaliability_list[min_available] + 1
     return chunk_address_list
