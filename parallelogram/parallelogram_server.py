@@ -5,7 +5,9 @@ import cloudpickle as pickle
 from config import PORT, MULTICAST_PORT, MULTICAST_GROUP_IP
 import socket
 
-# IP_ADDRESS = 'localhost' #run sockets on localhost
+# run sockets on localhost 
+# IP_ADDRESS = 'localhost'
+
 # gets ip address of machine on network
 IP_ADDRESS = socket.gethostbyname(socket.gethostname())
 
