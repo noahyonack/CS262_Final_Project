@@ -113,14 +113,14 @@ def p_func(foo, data, port, op, timeout):
     '''
     # get list of avaliable servers to send to
     # can block since we need list of machines to continue, don't need to thread
-    avaliable_servers = list()
-    helpers._broadcast_client_thread(MULTICAST_GROUP_IP, MULTICAST_PORT, avaliable_servers)
+    available_servers = list()
+    helpers._broadcast_client_thread(MULTICAST_GROUP_IP, MULTICAST_PORT, available_servers)
 
     # chunk the data so it can be sent out in pieces
     chunks = helpers._chunk_list(data, CHUNK_SIZE)
 
     #list of length len(chunks) with the address to send each chunk to
-    chunk_assignments = helpers._get_chunk_assignments(avaliable_servers, len(chunks))
+    chunk_assignments = helpers._get_chunk_assignments(available_servers, len(chunks))
 
     # placeholder for data to be read into
     result = [None] * len(chunks)
@@ -129,7 +129,7 @@ def p_func(foo, data, port, op, timeout):
     #iterate while some chunks are still None, and thus have not been completed
     while None in result:
         for index, chunk in enumerate(chunks):
-            #don't resend completed chunks
+            #don't resend completed chunks, move on to next result element
             if result[index] != None:
                 continue
             # spawns separate thread to distribute each chunk and collect results
@@ -148,15 +148,15 @@ def p_func(foo, data, port, op, timeout):
         timeout *= 2
         #recompute chunk destinations after removing failed machines
         bad_machine_indices = [i for i,val in enumerate(result) if val==None]
-        bad_machine_ips = set([avaliable_servers[i] for i in bad_machine_indices])
+        bad_machine_ips = set([available_servers[i] for i in bad_machine_indices])
         for server in bad_machine_ips:
-            avaliable_servers.remove(server)
+            available_servers.remove(server)
         #check if list is empty. If not, reassign to remaining machines. If yes, ask for machines again
-        if avaliable_servers:
-            chunk_assignments = helpers._get_chunk_assignments(avaliable_servers, len(chunks))
+        if available_servers:
+            chunk_assignments = helpers._get_chunk_assignments(available_servers, len(chunks))
         else:
-            avaliable_servers = list()
-            bst = helpers._broadcast_client_thread(MULTICAST_GROUP_IP, MULTICAST_PORT, avaliable_servers)
+            available_servers = list()
+            bst = helpers._broadcast_client_thread(MULTICAST_GROUP_IP, MULTICAST_PORT, available_servers)
             bst.start()
 
     return result
