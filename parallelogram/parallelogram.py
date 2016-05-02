@@ -12,8 +12,11 @@ import helpers
 import threading
 import Queue
 import socket
-from config import MULTICAST_PORT, MULTICAST_GROUP_IP
-
+import config
+print "Asds", config.DEFAULT_TIMEOUT
+MULTICAST_PORT = config.MULTICAST_PORT
+MULTICAST_GROUP_IP = config.MULTICAST_GROUP_IP
+# from parallelogram.config import MULTICAST_PORT, MULTICAST_GROUP_IP
 
 '''
 Our minimum chunk size in terms of number of elements. When asked to map(),
@@ -44,8 +47,12 @@ def p_map(foo, data, port, timeout):
     :param timeout: timeout, in seconds, that function should wait for chunks to be returned
     :return: the mapped results
     '''
-    result = p_func(foo, data, port, 'map', timeout)
-    return helpers._flatten(result)
+    try:
+        result = p_func(foo, data, port, 'map', timeout)
+        return helpers._flatten(result)
+    except RuntimeError:
+        # if no servers are available, run the job yourself
+        return helpers._single_map(foo, data)
 
 def p_filter(foo, data, port, timeout):
     '''
@@ -61,8 +68,12 @@ def p_filter(foo, data, port, timeout):
     :param port: a port by which to send over distributed operations
     :return: the filtered results
 	'''
-    result = p_func(foo, data, port, 'filter', timeout)
-    return helpers._flatten(result)
+    try:
+        result = p_func(foo, data, port, 'filter', timeout)
+        return helpers._flatten(result)
+    except RuntimeError:
+        # if no servers are available, run the job yourself
+        return helpers._single_filter(foo, data)
 
 def p_reduce(foo, data, port, timeout):
     '''
@@ -84,21 +95,24 @@ def p_reduce(foo, data, port, timeout):
     :param timeout: timeout, in seconds, that function should wait for chunks to be returned
     :return: the reduced result (a single value!)
     '''
+    try:
+        result = p_func(foo, data, port, 'reduce', timeout)
 
-    result = p_func(foo, data, port, 'reduce', timeout)
-
-    # checks if single value is returned, which means reduce is done.
-    # this case will only occur when our initial data is <= than CHUNK_SIZE
-    if (len(result) == 1):
-        return result[0]
-    else:
-        result = helpers._flatten(result)
-        # if we have less than CHUNK_SIZE elements, just locally compute.
-        # otherwise, call a new round of distributed reduction!
-        if (len(result) <= CHUNK_SIZE):
-            return helpers._single_reduce(foo, result)
+        # checks if single value is returned, which means reduce is done.
+        # this case will only occur when our initial data is <= than CHUNK_SIZE
+        if (len(result) == 1):
+            return result[0]
         else:
-            return p_reduce(foo, result, port, timeout)
+            result = helpers._flatten(result)
+            # if we have less than CHUNK_SIZE elements, just locally compute.
+            # otherwise, call a new round of distributed reduction!
+            if (len(result) <= CHUNK_SIZE):
+                return helpers._single_reduce(foo, result)
+            else:
+                return p_reduce(foo, result, port, timeout)
+    except RuntimeError:
+        # if no servers are available, run the job yourself
+        return helpers._single_reduce(foo, data)
 
 def p_func(foo, data, port, op, timeout):
     '''
@@ -119,8 +133,11 @@ def p_func(foo, data, port, op, timeout):
     # chunk the data so it can be sent out in pieces
     chunks = helpers._chunk_list(data, CHUNK_SIZE)
 
-    #list of length len(chunks) with the address to send each chunk to
-    chunk_assignments = helpers._get_chunk_assignments(available_servers, len(chunks))
+    try:
+        #list of length len(chunks) with the address to send each chunk to
+        chunk_assignments = helpers._get_chunk_assignments(available_servers, len(chunks))
+    except AssertionError:
+        raise RuntimeError("There aren't any available servers on the network!")
 
     # placeholder for data to be read into
     result = [None] * len(chunks)
@@ -148,6 +165,7 @@ def p_func(foo, data, port, op, timeout):
         timeout *= 2
         #recompute chunk destinations after removing failed machines
         bad_machine_indices = [i for i,val in enumerate(result) if val==None]
+        # convert indices of bad machines to ips
         bad_machine_ips = set([available_servers[i] for i in bad_machine_indices])
         for server in bad_machine_ips:
             available_servers.remove(server)

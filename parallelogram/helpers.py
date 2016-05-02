@@ -4,6 +4,12 @@ import threading
 import itertools
 import Queue
 import struct
+import config
+
+DEFAULT_TIMEOUT = config.DEFAULT_TIMEOUT
+MAX_CONNECT_REQUESTS = config.MAX_CONNECT_REQUESTS
+NETWORK_CHUNK_SIZE = config.NETWORK_CHUNK_SIZE
+# from config import DEFAULT_TIMEOUT, MAX_CONNECT_REQUESTS, NETWORK_CHUNK_SIZE
 
 '''
 This file contains helper functions for use in our parallelized 
@@ -13,12 +19,6 @@ Three of the methods in this file are prefixed by "_single_", indicating
 that they will be used as helper functions for single chunks of data (as
 opposed to large lists that comprise multiple chunks)
 '''
-
-DEFAULT_TIMEOUT = 5 #socket timeout
-#IP_ADDRESS = 'localhost' #run sockets on localhost
-#replace with socket.gethostname() for external access
-MAX_CONNECT_REQUESTS = 5 #max queue for socket requests
-NETWORK_CHUNK_SIZE = 8192 #max buffer size to read
 
 def _flatten(multiarray):
     '''
@@ -395,10 +395,14 @@ def _get_chunk_assignments(avaliable_servers, num_chunks):
     :return: list of len(num_chunks) in which each index is the ip address
              of the server to send the given chunk to
     '''
-    print(avaliable_servers)
     zipped_avaliable_servers = zip(*avaliable_servers)
+
+    # raise an AssertionError if there are no servers avaialable
+    assert(len(zipped_avaliable_servers) != 0)
+    
     server_list = list(zipped_avaliable_servers[0])
     avaliability_list = list(zipped_avaliable_servers[1])
+
     chunk_address_list = list()
     for i in xrange(0,num_chunks):
         min_avaliable = avaliability_list.index(min(avaliability_list))

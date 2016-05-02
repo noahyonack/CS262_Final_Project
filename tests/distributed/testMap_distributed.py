@@ -7,7 +7,8 @@ from parallelogram import parallelogram
 from parallelogram.parallelogram_server import Server
 import time
 import numpy as np
-from parallelogram.config import PORT
+# from parallelogram.config import PORT
+PORT = 1001
 
 class TestMap_Distributed(unittest.TestCase):
     #setUp and tearDown BROKEN
