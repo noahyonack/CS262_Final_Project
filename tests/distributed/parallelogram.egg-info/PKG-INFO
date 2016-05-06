@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: parallelogram
+Version: 0.1
+Summary: A parallelization library for distributed machines
+Home-page: https://github.com/noahyonack/parallelogram
+Author: Aaron Kabcenell, Jack Murtagh, Noah Yonack
+Author-email: noahyonack@college.harvard.edu
+License: APACHE 2.0
+Description: UNKNOWN
+Platform: UNKNOWN
