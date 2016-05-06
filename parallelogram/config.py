@@ -8,7 +8,7 @@ MULTICAST_GROUP_IP = '224.15.35.42'
 #:port to use for multicast communications
 MULTICAST_PORT = 10000
 #:the default timeout for all sockets
-DEFAULT_TIMEOUT = 5
+DEFAULT_TIMEOUT = 10
 #:the max size of a queue for socket requests
 MAX_CONNECT_REQUESTS = 5
 #:the max buffer size for socket data

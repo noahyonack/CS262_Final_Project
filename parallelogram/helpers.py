@@ -259,7 +259,6 @@ def _client_socket_thread_receive(ip, port, queue, timeout):
     #channel to allow quick reuse
     serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     #bind socket to given ip address and port
-    print(ip)
     serversocket.bind((ip, port))
     #allows up to MAX_CONNECT_REQUESTS requests before 
     # refusing outside connections

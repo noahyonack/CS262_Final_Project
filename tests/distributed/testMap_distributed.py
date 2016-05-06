@@ -35,18 +35,18 @@ class TestMap_Distributed(unittest.TestCase):
         output = parallelogram.p_map(foo_1, [1,2,3,4,5,6], PORT, 10)
         self.assertEqual(output, range(2, 8))
     
-    # def test_map_2(self):
-    #     '''
-    #     Test a basic map case by mapping an incremental function over a big list
-    #     '''
-    #     # ensure correct output when mapping over a big list
-    #     def foo_1(elt, index):
-    #         '''
-    #         Increments an element by 1
-    #         '''
-    #         return elt + 1
-    #     output = parallelogram.p_map(foo_1, range(10000), PORT, 10)
-    #     self.assertEqual(output, range(1, 10001))
+    def test_map_2(self):
+        '''
+        Test a basic map case by mapping an incremental function over a big list
+        '''
+        # ensure correct output when mapping over a big list
+        def foo_1(elt, index):
+            '''
+            Increments an element by 1
+            '''
+            return elt + 1
+        output = parallelogram.p_map(foo_1, range(10000), PORT, 30)
+        self.assertEqual(output, range(1, 10001))
 
     def test_map_3(self):
         '''
