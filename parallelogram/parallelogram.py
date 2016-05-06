@@ -178,8 +178,7 @@ def p_func(foo, data, port, op, timeout):
             chunk_assignments = helpers._get_chunk_assignments(available_servers, len(chunks))
         else:
             available_servers = list()
-            bst = helpers._broadcast_client_thread(MULTICAST_GROUP_IP, MULTICAST_PORT, available_servers)
-            bst.start()
+            helpers._broadcast_client_thread(MULTICAST_GROUP_IP, MULTICAST_PORT, available_servers)
 
     return result
     
