@@ -4,7 +4,7 @@ This file contains config values (like the port numbers) used by our library
 #:port to use for socket communications
 PORT = 1001
 #:ip address of group  to use for multicast communications
-MULTICAST_GROUP_IP = '224.3.29.71'
+MULTICAST_GROUP_IP = '224.15.35.42'
 #:port to use for multicast communications
 MULTICAST_PORT = 10000
 #:the default timeout for all sockets

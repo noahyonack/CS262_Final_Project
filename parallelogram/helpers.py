@@ -293,7 +293,7 @@ def _broadcast_client_thread(mult_group_ip, mult_port, server_list):
 
     # Set a timeout so the socket does not block indefinitely when trying
     # to receive data.
-    sock.settimeout(0.2)
+    sock.settimeout(2)
 
     # Standard time-to-live value scopes:
     # 0    Restricted to the same host
