@@ -135,7 +135,7 @@ def _send_op(result, foo, chunk, op, index, target_ip, own_ip, port, timeout):
         dict_sending = {'func': foo, 'chunk': chunk, 'op': op, 'index': index}
         csts = threading.Thread(
             target = _client_socket_thread_send,
-            args = (target_ip, port, pickle.dumps(dict_sending), timeout))
+            args = (target_ip, port, pickle.dumps(dict_sending)), timeout))
         csts.start()
         queue = Queue.Queue()
         cstr = threading.Thread(

@@ -12,6 +12,7 @@ import helpers
 import threading
 import Queue
 import socket
+import cloudpickle as pickle
 
 # from config import MULTICAST_PORT, MULTICAST_GROUP_IP
 import config
@@ -181,3 +182,4 @@ def p_func(foo, data, port, op, timeout):
             bst.start()
 
     return result
+    

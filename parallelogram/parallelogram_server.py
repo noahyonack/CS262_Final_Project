@@ -4,6 +4,7 @@ import Queue
 import cloudpickle as pickle
 from config import PORT, MULTICAST_PORT, MULTICAST_GROUP_IP
 import socket
+import time
 
 # run sockets on localhost 
 # IP_ADDRESS = 'localhost'
@@ -45,6 +46,10 @@ class Server(threading.Thread):
         self.sstr.start()
         #infinitely loops until calling process calls stop()
         while not self._abort:
+            
+            # sleep so we don't busy wait
+            time.sleep(0.01)
+
             if not self.chunk_queue.empty():
                 full_chunk = self.chunk_queue.get()
                 dict_received = pickle.loads(full_chunk[0])
