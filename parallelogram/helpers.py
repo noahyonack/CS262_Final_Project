@@ -4,6 +4,8 @@ import threading
 import itertools
 import Queue
 import struct
+#unblock to use cpu percentage or available memory as an availability score.
+#import psutil as ps 
 
 # from config import DEFAULT_TIMEOUT, MAX_CONNECT_REQUESTS, NETWORK_CHUNK_SIZE
 import config
@@ -369,6 +371,19 @@ class _Broadcast_Server_Thread(threading.Thread):
         '''
         avaliability = self.chunk_queue.qsize()
         return avaliability
+        '''
+        To use system cpu percentage as a metric swap in the following code:
+        avaliability = ps.cpu_percent(interval=.5) 
+        return avaliability
+        '''
+        '''
+        To use available memory as a metric swap in the following code:
+        #ps.virtual_memory()[2] returns available system memory as a 
+        #percentage. We return 100 minus this value to keep consistency
+        #with smaller availability scores corresponding to freer machines.
+        avaliability = 100 - ps.virtual_memory()[2] 
+        return avaliability
+        '''
 
     def stop(self):
         '''
