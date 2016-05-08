@@ -8,7 +8,6 @@ from parallelogram.parallelogram_server import Server
 import time
 import numpy as np
 from parallelogram.config import PORT
-import cloudpickle as pickle
 
 class TestMap_Distributed(unittest.TestCase):
     #setUp and tearDown BROKEN
