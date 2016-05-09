@@ -1,8 +1,10 @@
-from setuptools import setup
+'''
+Our setup file. To install the package on your machine, run:
 
-def readme():
-    with open('README.md') as f:
-        return f.read()
+sudo python setup.py install
+'''
+
+from setuptools import setup
 
 setup(name='parallelogram',
       version='0.1',
