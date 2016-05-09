@@ -10,7 +10,7 @@ Further design documentation can be found [here](https://docs.google.com/documen
 
 ## To begin using:
 
-Clone and `cd` into the repository. Simply run `sudo python setup.py install` to install the package. Running this command will install all the necessary external dependencies. Note that parallelogram currently only supports the Windows platform.
+Clone and `cd` into the repository. Simply run `sudo python setup.py install` to install the package. Running this command will install all the necessary external dependencies. **Note that parallelogram currently only supports the Windows platform.**
 
 To use this library, execute:
 
