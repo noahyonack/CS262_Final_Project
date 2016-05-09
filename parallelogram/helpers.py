@@ -1,11 +1,19 @@
-import socket
-import cloudpickle as pickle
-import threading
-import itertools
-import Queue
-import struct
+'''
+This file defines helper functions, methods, and classes for in 
+our implementations of p_map(), p_filter(), and p_reduce(), in addition
+to our server implementation.
+'''
 
-# from config import DEFAULT_TIMEOUT, MAX_CONNECT_REQUESTS, NETWORK_CHUNK_SIZE
+import Queue # allows machines to hold multiple chunks at one
+import struct # helps us with object serialization and packing
+import socket # allows for communication between machines
+import threading # allows us to have multiple threads on clients/servers
+import itertools # exposes helpful data manipulation methods
+import psutil as ps # exposes system metrics for calcing availabilities  
+import cloudpickle as pickle # allows for (de)serialization
+
+# somtimes Python can't find the actual variables inside of config, 
+# so it's safer to just assign variables this way
 import config
 DEFAULT_TIMEOUT = config.DEFAULT_TIMEOUT
 MAX_CONNECT_REQUESTS = config.MAX_CONNECT_REQUESTS
@@ -144,7 +152,7 @@ def _send_op(result, foo, chunk, op, index, target_ip, own_ip, port, timeout):
         cstr.start()
         cstr.join(timeout = None)
         response = pickle.loads(queue.get())
-        result[response['index']] = response['chunk']
+             result[response['index']] = response['chunk']
     except RuntimeError, socket.timeout:
         return #do nothing on error, just end and the client will restart the sending protocol
 
@@ -369,6 +377,19 @@ class _Broadcast_Server_Thread(threading.Thread):
         '''
         avaliability = self.chunk_queue.qsize()
         return avaliability
+        '''
+        To use system cpu percentage as a metric swap in the following code:
+        avaliability = ps.cpu_percent(interval=.5) 
+        return avaliability
+        '''
+        '''
+        To use available memory as a metric swap in the following code:
+        #ps.virtual_memory()[2] returns available system memory as a 
+        #percentage. We return 100 minus this value to keep consistency
+        #with smaller availability scores corresponding to freer machines.
+        avaliability = 100 - ps.virtual_memory()[2] 
+        return avaliability
+        '''
 
     def stop(self):
         '''
