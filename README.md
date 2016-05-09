@@ -48,7 +48,7 @@ either passengers or drivers. When a passenger Sarah requires a lift, she broadc
 
 We modeled our parallelization library, Parallelogram, after Uber’s paradigm. In this analogy, clients are “passengers” and servers are “drivers.”  If a user has a lot of data to process, she can write her program using Parallelogram, which breaks her data into chunks and them via a network of other machines. 
 
-The library begins by broadcasting to all of the drivers on the network that there are chunks of data to be processed. Each driver then responds with an availability score, which is some metric that measures how ready a machine is to take on a new job. Currently, Parallelogram’s implementation uses as its availability metric the number of unexecuted jobs in its queue.
+The library begins by broadcasting to all of the drivers on the network that there are chunks of data to be processed. Each driver then responds with an availability score, which is some metric that measures how ready a machine is to take on a new job. Currently, Parallelogram’s implementation uses as its availability metric the number of unexecuted jobs in its queue. More concretely, a driver that has 4 jobs in its queue is considered less available than a driver that has just 2.
 
 After data is returned to the user program from drivers in the netowrk, control flow resumes as expected, and the user may repeat calls to methods exposed by Parallelogram, or she may simply execute further code within a single address space. 
 
