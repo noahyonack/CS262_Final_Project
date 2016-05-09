@@ -107,7 +107,6 @@ def p_reduce(foo, data, port, timeout):
         if (len(result) == 1):
             return result[0]
         else:
-            result = helpers._flatten(result)
             # if we have less than CHUNK_SIZE elements, just locally compute.
             # otherwise, call a new round of distributed reduction!
             if (len(result) <= CHUNK_SIZE):

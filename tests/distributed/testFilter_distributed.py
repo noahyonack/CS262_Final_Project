@@ -18,33 +18,49 @@ class TestFilter_Distributed(unittest.TestCase):
 	# def tearDown(self):
 	# 	self.server.stop()
 	# 	print('stopped')
-	
-	def foo_1(self, elt, index):
-		'''
-		Filters out odd numbers.
-		'''
-		return elt % 2 == 0
+
 
 	def test_filter_1(self):
 		'''
 		Test a basic filtering case by filtering out odd numbers a small list
 		'''
+
+		def foo_1(elt, index):
+			'''
+			Filters out odd numbers.
+			'''
+			return elt % 2 == 0
+
 		# ensure correct output when filtering out odd numbers from small list
-		output = parallelogram.p_filter(self.foo_1, range(6), PORT, 10)
+		output = parallelogram.p_filter(foo_1, range(6), PORT, 10)
 		self.assertEqual(output, range(0, 6, 2))
 
 	def test_filter_2(self):
 		'''
 		Test a basic filtering case by filtering out odd numbers of a big list
 		'''
+
+		def foo_1(elt, index):
+			'''
+			Filters out odd numbers.
+			'''
+			return elt % 2 == 0
+
 		# ensure correct output when filtering out odd numbers from big list
-		output = parallelogram.p_filter(self.foo_1, range(10000), PORT, 10)
-		self.assertEqual(output, range(0, 10000, 2))	
+		output = parallelogram.p_filter(foo_1, range(100), PORT, 10)
+		self.assertEqual(output, range(0, 100, 2))
 
 	def test_filter_3(self):
 		'''
 		Ensure that filter operates correctly on empty lists
 		'''
+
+		def foo_1(elt, index):
+			'''
+			Filters out odd numbers.
+			'''
+			return elt % 2 == 0
+
 		# ensure correct output when filtering over empty lists
-		output = parallelogram.p_filter(self.foo_1, [], PORT, 10)
+		output = parallelogram.p_filter(foo_1, [], PORT, 10)
 		self.assertEqual(output, [])
