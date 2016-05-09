@@ -10,17 +10,17 @@ Further design documentation can be found [here](https://docs.google.com/documen
 
 ## To begin using:
 
-Clone and `cd` into the repository. Simply run `sudo python setup.py install` to install the package. Running this command will install all the necessary external dependencies. **Note that parallelogram currently only supports the Windows platform.**
+Clone and `cd` into the repository. Simply run `sudo python setup.py install` to install the package. Running this command will install all the necessary external dependencies. **Note that Parallelogram currently only supports the Windows platform.**
 
 To use this library, execute:
 
 `python parallelogram_server.py`
 
-Then, in another window, navigate to the root directory and execute your program, via:
+Then, in another window, navigate to your program, via:
 
-`python filename.py`
+`python YOUR_PROGRAM.py`
 
-All `filename.py` needs to do is import Parallelogram and call one of the three exposed methods, like so:
+All `YOUR_PROGRAM.py` needs to do is import Parallelogram and call one of the three exposed methods, like so:
 
 ```python
 from parallelogram import parallelogram
