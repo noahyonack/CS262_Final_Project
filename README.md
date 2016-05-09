@@ -50,7 +50,7 @@ We modeled our parallelization library, Parallelogram, after Uber’s paradigm. 
 
 The library begins by broadcasting to all of the drivers on the network that there are chunks of data to be processed. Each driver then responds with an availability score, which is some metric that measures how ready a machine is to take on a new job. Currently, Parallelogram’s implementation uses as its availability metric the number of unexecuted jobs in its queue. More concretely, a driver that has 4 jobs in its queue is considered less available than a driver that has just 2.
 
-After data is returned to the user program from drivers in the netowrk, control flow resumes as expected, and the user may repeat calls to methods exposed by Parallelogram, or she may simply execute further code within a single address space. 
+After data is returned to the user program from drivers in the network, control flow resumes as expected, and the user may repeat calls to methods exposed by Parallelogram, or she may simply execute further code within a single address space. 
 
 ## What methods does this library expose?
 * `p_map(foo, data, port, timeout)`
