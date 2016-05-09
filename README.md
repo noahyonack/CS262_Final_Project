@@ -66,8 +66,8 @@ respective index.
 
 ## How can I run or write tests?
 
-Nose is a Python package that makes running the tests themselves easy. It automatically gets installed when you run `python setup.py install`. To run tests, navigate to the root directory. Then:
+Nose is a Python package that makes running the tests themselves easy. It automatically gets installed when you run `python setup.py install`. To run tests, navigate to the root directory. Then execute:
 
 `nosetests`
 
-Test files live in `/tests/local` and `/tests/distributed` and can be runing `nosetests` from the root directory.
+Test files live in `/tests/local` and `/tests/distributed` and can be validated by running `nosetests` from the root directory.
