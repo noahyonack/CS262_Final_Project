@@ -2,8 +2,8 @@
 Ensures correctness for _single_map() using the PyUnit (unittest) package
 '''
 
-import unittest
-from parallelogram import helpers
+import unittest # our test package
+from parallelogram import helpers # exposes the functions to test
 
 class TestMap(unittest.TestCase):
 

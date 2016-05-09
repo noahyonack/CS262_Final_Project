@@ -2,11 +2,24 @@
 
 Parallelogram is a parallelization package that distributes computationally intensive programs across machines in a distributed system using a distribution model similar to that of the ride-sharing service Uber.
 
-NOTE: Helpful tips on creating a good package structure can be found [here](https://python-packaging.readthedocs.org/en/latest/everything.html)
-
 ## To begin using:
 
-Clone and `cd` into the repository. Simply run `python setup.py install` to install the package. Some systems may require `sudo` access.
+Clone and `cd` into the repository. Simply run `sudo python setup.py install` to install the package. Running this command will install all the necessary external dependencies.
+
+To use this library, execute:
+
+`python parallelogram_server.py`
+
+Then, in another window, navigate to the root directory and execute your program, via:
+
+`python filename.py`
+
+All `filename.py` needs to do is import Parallelogram (as with `from parallelogram import parallelogram`),
+and call one of our methods like so:
+
+`result = parallelogram.p_map(foo, range(10000), PORT, 30)`,
+
+where `foo` is a function to map over `range(10000)`, and PORT is 1001. This port configuration variable can be changed in `/parallelogram/config.py` if needed.
 
 ## How exactly does distribution work?
 
@@ -37,4 +50,4 @@ Nose is a Python package that makes running the tests themselves easy. It automa
 
 `nosetests`
 
-Test files live in `/parallelogram/tests/` and are of the form `test[METHOD].py`
+Test files live in `/tests/local` and `/tests/distributed` and can be runing `nosetests` from the root directory.

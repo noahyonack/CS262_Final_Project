@@ -2,12 +2,10 @@
 Ensures correctness for p_map() using the PyUnit (unittest) package
 '''
 
-import unittest
-from parallelogram import parallelogram
-from parallelogram.parallelogram_server import Server
-import time
-import numpy as np
-from parallelogram.config import PORT
+import unittest # our test package
+from parallelogram.config import PORT # PORT on which the server should listen
+from parallelogram import parallelogram # library methods 
+from parallelogram.parallelogram_server import Server # server api
 
 class TestMap_Distributed(unittest.TestCase):
     #setUp and tearDown BROKEN
@@ -22,28 +20,31 @@ class TestMap_Distributed(unittest.TestCase):
 
     def test_map_1(self):
         '''
-        Test a basic map case by mapping an incremental function over a
+        Test a basic map case by mapping an incremental 
+        function over a small list
         '''
+
         def foo_1(elt, index):
             '''
             Increments an element by 1
             '''
             return elt + 1
 
-        # ensure correct output when mapping over a small list
         output = parallelogram.p_map(foo_1, [1,2,3,4,5,6], PORT, 10)
         self.assertEqual(output, range(2, 8))
     
     def test_map_2(self):
         '''
-        Test a basic map case by mapping an incremental function over a big list
+        Test a basic map case by mapping an incremental 
+        function over a big list
         '''
-        # ensure correct output when mapping over a big list
+
         def foo_1(elt, index):
             '''
             Increments an element by 1
             '''
             return elt + 1
+
         output = parallelogram.p_map(foo_1, range(10000), PORT, 30)
         self.assertEqual(output, range(1, 10001))
 
@@ -51,7 +52,6 @@ class TestMap_Distributed(unittest.TestCase):
         '''
         Ensure that map operates correctly on empty lists.
         '''
-        # ensure correct output when mapping over empty lists
         def foo_1(elt, index):
             '''
             Increments an element by 1

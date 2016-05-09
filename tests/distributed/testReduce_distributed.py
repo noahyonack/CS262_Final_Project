@@ -2,12 +2,11 @@
 Ensures correctness for p_reduce() using the PyUnit (unittest) package
 '''
 
-import unittest
-from parallelogram import parallelogram
-from parallelogram.parallelogram_server import Server
-import time
-from nose.tools import assert_raises
-from parallelogram.config import PORT
+import unittest # our testing package
+from nose.tools import assert_raises # so we can test against assertions
+from parallelogram import parallelogram # library methods 
+from parallelogram.config import PORT # PORT on which the server should listen
+from parallelogram.parallelogram_server import Server # server api
 
 class TestReduce_Distributed(unittest.TestCase):
     #setUp and tearDown BROKEN
@@ -42,6 +41,8 @@ class TestReduce_Distributed(unittest.TestCase):
 
     def test_reduce_3(self):
         '''
-        Ensure that _single_reduce() assertion fails when an empty list is used.
+        Ensure that _single_reduce() assertion fails when an empty 
+        list is used.
         '''
-        assert_raises(AssertionError, parallelogram.p_reduce, self.foo_1, [], PORT, 10)
+        assert_raises(AssertionError, parallelogram.p_reduce, 
+            self.foo_1, [], PORT, 10)

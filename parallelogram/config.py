@@ -3,7 +3,7 @@ This file contains config values (like the port numbers) used by our library
 '''
 #:port to use for socket communications
 PORT = 1001
-#:ip address of group  to use for multicast communications
+#:ip address of group to use for multicast communications
 MULTICAST_GROUP_IP = '224.15.35.42'
 #:port to use for multicast communications
 MULTICAST_PORT = 10000

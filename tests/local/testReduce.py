@@ -2,9 +2,9 @@
 Ensures correctness for _single_reduce() using the PyUnit (unittest) package
 '''
 
-import unittest
-from parallelogram import helpers
-from nose.tools import assert_raises
+import unittest # our testing package
+from parallelogram import helpers # exposes the functions to test
+from nose.tools import assert_raises # so we can test against assertions
 
 class TestReduce(unittest.TestCase):
 
