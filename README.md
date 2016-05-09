@@ -8,7 +8,7 @@ Before you begin reading the README, please note that extensive documentation of
 
 ## To begin using:
 
-Clone and `cd` into the repository. Simply run `sudo python setup.py install` to install the package. Running this command will install all the necessary external dependencies.
+Clone and `cd` into the repository. Simply run `sudo python setup.py install` to install the package. Running this command will install all the necessary external dependencies. Note that parallelogram currently only supports the Windows platform.
 
 To use this library, execute:
 
@@ -39,24 +39,26 @@ result = parallelogram.p_map(foo, range(10000), 1001, 30)
 print result
 ```
 
-## How exactly does distribution work?
+## What is the idea behind Parallelogram?
 
-Uber has a pool of users that can be classified as
+Parallelogram is modeled after the popular ride-sharing service, Uber. Uber has a pool of users that can be classified as
 either passengers or drivers. When a passenger Sarah requires a lift, she broadcasts a request, which alerts nearby drivers who can then decide to either accept or ignore the request. Drivers who are already carrying passengers oftentimes do not accept the request, and only those drivers who are completely available (and ideally nearby) consider picking up Sarah. Once an Uber driver confirms Sarah’s request, all other available drivers are notified that Sarah no longer needs a ride.
 
-This ride­sharing system will serve as the foundation of our parallelization model. Our library will, on a single machine, partition pieces of the client’s program into parallelizable
-chunks.
+This ride­sharing system will serve as the foundation of our parallelization model. Our library will, on a single machine, partition pieces of the client’s program into parallelizable chunks.
 
 ## What methods does this library expose?
-* `p_map(foo, data)`
+* `p_map(foo, data, port, timeout)`
     * Map a function `foo()` over `data` (of type list). `p_map()` modifies `data` in place
 and supplies `foo()` with both the current element of the list and its
-respective index.
-* `p_filter(foo, data)`
-    * Filter `data` (of type list) via a predicate formatted as a function.
-* `p_reduce(foo, data)`
+respective index. Communication happens over port `port`and `timeout`is the time to wait for the data to be returned. 
+* `p_filter(foo, data, port, timeout)`
+    * Filter `data` (of type list) via a predicate formatted as a function. Communication happens over port `port`and `timeout`is the time to wait for the data to be returned. 
+* `p_reduce(foo, data, port, timeout)`
     * Reduce `data` (of type list) by continually applying `foo()` to subsequent
-	elements of `data`.
+	elements of `data`. Communication happens over port `port`and `timeout`is the time to wait for the data to be returned. 
+
+## How exactly does this distribution work?
+Please see the documentation folder and the Implementation Details and Design Choices section of the written report for a detailed description of how Parallelogram works. 
 
 ## Package Structure
 
