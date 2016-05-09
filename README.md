@@ -47,9 +47,7 @@ either passengers or drivers. When a passenger Sarah requires a lift, she broadc
 This ride­sharing system will serve as the foundation of our parallelization model. Our library will, on a single machine, partition pieces of the client’s program into parallelizable chunks.
 
 ## What methods does this library expose?
-* ```python
-	p_map(foo, data, port, timeout)
-	```
+* `p_map(foo, data, port, timeout)`
     * Map a function `foo()` over `data` (of type list). `p_map()` modifies `data` in place
 and supplies `foo()` with both the current element of the list and its
 respective index. Communication happens over port `port`and `timeout` is the time to wait for the data to be returned before assuming failure and redistributing chunks. 
