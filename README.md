@@ -75,9 +75,9 @@ Please see the `documentation/pydoc` folder and the **Implementation Details and
 	* `config.py`
 		* This file contains config values (like the port numbers) used by our library
 	* `helpers.py`
-		* This file defines helper functions, methods, and classes for in our implementations of p_map(), p_filter(), and p_reduce(), in addition to our server implementation.
+		* This file defines helper functions, methods, and classes for in our implementations of `p_map()`, `p_filter()`, and `p_reduce()`, in addition to our server implementation.
 	* `parallelogram.py`
-		* This file contains our library's implementations of p_map(), p_filter(), and p_reduce(). We use the letter "p" because it indicates that the method is paralellized and because doing so ensures that our functions are properly namespaced
+		* This file contains our library's implementations of `p_map()`, `p_filter()`, and `p_reduce()`. We use the letter "p" because it indicates that the method is paralellized and because doing so ensures that our functions are properly namespaced
 	* `parallelogram_server.py`
 		* This file defines a Server class, which allows machines to listen on a port for jobs. This class should be instantiated by every machine in the distributed system that is meant to process jobs.
 * `tests`
