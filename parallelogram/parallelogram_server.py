@@ -1,10 +1,16 @@
-import helpers
-import threading
-import Queue
-import cloudpickle as pickle
-from config import PORT, MULTICAST_PORT, MULTICAST_GROUP_IP
-import socket
-import time
+'''
+This file defines a Server class, which allows machines to listen on 
+a port for jobs. This class should be instantiated by every machine
+in the distributed system that is meant to process jobs.
+'''
+
+import time # allows us to avoid busy waiting
+import Queue # to hold incoming chunks
+import socket # to communicate
+import helpers # exposes our helper methods
+import threading # allows us to use multiple threads on a single server
+import cloudpickle as pickle # allows for (de)serialization
+from config import PORT, MULTICAST_PORT, MULTICAST_GROUP_IP # config vars
 
 # run sockets on localhost 
 # IP_ADDRESS = 'localhost'
@@ -38,11 +44,13 @@ class Server(threading.Thread):
         returns to waiting
         '''
         #infinite looping listening thread to identify itself to clients
-        self.bst = helpers._Broadcast_Server_Thread(MULTICAST_GROUP_IP, MULTICAST_PORT, self.chunk_queue)
+        self.bst = helpers._Broadcast_Server_Thread(MULTICAST_GROUP_IP, 
+            MULTICAST_PORT, self.chunk_queue)
         self.bst.start()
 
         #infinite looping listening thread for chunks
-        self.sstr = helpers._Server_Socket_Thread_Receive(IP_ADDRESS, self.port, self.chunk_queue)
+        self.sstr = helpers._Server_Socket_Thread_Receive(IP_ADDRESS, 
+            self.port, self.chunk_queue)
         self.sstr.start()
         #infinitely loops until calling process calls stop()
         while not self._abort:
@@ -76,7 +84,8 @@ class Server(threading.Thread):
                 #todo: find more elegant way of agreeing on a response port
                 self.ssts = threading.Thread(
                     target = helpers._server_socket_thread_send, 
-                    args = (full_chunk[1], self.port + 1, pickle.dumps(dict_sent))
+                    args = (full_chunk[1], self.port + 1, 
+                        pickle.dumps(dict_sent))
                 )
                 self.ssts.start()
         self.sstr.stop() #nicely close sockets at the end
