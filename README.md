@@ -41,12 +41,16 @@ result = parallelogram.p_map(foo, range(10000), 1001, 30)
 print result
 ```
 
-## What is the idea behind Parallelogram?
+## What's the motivation behind Parallelogram?
 
 Parallelogram is modeled after the popular ride-sharing service, Uber. Uber has a pool of users that can be classified as
 either passengers or drivers. When a passenger Sarah requires a lift, she broadcasts a request, which alerts nearby drivers who can then decide to either accept or ignore the request. Drivers who are already carrying passengers oftentimes do not accept the request, and only those drivers who are completely available (and ideally nearby) consider picking up Sarah. Once an Uber driver confirms Sarah’s request, all other available drivers are notified that Sarah no longer needs a ride.
 
-This ride­sharing system will serve as the foundation of our parallelization model. Our library will, on a single machine, partition pieces of the client’s program into parallelizable chunks.
+We modeled our parallelization library, Parallelogram, after Uber’s paradigm. In this analogy, clients are “passengers” and servers are “drivers.”  If a user has a lot of data to process, she can write her program using Parallelogram, which first breaks her data into chunks and connects to a network of other machines, which are modeled as drivers. 
+
+The library begins by broadcasting to all of the drivers on the network that there are chunks of data to be processed. Each driver then responds with an availability score, which is some metric that measures how ready a machine is to take on a new job. Currently, Parallelogram’s implementation uses as its availability metric the number of unexecuted jobs in its queue.
+
+After data is returned to the user program from drivers in the netowrk, control flow resumes as expected, and the user may repeat calls to methods exposed by Parallelogram, or she may simply execute further code within a single address space. 
 
 ## What methods does this library expose?
 * `p_map(foo, data, port, timeout)`
