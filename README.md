@@ -65,7 +65,7 @@ respective index. Communication happens over port `port`and `timeout` is the tim
 
 ## How exactly does this distribution work?
 
-Please see the documentation folder and the **Implementation Details and Design Choices** section of the [written report](https://docs.google.com/document/d/1Ll4crPgUnyQelSuNn2GgzwXmDg1-KnBF-hHA4Pz0HGY/edit?usp=sharing) for a detailed description of how Parallelogram works. 
+Please see the `documentation/pydoc` folder and the **Implementation Details and Design Choices** section of the [written report](https://docs.google.com/document/d/1Ll4crPgUnyQelSuNn2GgzwXmDg1-KnBF-hHA4Pz0HGY/edit?usp=sharing) for a detailed description of how Parallelogram works. 
 
 ## Package Structure
 
