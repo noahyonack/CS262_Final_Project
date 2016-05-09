@@ -1,0 +1,100 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module parallelogram</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>parallelogram</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/jackmurtagh/GitHub/parallelogram/parallelogram/parallelogram.py">/Users/jackmurtagh/GitHub/parallelogram/parallelogram/parallelogram.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;file&nbsp;contains&nbsp;our&nbsp;library's&nbsp;implementations&nbsp;of&nbsp;<a href="#-p_map">p_map</a>(),&nbsp;<a href="#-p_filter">p_filter</a>(),&nbsp;and&nbsp;<br>
+<a href="#-p_reduce">p_reduce</a>().<br>
+&nbsp;<br>
+We&nbsp;use&nbsp;the&nbsp;letter&nbsp;"p"&nbsp;because&nbsp;it&nbsp;indicates&nbsp;that&nbsp;the&nbsp;method&nbsp;is&nbsp;paralellized<br>
+and&nbsp;because&nbsp;doing&nbsp;so&nbsp;ensures&nbsp;that&nbsp;our&nbsp;functions&nbsp;are&nbsp;properly&nbsp;namespaced<br>
+&nbsp;<br>
+Imports&nbsp;helpers.py,&nbsp;which&nbsp;contains&nbsp;'private'&nbsp;helper&nbsp;functions</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="Queue.html">Queue</a><br>
+<a href="config.html">config</a><br>
+</td><td width="25%" valign=top><a href="helpers.html">helpers</a><br>
+<a href="socket.html">socket</a><br>
+</td><td width="25%" valign=top><a href="threading.html">threading</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-p_filter"><strong>p_filter</strong></a>(foo, data, port, timeout)</dt><dd><tt>Filter&nbsp;a&nbsp;function&nbsp;foo()&nbsp;over&nbsp;chunks&nbsp;of&nbsp;data&nbsp;(of&nbsp;type&nbsp;list)&nbsp;and<br>
+join&nbsp;the&nbsp;filtered&nbsp;chunks&nbsp;before&nbsp;returning&nbsp;back&nbsp;to&nbsp;the&nbsp;caller.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;filtering&nbsp;will&nbsp;likely&nbsp;not&nbsp;be&nbsp;done&nbsp;on&nbsp;a&nbsp;single&nbsp;machine&nbsp;(unless&nbsp;the&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;be&nbsp;filtered&nbsp;over&nbsp;is&nbsp;so&nbsp;small&nbsp;that&nbsp;sending&nbsp;it&nbsp;over&nbsp;a&nbsp;network&nbsp;would&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;inefficient.)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;:param&nbsp;foo:&nbsp;function&nbsp;to&nbsp;filter&nbsp;over&nbsp;data<br>
+:param&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;data&nbsp;to&nbsp;be&nbsp;filtered<br>
+:param&nbsp;port:&nbsp;a&nbsp;port&nbsp;by&nbsp;which&nbsp;to&nbsp;send&nbsp;over&nbsp;distributed&nbsp;operations<br>
+:return:&nbsp;the&nbsp;filtered&nbsp;results</tt></dd></dl>
+ <dl><dt><a name="-p_func"><strong>p_func</strong></a>(foo, data, port, op, timeout)</dt><dd><tt>Performs&nbsp;network&nbsp;operations&nbsp;for&nbsp;parallel&nbsp;map,&nbsp;filter,&nbsp;and&nbsp;reduce&nbsp;functions<br>
+&nbsp;<br>
+:param&nbsp;foo:&nbsp;function&nbsp;to&nbsp;reduce&nbsp;over&nbsp;data<br>
+:param&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;data&nbsp;to&nbsp;be&nbsp;reduced<br>
+:param&nbsp;port:&nbsp;a&nbsp;port&nbsp;by&nbsp;which&nbsp;to&nbsp;send&nbsp;over&nbsp;distributed&nbsp;operations<br>
+:param&nbsp;op:&nbsp;operation&nbsp;to&nbsp;perform,&nbsp;can&nbsp;be&nbsp;'map',&nbsp;'reduce',&nbsp;or&nbsp;'filter<br>
+:param&nbsp;timeout:&nbsp;timeout,&nbsp;in&nbsp;seconds,&nbsp;that&nbsp;function&nbsp;should&nbsp;wait&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;chunks&nbsp;to&nbsp;be&nbsp;returned<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-p_map"><strong>p_map</strong></a>(foo, data, port, timeout)</dt><dd><tt>Map&nbsp;a&nbsp;function&nbsp;foo()&nbsp;over&nbsp;chunks&nbsp;of&nbsp;data&nbsp;(of&nbsp;type&nbsp;list)&nbsp;and<br>
+join&nbsp;the&nbsp;mapped&nbsp;chunks&nbsp;before&nbsp;returning&nbsp;back&nbsp;to&nbsp;the&nbsp;caller.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;will&nbsp;likely&nbsp;not&nbsp;be&nbsp;done&nbsp;on&nbsp;a&nbsp;single&nbsp;machine&nbsp;(unless&nbsp;the&nbsp;data<br>
+to&nbsp;be&nbsp;mapped&nbsp;over&nbsp;is&nbsp;so&nbsp;small&nbsp;that&nbsp;sending&nbsp;it&nbsp;over&nbsp;a&nbsp;network&nbsp;would&nbsp;be<br>
+inefficient.)<br>
+&nbsp;<br>
+:param&nbsp;foo:&nbsp;function&nbsp;to&nbsp;map&nbsp;over&nbsp;data<br>
+:param&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;data&nbsp;to&nbsp;be&nbsp;mapped&nbsp;over<br>
+:param&nbsp;port:&nbsp;a&nbsp;port&nbsp;by&nbsp;which&nbsp;to&nbsp;send&nbsp;over&nbsp;distributed&nbsp;operations<br>
+:param&nbsp;timeout:&nbsp;timeout,&nbsp;in&nbsp;seconds,&nbsp;that&nbsp;function&nbsp;should&nbsp;wait&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;chunks&nbsp;to&nbsp;be&nbsp;returned<br>
+:return:&nbsp;the&nbsp;mapped&nbsp;results</tt></dd></dl>
+ <dl><dt><a name="-p_reduce"><strong>p_reduce</strong></a>(foo, data, port, timeout)</dt><dd><tt>Reduce&nbsp;a&nbsp;function&nbsp;foo()&nbsp;over&nbsp;chunks&nbsp;of&nbsp;data&nbsp;(of&nbsp;type&nbsp;list)&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;reduce&nbsp;the&nbsp;results&nbsp;before&nbsp;returning&nbsp;back&nbsp;to&nbsp;the&nbsp;caller.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;reduction&nbsp;will&nbsp;likely&nbsp;not&nbsp;be&nbsp;done&nbsp;on&nbsp;a&nbsp;single&nbsp;machine&nbsp;(unless&nbsp;the&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;be&nbsp;reduced&nbsp;over&nbsp;is&nbsp;so&nbsp;small&nbsp;that&nbsp;sending&nbsp;it&nbsp;over&nbsp;a&nbsp;network&nbsp;would&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;inefficient.)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;After&nbsp;the&nbsp;intial&nbsp;chunks&nbsp;have&nbsp;been&nbsp;reduced,&nbsp;we&nbsp;still&nbsp;need&nbsp;to&nbsp;reduce<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;results&nbsp;of&nbsp;the&nbsp;initial&nbsp;reduction,&nbsp;so&nbsp;we&nbsp;call&nbsp;our&nbsp;function&nbsp;again<br>
+&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;either&nbsp;redistribute&nbsp;the&nbsp;initial&nbsp;results&nbsp;or&nbsp;simply&nbsp;locally-process<br>
+&nbsp;&nbsp;&nbsp;&nbsp;chunks,&nbsp;depending&nbsp;on&nbsp;the&nbsp;size&nbsp;of&nbsp;the&nbsp;initial&nbsp;results&nbsp;array.<br>
+&nbsp;<br>
+:param&nbsp;foo:&nbsp;function&nbsp;to&nbsp;reduce&nbsp;over&nbsp;data<br>
+:param&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;data&nbsp;to&nbsp;be&nbsp;reduced<br>
+:param&nbsp;port:&nbsp;a&nbsp;port&nbsp;by&nbsp;which&nbsp;to&nbsp;send&nbsp;over&nbsp;distributed&nbsp;operations<br>
+:param&nbsp;timeout:&nbsp;timeout,&nbsp;in&nbsp;seconds,&nbsp;that&nbsp;function&nbsp;should&nbsp;wait&nbsp;for&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;chunks&nbsp;to&nbsp;be&nbsp;returned<br>
+:return:&nbsp;the&nbsp;reduced&nbsp;result&nbsp;(a&nbsp;single&nbsp;value!)</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>CHUNK_SIZE</strong> = 6<br>
+<strong>IP_ADDRESS</strong> = '192.168.1.6'<br>
+<strong>MULTICAST_GROUP_IP</strong> = '224.15.35.42'<br>
+<strong>MULTICAST_PORT</strong> = 10000</td></tr></table>
+</body></html>

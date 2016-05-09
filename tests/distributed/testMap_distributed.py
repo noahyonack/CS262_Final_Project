@@ -44,9 +44,14 @@ class TestMap_Distributed(unittest.TestCase):
             Increments an element by 1
             '''
             return elt + 1
+<<<<<<< HEAD
 
         output = parallelogram.p_map(foo_1, range(10000), PORT, 30)
         self.assertEqual(output, range(1, 10001))
+=======
+        output = parallelogram.p_map(foo_1, range(100), PORT, 30)
+        self.assertEqual(output, range(1, 101))
+>>>>>>> 935750d29eb26e86b33b720697096b346803b58e
 
     def test_map_3(self):
         '''

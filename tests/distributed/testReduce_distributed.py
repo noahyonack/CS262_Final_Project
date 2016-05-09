@@ -19,30 +19,48 @@ class TestReduce_Distributed(unittest.TestCase):
     #     self.server.stop()
     #     print('stopped')
 
-    def foo_1(self, elt1, elt2):
-        '''
-        Adds two adjacent elements together
-        '''
-        return elt1 + elt2
-
     def test_reduce_1(self):
         '''
+
         Test a basic reduce case by summing a small list
         '''
-        output = parallelogram.p_reduce(self.foo_1, range(6), PORT, 10)
+        def foo_1(elt1, elt2):
+            '''
+            Adds two adjacent elements together
+            '''
+            return elt1 + elt2
+
+        output = parallelogram.p_reduce(foo_1, range(6), PORT, 10)
         self.assertEqual(output, sum(range(6)))
 
     def test_reduce_2(self):
         '''
         Test a basic reduce case by summing a big list
         '''
-        output = parallelogram.p_reduce(self.foo_1, range(10000), PORT, 10)
-        self.assertEqual(output, sum(range(10000)))
+
+        def foo_1(elt1, elt2):
+            '''
+            Adds two adjacent elements together
+            '''
+            return elt1 + elt2
+
+        output = parallelogram.p_reduce(foo_1, range(100), PORT, 10)
+        self.assertEqual(output, sum(range(100)))
 
     def test_reduce_3(self):
         '''
         Ensure that _single_reduce() assertion fails when an empty 
         list is used.
         '''
+<<<<<<< HEAD
         assert_raises(AssertionError, parallelogram.p_reduce, 
             self.foo_1, [], PORT, 10)
+=======
+        def foo_1(elt1, elt2):
+            '''
+            Adds two adjacent elements together
+            '''
+            return elt1 + elt2
+
+        assert_raises(AssertionError, parallelogram.p_reduce, foo_1, [], PORT, 10)
+>>>>>>> 935750d29eb26e86b33b720697096b346803b58e
