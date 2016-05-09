@@ -1,8 +1,0 @@
-parallelogram.parallelogram_server module
-=============================================
-
-.. automodule:: parallelogram.parallelogram_server
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :private-members:
