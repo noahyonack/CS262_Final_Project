@@ -1,0 +1,566 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module itertools</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>itertools</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-dynload/itertools.so">/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-dynload/itertools.so</a><br><a href="http://docs.python.org/library/itertools">Module Docs</a></font></td></tr></table>
+    <p><tt>Functional&nbsp;tools&nbsp;for&nbsp;creating&nbsp;and&nbsp;using&nbsp;iterators.<br>
+&nbsp;<br>
+Infinite&nbsp;iterators:<br>
+<a href="#count">count</a>([n])&nbsp;--&gt;&nbsp;n,&nbsp;n+1,&nbsp;n+2,&nbsp;...<br>
+<a href="#cycle">cycle</a>(p)&nbsp;--&gt;&nbsp;p0,&nbsp;p1,&nbsp;...&nbsp;plast,&nbsp;p0,&nbsp;p1,&nbsp;...<br>
+<a href="#repeat">repeat</a>(elem&nbsp;[,n])&nbsp;--&gt;&nbsp;elem,&nbsp;elem,&nbsp;elem,&nbsp;...&nbsp;endlessly&nbsp;or&nbsp;up&nbsp;to&nbsp;n&nbsp;times<br>
+&nbsp;<br>
+Iterators&nbsp;terminating&nbsp;on&nbsp;the&nbsp;shortest&nbsp;input&nbsp;sequence:<br>
+<a href="#chain">chain</a>(p,&nbsp;q,&nbsp;...)&nbsp;--&gt;&nbsp;p0,&nbsp;p1,&nbsp;...&nbsp;plast,&nbsp;q0,&nbsp;q1,&nbsp;...&nbsp;<br>
+<a href="#compress">compress</a>(data,&nbsp;selectors)&nbsp;--&gt;&nbsp;(d[0]&nbsp;if&nbsp;s[0]),&nbsp;(d[1]&nbsp;if&nbsp;s[1]),&nbsp;...<br>
+<a href="#dropwhile">dropwhile</a>(pred,&nbsp;seq)&nbsp;--&gt;&nbsp;seq[n],&nbsp;seq[n+1],&nbsp;starting&nbsp;when&nbsp;pred&nbsp;fails<br>
+<a href="#groupby">groupby</a>(iterable[,&nbsp;keyfunc])&nbsp;--&gt;&nbsp;sub-iterators&nbsp;grouped&nbsp;by&nbsp;value&nbsp;of&nbsp;keyfunc(v)<br>
+<a href="#ifilter">ifilter</a>(pred,&nbsp;seq)&nbsp;--&gt;&nbsp;elements&nbsp;of&nbsp;seq&nbsp;where&nbsp;pred(elem)&nbsp;is&nbsp;True<br>
+<a href="#ifilterfalse">ifilterfalse</a>(pred,&nbsp;seq)&nbsp;--&gt;&nbsp;elements&nbsp;of&nbsp;seq&nbsp;where&nbsp;pred(elem)&nbsp;is&nbsp;False<br>
+<a href="#islice">islice</a>(seq,&nbsp;[start,]&nbsp;stop&nbsp;[,&nbsp;step])&nbsp;--&gt;&nbsp;elements&nbsp;from<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;seq[start:stop:step]<br>
+<a href="#imap">imap</a>(fun,&nbsp;p,&nbsp;q,&nbsp;...)&nbsp;--&gt;&nbsp;fun(p0,&nbsp;q0),&nbsp;fun(p1,&nbsp;q1),&nbsp;...<br>
+<a href="#starmap">starmap</a>(fun,&nbsp;seq)&nbsp;--&gt;&nbsp;fun(*seq[0]),&nbsp;fun(*seq[1]),&nbsp;...<br>
+<a href="#-tee">tee</a>(it,&nbsp;n=2)&nbsp;--&gt;&nbsp;(it1,&nbsp;it2&nbsp;,&nbsp;...&nbsp;itn)&nbsp;splits&nbsp;one&nbsp;iterator&nbsp;into&nbsp;n<br>
+<a href="#takewhile">takewhile</a>(pred,&nbsp;seq)&nbsp;--&gt;&nbsp;seq[0],&nbsp;seq[1],&nbsp;until&nbsp;pred&nbsp;fails<br>
+<a href="#izip">izip</a>(p,&nbsp;q,&nbsp;...)&nbsp;--&gt;&nbsp;(p[0],&nbsp;q[0]),&nbsp;(p[1],&nbsp;q[1]),&nbsp;...&nbsp;<br>
+<a href="#izip_longest">izip_longest</a>(p,&nbsp;q,&nbsp;...)&nbsp;--&gt;&nbsp;(p[0],&nbsp;q[0]),&nbsp;(p[1],&nbsp;q[1]),&nbsp;...&nbsp;<br>
+&nbsp;<br>
+Combinatoric&nbsp;generators:<br>
+<a href="#product">product</a>(p,&nbsp;q,&nbsp;...&nbsp;[<a href="#repeat">repeat</a>=1])&nbsp;--&gt;&nbsp;cartesian&nbsp;<a href="#product">product</a><br>
+<a href="#permutations">permutations</a>(p[,&nbsp;r])<br>
+<a href="#combinations">combinations</a>(p,&nbsp;r)<br>
+<a href="#combinations_with_replacement">combinations_with_replacement</a>(p,&nbsp;r)</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="__builtin__.html#object">__builtin__.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="itertools.html#chain">chain</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#combinations">combinations</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#combinations_with_replacement">combinations_with_replacement</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#compress">compress</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#count">count</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#cycle">cycle</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#dropwhile">dropwhile</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#groupby">groupby</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#ifilter">ifilter</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#ifilterfalse">ifilterfalse</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#imap">imap</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#islice">islice</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#izip">izip</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#izip_longest">izip_longest</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#permutations">permutations</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#product">product</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#repeat">repeat</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#starmap">starmap</a>
+</font></dt><dt><font face="helvetica, arial"><a href="itertools.html#takewhile">takewhile</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="chain">class <strong>chain</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#chain">chain</a>(*iterables)&nbsp;--&gt;&nbsp;<a href="#chain">chain</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Return&nbsp;a&nbsp;<a href="#chain">chain</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;whose&nbsp;.<a href="#chain-next">next</a>()&nbsp;method&nbsp;returns&nbsp;elements&nbsp;from&nbsp;the<br>
+first&nbsp;iterable&nbsp;until&nbsp;it&nbsp;is&nbsp;exhausted,&nbsp;then&nbsp;elements&nbsp;from&nbsp;the&nbsp;next<br>
+iterable,&nbsp;until&nbsp;all&nbsp;of&nbsp;the&nbsp;iterables&nbsp;are&nbsp;exhausted.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="chain-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#chain-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="chain-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#chain-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="chain-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#chain-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#chain-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<dl><dt><strong>from_iterable</strong> = &lt;built-in method from_iterable of type object&gt;<dd><tt><a href="#chain">chain</a>.<a href="#chain-from_iterable">from_iterable</a>(iterable)&nbsp;--&gt;&nbsp;<a href="#chain">chain</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Alternate&nbsp;<a href="#chain">chain</a>()&nbsp;contructor&nbsp;taking&nbsp;a&nbsp;single&nbsp;iterable&nbsp;argument<br>
+that&nbsp;evaluates&nbsp;lazily.</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="combinations">class <strong>combinations</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#combinations">combinations</a>(iterable,&nbsp;r)&nbsp;--&gt;&nbsp;<a href="#combinations">combinations</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Return&nbsp;successive&nbsp;r-length&nbsp;<a href="#combinations">combinations</a>&nbsp;of&nbsp;elements&nbsp;in&nbsp;the&nbsp;iterable.<br>
+&nbsp;<br>
+<a href="#combinations">combinations</a>(range(4),&nbsp;3)&nbsp;--&gt;&nbsp;(0,1,2),&nbsp;(0,1,3),&nbsp;(0,2,3),&nbsp;(1,2,3)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="combinations-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#combinations-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="combinations-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#combinations-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="combinations-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#combinations-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#combinations-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="combinations_with_replacement">class <strong>combinations_with_replacement</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#combinations_with_replacement">combinations_with_replacement</a>(iterable,&nbsp;r)&nbsp;--&gt;&nbsp;<a href="#combinations_with_replacement">combinations_with_replacement</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Return&nbsp;successive&nbsp;r-length&nbsp;<a href="#combinations">combinations</a>&nbsp;of&nbsp;elements&nbsp;in&nbsp;the&nbsp;iterable<br>
+allowing&nbsp;individual&nbsp;elements&nbsp;to&nbsp;have&nbsp;successive&nbsp;repeats.<br>
+<a href="#combinations_with_replacement">combinations_with_replacement</a>('ABC',&nbsp;2)&nbsp;--&gt;&nbsp;AA&nbsp;AB&nbsp;AC&nbsp;BB&nbsp;BC&nbsp;CC<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="combinations_with_replacement-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#combinations_with_replacement-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="combinations_with_replacement-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#combinations_with_replacement-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="combinations_with_replacement-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#combinations_with_replacement-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#combinations_with_replacement-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="compress">class <strong>compress</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#compress">compress</a>(data,&nbsp;selectors)&nbsp;--&gt;&nbsp;iterator&nbsp;over&nbsp;selected&nbsp;data<br>
+&nbsp;<br>
+Return&nbsp;data&nbsp;elements&nbsp;corresponding&nbsp;to&nbsp;true&nbsp;selector&nbsp;elements.<br>
+Forms&nbsp;a&nbsp;shorter&nbsp;iterator&nbsp;from&nbsp;selected&nbsp;data&nbsp;elements&nbsp;using&nbsp;the<br>
+selectors&nbsp;to&nbsp;choose&nbsp;the&nbsp;data&nbsp;elements.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="compress-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#compress-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="compress-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#compress-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="compress-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#compress-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#compress-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="count">class <strong>count</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#count">count</a>(start=0,&nbsp;step=1)&nbsp;--&gt;&nbsp;<a href="#count">count</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Return&nbsp;a&nbsp;<a href="#count">count</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;whose&nbsp;.<a href="#count-next">next</a>()&nbsp;method&nbsp;returns&nbsp;consecutive&nbsp;values.<br>
+Equivalent&nbsp;to:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;<a href="#count">count</a>(firstval=0,&nbsp;step=1):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;firstval<br>
+&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;1:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;x<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;+=&nbsp;step<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="count-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#count-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="count-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#count-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="count-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Return&nbsp;state&nbsp;information&nbsp;for&nbsp;pickling.</tt></dd></dl>
+
+<dl><dt><a name="count-__repr__"><strong>__repr__</strong></a>(...)</dt><dd><tt>x.<a href="#count-__repr__">__repr__</a>()&nbsp;&lt;==&gt;&nbsp;repr(x)</tt></dd></dl>
+
+<dl><dt><a name="count-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#count-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#count-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="cycle">class <strong>cycle</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#cycle">cycle</a>(iterable)&nbsp;--&gt;&nbsp;<a href="#cycle">cycle</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Return&nbsp;elements&nbsp;from&nbsp;the&nbsp;iterable&nbsp;until&nbsp;it&nbsp;is&nbsp;exhausted.<br>
+Then&nbsp;<a href="#repeat">repeat</a>&nbsp;the&nbsp;sequence&nbsp;indefinitely.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="cycle-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#cycle-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="cycle-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#cycle-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="cycle-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#cycle-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#cycle-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="dropwhile">class <strong>dropwhile</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#dropwhile">dropwhile</a>(predicate,&nbsp;iterable)&nbsp;--&gt;&nbsp;<a href="#dropwhile">dropwhile</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Drop&nbsp;items&nbsp;from&nbsp;the&nbsp;iterable&nbsp;while&nbsp;predicate(item)&nbsp;is&nbsp;true.<br>
+Afterwards,&nbsp;return&nbsp;every&nbsp;element&nbsp;until&nbsp;the&nbsp;iterable&nbsp;is&nbsp;exhausted.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="dropwhile-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#dropwhile-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="dropwhile-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#dropwhile-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="dropwhile-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#dropwhile-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#dropwhile-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="groupby">class <strong>groupby</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#groupby">groupby</a>(iterable[,&nbsp;keyfunc])&nbsp;-&gt;&nbsp;create&nbsp;an&nbsp;iterator&nbsp;which&nbsp;returns<br>
+(key,&nbsp;sub-iterator)&nbsp;grouped&nbsp;by&nbsp;each&nbsp;value&nbsp;of&nbsp;key(value).<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="groupby-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#groupby-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="groupby-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#groupby-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="groupby-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#groupby-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#groupby-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ifilter">class <strong>ifilter</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ifilter">ifilter</a>(function&nbsp;or&nbsp;None,&nbsp;sequence)&nbsp;--&gt;&nbsp;<a href="#ifilter">ifilter</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Return&nbsp;those&nbsp;items&nbsp;of&nbsp;sequence&nbsp;for&nbsp;which&nbsp;function(item)&nbsp;is&nbsp;true.<br>
+If&nbsp;function&nbsp;is&nbsp;None,&nbsp;return&nbsp;the&nbsp;items&nbsp;that&nbsp;are&nbsp;true.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="ifilter-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#ifilter-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="ifilter-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#ifilter-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="ifilter-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#ifilter-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#ifilter-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ifilterfalse">class <strong>ifilterfalse</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ifilterfalse">ifilterfalse</a>(function&nbsp;or&nbsp;None,&nbsp;sequence)&nbsp;--&gt;&nbsp;<a href="#ifilterfalse">ifilterfalse</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Return&nbsp;those&nbsp;items&nbsp;of&nbsp;sequence&nbsp;for&nbsp;which&nbsp;function(item)&nbsp;is&nbsp;false.<br>
+If&nbsp;function&nbsp;is&nbsp;None,&nbsp;return&nbsp;the&nbsp;items&nbsp;that&nbsp;are&nbsp;false.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="ifilterfalse-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#ifilterfalse-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="ifilterfalse-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#ifilterfalse-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="ifilterfalse-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#ifilterfalse-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#ifilterfalse-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="imap">class <strong>imap</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#imap">imap</a>(func,&nbsp;*iterables)&nbsp;--&gt;&nbsp;<a href="#imap">imap</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Make&nbsp;an&nbsp;iterator&nbsp;that&nbsp;computes&nbsp;the&nbsp;function&nbsp;using&nbsp;arguments&nbsp;from<br>
+each&nbsp;of&nbsp;the&nbsp;iterables.&nbsp;&nbsp;Like&nbsp;map()&nbsp;except&nbsp;that&nbsp;it&nbsp;returns<br>
+an&nbsp;iterator&nbsp;instead&nbsp;of&nbsp;a&nbsp;list&nbsp;and&nbsp;that&nbsp;it&nbsp;stops&nbsp;when&nbsp;the&nbsp;shortest<br>
+iterable&nbsp;is&nbsp;exhausted&nbsp;instead&nbsp;of&nbsp;filling&nbsp;in&nbsp;None&nbsp;for&nbsp;shorter<br>
+iterables.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="imap-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#imap-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="imap-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#imap-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="imap-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#imap-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#imap-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="islice">class <strong>islice</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#islice">islice</a>(iterable,&nbsp;[start,]&nbsp;stop&nbsp;[,&nbsp;step])&nbsp;--&gt;&nbsp;<a href="#islice">islice</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Return&nbsp;an&nbsp;iterator&nbsp;whose&nbsp;<a href="#islice-next">next</a>()&nbsp;method&nbsp;returns&nbsp;selected&nbsp;values&nbsp;from&nbsp;an<br>
+iterable.&nbsp;&nbsp;If&nbsp;start&nbsp;is&nbsp;specified,&nbsp;will&nbsp;skip&nbsp;all&nbsp;preceding&nbsp;elements;<br>
+otherwise,&nbsp;start&nbsp;defaults&nbsp;to&nbsp;zero.&nbsp;&nbsp;Step&nbsp;defaults&nbsp;to&nbsp;one.&nbsp;&nbsp;If<br>
+specified&nbsp;as&nbsp;another&nbsp;value,&nbsp;step&nbsp;determines&nbsp;how&nbsp;many&nbsp;values&nbsp;are&nbsp;<br>
+skipped&nbsp;between&nbsp;successive&nbsp;calls.&nbsp;&nbsp;Works&nbsp;like&nbsp;a&nbsp;slice()&nbsp;on&nbsp;a&nbsp;list<br>
+but&nbsp;returns&nbsp;an&nbsp;iterator.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="islice-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#islice-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="islice-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#islice-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="islice-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#islice-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#islice-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="izip">class <strong>izip</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#izip">izip</a>(iter1&nbsp;[,iter2&nbsp;[...]])&nbsp;--&gt;&nbsp;<a href="#izip">izip</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Return&nbsp;a&nbsp;<a href="#izip">izip</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;whose&nbsp;.<a href="#izip-next">next</a>()&nbsp;method&nbsp;returns&nbsp;a&nbsp;tuple&nbsp;where<br>
+the&nbsp;i-th&nbsp;element&nbsp;comes&nbsp;from&nbsp;the&nbsp;i-th&nbsp;iterable&nbsp;argument.&nbsp;&nbsp;The&nbsp;.<a href="#izip-next">next</a>()<br>
+method&nbsp;continues&nbsp;until&nbsp;the&nbsp;shortest&nbsp;iterable&nbsp;in&nbsp;the&nbsp;argument&nbsp;sequence<br>
+is&nbsp;exhausted&nbsp;and&nbsp;then&nbsp;it&nbsp;raises&nbsp;StopIteration.&nbsp;&nbsp;Works&nbsp;like&nbsp;the&nbsp;zip()<br>
+function&nbsp;but&nbsp;consumes&nbsp;less&nbsp;memory&nbsp;by&nbsp;returning&nbsp;an&nbsp;iterator&nbsp;instead&nbsp;of<br>
+a&nbsp;list.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="izip-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#izip-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="izip-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#izip-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="izip-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#izip-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#izip-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="izip_longest">class <strong>izip_longest</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#izip_longest">izip_longest</a>(iter1&nbsp;[,iter2&nbsp;[...]],&nbsp;[fillvalue=None])&nbsp;--&gt;&nbsp;<a href="#izip_longest">izip_longest</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Return&nbsp;an&nbsp;<a href="#izip_longest">izip_longest</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;whose&nbsp;.<a href="#izip_longest-next">next</a>()&nbsp;method&nbsp;returns&nbsp;a&nbsp;tuple&nbsp;where<br>
+the&nbsp;i-th&nbsp;element&nbsp;comes&nbsp;from&nbsp;the&nbsp;i-th&nbsp;iterable&nbsp;argument.&nbsp;&nbsp;The&nbsp;.<a href="#izip_longest-next">next</a>()<br>
+method&nbsp;continues&nbsp;until&nbsp;the&nbsp;longest&nbsp;iterable&nbsp;in&nbsp;the&nbsp;argument&nbsp;sequence<br>
+is&nbsp;exhausted&nbsp;and&nbsp;then&nbsp;it&nbsp;raises&nbsp;StopIteration.&nbsp;&nbsp;When&nbsp;the&nbsp;shorter&nbsp;iterables<br>
+are&nbsp;exhausted,&nbsp;the&nbsp;fillvalue&nbsp;is&nbsp;substituted&nbsp;in&nbsp;their&nbsp;place.&nbsp;&nbsp;The&nbsp;fillvalue<br>
+defaults&nbsp;to&nbsp;None&nbsp;or&nbsp;can&nbsp;be&nbsp;specified&nbsp;by&nbsp;a&nbsp;keyword&nbsp;argument.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="izip_longest-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#izip_longest-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="izip_longest-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#izip_longest-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="izip_longest-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#izip_longest-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#izip_longest-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="permutations">class <strong>permutations</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#permutations">permutations</a>(iterable[,&nbsp;r])&nbsp;--&gt;&nbsp;<a href="#permutations">permutations</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Return&nbsp;successive&nbsp;r-length&nbsp;<a href="#permutations">permutations</a>&nbsp;of&nbsp;elements&nbsp;in&nbsp;the&nbsp;iterable.<br>
+&nbsp;<br>
+<a href="#permutations">permutations</a>(range(3),&nbsp;2)&nbsp;--&gt;&nbsp;(0,1),&nbsp;(0,2),&nbsp;(1,0),&nbsp;(1,2),&nbsp;(2,0),&nbsp;(2,1)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="permutations-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#permutations-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="permutations-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#permutations-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="permutations-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#permutations-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#permutations-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="product">class <strong>product</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#product">product</a>(*iterables)&nbsp;--&gt;&nbsp;<a href="#product">product</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Cartesian&nbsp;<a href="#product">product</a>&nbsp;of&nbsp;input&nbsp;iterables.&nbsp;&nbsp;Equivalent&nbsp;to&nbsp;nested&nbsp;for-loops.<br>
+&nbsp;<br>
+For&nbsp;example,&nbsp;<a href="#product">product</a>(A,&nbsp;B)&nbsp;returns&nbsp;the&nbsp;same&nbsp;as:&nbsp;&nbsp;((x,y)&nbsp;for&nbsp;x&nbsp;in&nbsp;A&nbsp;for&nbsp;y&nbsp;in&nbsp;B).<br>
+The&nbsp;leftmost&nbsp;iterators&nbsp;are&nbsp;in&nbsp;the&nbsp;outermost&nbsp;for-loop,&nbsp;so&nbsp;the&nbsp;output&nbsp;tuples<br>
+<a href="#cycle">cycle</a>&nbsp;in&nbsp;a&nbsp;manner&nbsp;similar&nbsp;to&nbsp;an&nbsp;odometer&nbsp;(with&nbsp;the&nbsp;rightmost&nbsp;element&nbsp;changing<br>
+on&nbsp;every&nbsp;iteration).<br>
+&nbsp;<br>
+To&nbsp;compute&nbsp;the&nbsp;<a href="#product">product</a>&nbsp;of&nbsp;an&nbsp;iterable&nbsp;with&nbsp;itself,&nbsp;specify&nbsp;the&nbsp;number<br>
+of&nbsp;repetitions&nbsp;with&nbsp;the&nbsp;optional&nbsp;<a href="#repeat">repeat</a>&nbsp;keyword&nbsp;argument.&nbsp;For&nbsp;example,<br>
+<a href="#product">product</a>(A,&nbsp;<a href="#repeat">repeat</a>=4)&nbsp;means&nbsp;the&nbsp;same&nbsp;as&nbsp;<a href="#product">product</a>(A,&nbsp;A,&nbsp;A,&nbsp;A).<br>
+&nbsp;<br>
+<a href="#product">product</a>('ab',&nbsp;range(3))&nbsp;--&gt;&nbsp;('a',0)&nbsp;('a',1)&nbsp;('a',2)&nbsp;('b',0)&nbsp;('b',1)&nbsp;('b',2)<br>
+<a href="#product">product</a>((0,1),&nbsp;(0,1),&nbsp;(0,1))&nbsp;--&gt;&nbsp;(0,0,0)&nbsp;(0,0,1)&nbsp;(0,1,0)&nbsp;(0,1,1)&nbsp;(1,0,0)&nbsp;...<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="product-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#product-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="product-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#product-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="product-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#product-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#product-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="repeat">class <strong>repeat</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#repeat">repeat</a>(<a href="__builtin__.html#object">object</a>&nbsp;[,times])&nbsp;-&gt;&nbsp;create&nbsp;an&nbsp;iterator&nbsp;which&nbsp;returns&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a><br>
+for&nbsp;the&nbsp;specified&nbsp;number&nbsp;of&nbsp;times.&nbsp;&nbsp;If&nbsp;not&nbsp;specified,&nbsp;returns&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a><br>
+endlessly.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="repeat-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#repeat-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="repeat-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#repeat-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="repeat-__length_hint__"><strong>__length_hint__</strong></a>(...)</dt><dd><tt>Private&nbsp;method&nbsp;returning&nbsp;an&nbsp;estimate&nbsp;of&nbsp;len(list(it)).</tt></dd></dl>
+
+<dl><dt><a name="repeat-__repr__"><strong>__repr__</strong></a>(...)</dt><dd><tt>x.<a href="#repeat-__repr__">__repr__</a>()&nbsp;&lt;==&gt;&nbsp;repr(x)</tt></dd></dl>
+
+<dl><dt><a name="repeat-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#repeat-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#repeat-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="starmap">class <strong>starmap</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#starmap">starmap</a>(function,&nbsp;sequence)&nbsp;--&gt;&nbsp;<a href="#starmap">starmap</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Return&nbsp;an&nbsp;iterator&nbsp;whose&nbsp;values&nbsp;are&nbsp;returned&nbsp;from&nbsp;the&nbsp;function&nbsp;evaluated<br>
+with&nbsp;a&nbsp;argument&nbsp;tuple&nbsp;taken&nbsp;from&nbsp;the&nbsp;given&nbsp;sequence.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="starmap-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#starmap-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="starmap-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#starmap-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="starmap-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#starmap-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#starmap-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="takewhile">class <strong>takewhile</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#takewhile">takewhile</a>(predicate,&nbsp;iterable)&nbsp;--&gt;&nbsp;<a href="#takewhile">takewhile</a>&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Return&nbsp;successive&nbsp;entries&nbsp;from&nbsp;an&nbsp;iterable&nbsp;as&nbsp;long&nbsp;as&nbsp;the&nbsp;<br>
+predicate&nbsp;evaluates&nbsp;to&nbsp;true&nbsp;for&nbsp;each&nbsp;entry.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="takewhile-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#takewhile-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="takewhile-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#takewhile-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="takewhile-next"><strong>next</strong></a>(...)</dt><dd><tt>x.<a href="#takewhile-next">next</a>()&nbsp;-&gt;&nbsp;the&nbsp;next&nbsp;value,&nbsp;or&nbsp;raise&nbsp;StopIteration</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#takewhile-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-tee"><strong>tee</strong></a>(...)</dt><dd><tt><a href="#-tee">tee</a>(iterable,&nbsp;n=2)&nbsp;--&gt;&nbsp;tuple&nbsp;of&nbsp;n&nbsp;independent&nbsp;iterators.</tt></dd></dl>
+</td></tr></table>
+</body></html>

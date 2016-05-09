@@ -152,7 +152,7 @@ def _send_op(result, foo, chunk, op, index, target_ip, own_ip, port, timeout):
         cstr.start()
         cstr.join(timeout = None)
         response = pickle.loads(queue.get())
-             result[response['index']] = response['chunk']
+        result[response['index']] = response['chunk']
     except RuntimeError, socket.timeout:
         return #do nothing on error, just end and the client will restart the sending protocol
 
