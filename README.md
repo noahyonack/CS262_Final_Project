@@ -18,12 +18,26 @@ Then, in another window, navigate to the root directory and execute your program
 
 `python filename.py`
 
-All `filename.py` needs to do is import Parallelogram (as with `from parallelogram import parallelogram`),
-and call one of our methods like so:
+All `filename.py` needs to do is import Parallelogram and call one of the three exposed methods, like so:
 
-`result = parallelogram.p_map(foo, range(10000), PORT, 30)`,
+```python
+from parallelogram import parallelogram
 
-where `foo` is a function to map over `range(10000)`, and PORT is 1001. This port configuration variable can be changed in `/parallelogram/config.py` if needed.
+data = range(1000)
+
+def foo(elt, index):
+	'''
+	A function to map over a list of data.
+	Increments every element in the list by 1.
+	'''
+	return elt + 1
+
+# port 1001 is currently hardcoded into Parallelogram's
+# configuration file. If you'd rather not use port 1001,
+# you may change it in parallelogram/config.py
+result = parallelogram.p_map(foo, range(10000), 1001, 30)
+print result
+```
 
 ## How exactly does distribution work?
 
