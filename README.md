@@ -50,12 +50,12 @@ This ride­sharing system will serve as the foundation of our parallelization mo
 * `p_map(foo, data, port, timeout)`
     * Map a function `foo()` over `data` (of type list). `p_map()` modifies `data` in place
 and supplies `foo()` with both the current element of the list and its
-respective index. Communication happens over port `port`and `timeout`is the time to wait for the data to be returned. 
+respective index. Communication happens over port `port`and `timeout` is the time to wait for the data to be returned before assuming failure and redistributing chunks. 
 * `p_filter(foo, data, port, timeout)`
-    * Filter `data` (of type list) via a predicate formatted as a function. Communication happens over port `port`and `timeout`is the time to wait for the data to be returned. 
+    * Filter `data` (of type list) via a predicate formatted as a function. Communication happens over port `port`and `timeout`is the time to wait for the data to be returned before assuming failure and redistributing chunks. 
 * `p_reduce(foo, data, port, timeout)`
     * Reduce `data` (of type list) by continually applying `foo()` to subsequent
-	elements of `data`. Communication happens over port `port`and `timeout`is the time to wait for the data to be returned. 
+	elements of `data`. Communication happens over port `port`and `timeout`is the time to wait for the data to be returned before assuming failure and redistributing chunks. 
 
 ## How exactly does this distribution work?
 Please see the documentation folder and the Implementation Details and Design Choices section of the written report for a detailed description of how Parallelogram works. 
