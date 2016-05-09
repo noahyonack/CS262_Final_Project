@@ -2,23 +2,12 @@
 Ensures correctness for p_filter() using the PyUnit (unittest) package
 '''
 
-import unittest
-from parallelogram import parallelogram
-from parallelogram.parallelogram_server import Server
-import time
-from parallelogram.config import PORT
+import unittest # our test package
+from parallelogram.config import PORT # PORT on which the server should listen
+from parallelogram import parallelogram # library methods 
+from parallelogram.parallelogram_server import Server # server api
 
 class TestFilter_Distributed(unittest.TestCase):
-	#setUp and tearDown BROKEN
-	# def setUp(self):
-	# 	self.server = Server(PORT)
-	# 	self.server.start()
-	# 	print('started')
- #    #
-	# def tearDown(self):
-	# 	self.server.stop()
-	# 	print('stopped')
-
 
 	def test_filter_1(self):
 		'''

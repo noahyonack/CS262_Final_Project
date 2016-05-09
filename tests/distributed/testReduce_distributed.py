@@ -9,15 +9,6 @@ from parallelogram.config import PORT # PORT on which the server should listen
 from parallelogram.parallelogram_server import Server # server api
 
 class TestReduce_Distributed(unittest.TestCase):
-    #setUp and tearDown BROKEN
-    # def setUp(self):
-    #     self.server = Server(PORT)
-    #     self.server.start()
-    #     print('started')
-    #
-    # def tearDown(self):
-    #     self.server.stop()
-    #     print('stopped')
 
     def test_reduce_1(self):
         '''
@@ -52,10 +43,6 @@ class TestReduce_Distributed(unittest.TestCase):
         Ensure that _single_reduce() assertion fails when an empty 
         list is used.
         '''
-<<<<<<< HEAD
-        assert_raises(AssertionError, parallelogram.p_reduce, 
-            self.foo_1, [], PORT, 10)
-=======
         def foo_1(elt1, elt2):
             '''
             Adds two adjacent elements together
@@ -63,4 +50,3 @@ class TestReduce_Distributed(unittest.TestCase):
             return elt1 + elt2
 
         assert_raises(AssertionError, parallelogram.p_reduce, foo_1, [], PORT, 10)
->>>>>>> 935750d29eb26e86b33b720697096b346803b58e
