@@ -1,5 +1,5 @@
 '''
-This file defines helper functions, methods, and classes for in 
+This file defines helper functions, methods, and classes for 
 our implementations of p_map(), p_filter(), and p_reduce(), in addition
 to our server implementation.
 
@@ -16,8 +16,12 @@ networking code, and one for the client to assign chunks based on this
 Remaining functions, labeled using the terms client/server,
 socket/broadcast, and send/receive perform the described networking
 function for the described entity
-'''
 
+
+Three of the methods in this file are prefixed by "_single_", indicating
+that they will be used as helper functions for single chunks of data (as
+opposed to large lists that comprise multiple chunks)
+'''
 import Queue # allows machines to hold multiple chunks at one
 import struct # helps us with object serialization and packing
 import socket # allows for communication between machines
@@ -32,15 +36,6 @@ import config
 DEFAULT_TIMEOUT = config.DEFAULT_TIMEOUT
 MAX_CONNECT_REQUESTS = config.MAX_CONNECT_REQUESTS
 NETWORK_CHUNK_SIZE = config.NETWORK_CHUNK_SIZE
-
-'''
-This file contains helper functions for use in our parallelized 
-implementations  of p_map(), p_filter(), and p_reduce()
-
-Three of the methods in this file are prefixed by "_single_", indicating
-that they will be used as helper functions for single chunks of data (as
-opposed to large lists that comprise multiple chunks)
-'''
 
 def _flatten(multiarray):
     '''
@@ -423,14 +418,11 @@ class _Broadcast_Server_Thread(threading.Thread):
         avaliability = 100 - ps.virtual_memory()[2] 
         return avaliability
         '''
-
     def stop(self):
         '''
         stop server and nicely close sockets
         '''
         self._abort = True
-
-
 #naive implementation: give each chunk to minimum avaliability server, then increment
 #avaliability of that server modify this function to change how chunks are
 #assigned

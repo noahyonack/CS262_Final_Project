@@ -8,8 +8,8 @@
 <td valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>helpers</strong></big></big></font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/parallelogram/parallelogram/helpers.py">/parallelogram/parallelogram/helpers.py</a></font></td></tr></table>
-    <p><tt>This&nbsp;file&nbsp;defines&nbsp;helper&nbsp;functions,&nbsp;methods,&nbsp;and&nbsp;classes&nbsp;for&nbsp;in&nbsp;<br>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/jackmurtagh/GitHub/parallelogram/parallelogram/helpers.py">/Users/jackmurtagh/GitHub/parallelogram/parallelogram/helpers.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;file&nbsp;defines&nbsp;helper&nbsp;functions,&nbsp;methods,&nbsp;and&nbsp;classes&nbsp;for&nbsp;<br>
 our&nbsp;implementations&nbsp;of&nbsp;p_map(),&nbsp;p_filter(),&nbsp;and&nbsp;p_reduce(),&nbsp;in&nbsp;addition<br>
 to&nbsp;our&nbsp;server&nbsp;implementation.<br>
 &nbsp;<br>
@@ -25,7 +25,12 @@ networking&nbsp;code,&nbsp;and&nbsp;one&nbsp;for&nbsp;the&nbsp;client&nbsp;to&nb
 (_get_chunk_assignments)<br>
 Remaining&nbsp;functions,&nbsp;labeled&nbsp;using&nbsp;the&nbsp;terms&nbsp;client/server,<br>
 socket/broadcast,&nbsp;and&nbsp;send/receive&nbsp;perform&nbsp;the&nbsp;described&nbsp;networking<br>
-function&nbsp;for&nbsp;the&nbsp;described&nbsp;entity</tt></p>
+function&nbsp;for&nbsp;the&nbsp;described&nbsp;entity<br>
+&nbsp;<br>
+&nbsp;<br>
+Three&nbsp;of&nbsp;the&nbsp;methods&nbsp;in&nbsp;this&nbsp;file&nbsp;are&nbsp;prefixed&nbsp;by&nbsp;"_single_",&nbsp;indicating<br>
+that&nbsp;they&nbsp;will&nbsp;be&nbsp;used&nbsp;as&nbsp;helper&nbsp;functions&nbsp;for&nbsp;single&nbsp;chunks&nbsp;of&nbsp;data&nbsp;(as<br>
+opposed&nbsp;to&nbsp;large&nbsp;lists&nbsp;that&nbsp;comprise&nbsp;multiple&nbsp;chunks)</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -42,6 +47,286 @@ function&nbsp;for&nbsp;the&nbsp;described&nbsp;entity</tt></p>
 </td><td width="25%" valign=top><a href="struct.html">struct</a><br>
 <a href="threading.html">threading</a><br>
 </td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="threading.html#Thread">threading.Thread</a>(<a href="threading.html#_Verbose">threading._Verbose</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="helpers.html#Broadcast_Server_Thread">Broadcast_Server_Thread</a>
+</font></dt><dt><font face="helvetica, arial"><a href="helpers.html#Server_Socket_Thread_Receive">Server_Socket_Thread_Receive</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Broadcast_Server_Thread">class <strong>Broadcast_Server_Thread</strong></a>(<a href="threading.html#Thread">threading.Thread</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>#based&nbsp;on&nbsp;sample&nbsp;code&nbsp;from&nbsp;https://pymotw.com/2/socket/multicast.html<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="helpers.html#Broadcast_Server_Thread">Broadcast_Server_Thread</a></dd>
+<dd><a href="threading.html#Thread">threading.Thread</a></dd>
+<dd><a href="threading.html#_Verbose">threading._Verbose</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Broadcast_Server_Thread-calc_avaliability"><strong>calc_avaliability</strong></a>(self)</dt><dd><tt>Function&nbsp;to&nbsp;calculate&nbsp;avaliability&nbsp;of&nbsp;given&nbsp;machine.&nbsp;Change&nbsp;this<br>
+function&nbsp;to&nbsp;customize&nbsp;the&nbsp;metric&nbsp;for&nbsp;your&nbsp;application/network<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="Broadcast_Server_Thread-init__"><strong>init__</strong></a>(self, mult_group_ip, mult_port, chunk_queue)</dt><dd><tt>Function&nbsp;run&nbsp;by&nbsp;server&nbsp;to&nbsp;listen&nbsp;on&nbsp;the&nbsp;multicast&nbsp;channel&nbsp;for&nbsp;new<br>
+clients,&nbsp;and&nbsp;to&nbsp;send&nbsp;back&nbsp;that&nbsp;the&nbsp;machine&nbsp;is&nbsp;avaliable&nbsp;and&nbsp;how<br>
+avaliable/busy&nbsp;it&nbsp;is.&nbsp;Implemented&nbsp;as&nbsp;a&nbsp;class&nbsp;since&nbsp;it&nbsp;listen&nbsp;forever<br>
+until&nbsp;the&nbsp;server&nbsp;is&nbsp;stopped,&nbsp;at&nbsp;which&nbsp;time&nbsp;it&nbsp;should&nbsp;exit&nbsp;nicely<br>
+&nbsp;<br>
+:param&nbsp;mult_group_ip:&nbsp;multicast&nbsp;group&nbsp;ip&nbsp;address&nbsp;on&nbsp;which&nbsp;to&nbsp;broadcast<br>
+:param&nbsp;mult_port:&nbsp;multicast&nbsp;port&nbsp;to&nbsp;send&nbsp;to<br>
+:param&nbsp;chunk_queue:&nbsp;queue&nbsp;of&nbsp;chunks&nbsp;that&nbsp;are&nbsp;waiting&nbsp;to&nbsp;be&nbsp;processed</tt></dd></dl>
+
+<dl><dt><a name="Broadcast_Server_Thread-run"><strong>run</strong></a>(self)</dt><dd><tt>starts&nbsp;receive&nbsp;and&nbsp;respond&nbsp;loop</tt></dd></dl>
+
+<dl><dt><a name="Broadcast_Server_Thread-stop"><strong>stop</strong></a>(self)</dt><dd><tt>stop&nbsp;server&nbsp;and&nbsp;nicely&nbsp;close&nbsp;sockets</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="threading.html#Thread">threading.Thread</a>:<br>
+<dl><dt><a name="Broadcast_Server_Thread-__init__"><strong>__init__</strong></a>(self, group<font color="#909090">=None</font>, target<font color="#909090">=None</font>, name<font color="#909090">=None</font>, args<font color="#909090">=()</font>, kwargs<font color="#909090">=None</font>, verbose<font color="#909090">=None</font>)</dt></dl>
+
+<dl><dt><a name="Broadcast_Server_Thread-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Broadcast_Server_Thread-getName"><strong>getName</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Broadcast_Server_Thread-isAlive"><strong>isAlive</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Broadcast_Server_Thread-isDaemon"><strong>isDaemon</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Broadcast_Server_Thread-is_alive"><strong>is_alive</strong></a> = isAlive(self)</dt></dl>
+
+<dl><dt><a name="Broadcast_Server_Thread-join"><strong>join</strong></a>(self, timeout<font color="#909090">=None</font>)</dt></dl>
+
+<dl><dt><a name="Broadcast_Server_Thread-setDaemon"><strong>setDaemon</strong></a>(self, daemonic)</dt></dl>
+
+<dl><dt><a name="Broadcast_Server_Thread-setName"><strong>setName</strong></a>(self, name)</dt></dl>
+
+<dl><dt><a name="Broadcast_Server_Thread-start"><strong>start</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="threading.html#Thread">threading.Thread</a>:<br>
+<dl><dt><strong>daemon</strong></dt>
+</dl>
+<dl><dt><strong>ident</strong></dt>
+</dl>
+<dl><dt><strong>name</strong></dt>
+</dl>
+<hr>
+Data descriptors inherited from <a href="threading.html#_Verbose">threading._Verbose</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Server_Socket_Thread_Receive">class <strong>Server_Socket_Thread_Receive</strong></a>(<a href="threading.html#Thread">threading.Thread</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>#&nbsp;based&nbsp;on&nbsp;examples&nbsp;from&nbsp;https://docs.python.org/2/howto/sockets.html<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="helpers.html#Server_Socket_Thread_Receive">Server_Socket_Thread_Receive</a></dd>
+<dd><a href="threading.html#Thread">threading.Thread</a></dd>
+<dd><a href="threading.html#_Verbose">threading._Verbose</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Server_Socket_Thread_Receive-init__"><strong>init__</strong></a>(self, ip, port, queue)</dt><dd><tt>Starts&nbsp;a&nbsp;server&nbsp;socket&nbsp;that&nbsp;listens&nbsp;on&nbsp;the&nbsp;input&nbsp;port&nbsp;and&nbsp;writes<br>
+received&nbsp;messages&nbsp;to&nbsp;the&nbsp;queue.&nbsp;Has&nbsp;a&nbsp;blocking<br>
+infinite&nbsp;loop,&nbsp;so&nbsp;should&nbsp;be&nbsp;run&nbsp;as&nbsp;a&nbsp;separate&nbsp;thread<br>
+A&nbsp;class&nbsp;rather&nbsp;than&nbsp;a&nbsp;function&nbsp;to&nbsp;make&nbsp;it&nbsp;stoppable&nbsp;and&nbsp;allow<br>
+cleaner&nbsp;socket&nbsp;closing&nbsp;in&nbsp;infinite&nbsp;loop<br>
+&nbsp;<br>
+:param&nbsp;port:&nbsp;Port&nbsp;on&nbsp;which&nbsp;to&nbsp;listen&nbsp;for&nbsp;messages<br>
+:param&nbsp;queue:&nbsp;Queue&nbsp;to&nbsp;add&nbsp;messages&nbsp;to</tt></dd></dl>
+
+<dl><dt><a name="Server_Socket_Thread_Receive-run"><strong>run</strong></a>(self)</dt><dd><tt>Loop&nbsp;that&nbsp;listens&nbsp;for&nbsp;messages&nbsp;and&nbsp;processes&nbsp;them&nbsp;if&nbsp;they&nbsp;arrive,&nbsp;<br>
+adding&nbsp;them&nbsp;to&nbsp;the&nbsp;queue</tt></dd></dl>
+
+<dl><dt><a name="Server_Socket_Thread_Receive-stop"><strong>stop</strong></a>(self)</dt><dd><tt>stop&nbsp;server&nbsp;and&nbsp;nicely&nbsp;close&nbsp;sockets</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="threading.html#Thread">threading.Thread</a>:<br>
+<dl><dt><a name="Server_Socket_Thread_Receive-__init__"><strong>__init__</strong></a>(self, group<font color="#909090">=None</font>, target<font color="#909090">=None</font>, name<font color="#909090">=None</font>, args<font color="#909090">=()</font>, kwargs<font color="#909090">=None</font>, verbose<font color="#909090">=None</font>)</dt></dl>
+
+<dl><dt><a name="Server_Socket_Thread_Receive-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Server_Socket_Thread_Receive-getName"><strong>getName</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Server_Socket_Thread_Receive-isAlive"><strong>isAlive</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Server_Socket_Thread_Receive-isDaemon"><strong>isDaemon</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Server_Socket_Thread_Receive-is_alive"><strong>is_alive</strong></a> = isAlive(self)</dt></dl>
+
+<dl><dt><a name="Server_Socket_Thread_Receive-join"><strong>join</strong></a>(self, timeout<font color="#909090">=None</font>)</dt></dl>
+
+<dl><dt><a name="Server_Socket_Thread_Receive-setDaemon"><strong>setDaemon</strong></a>(self, daemonic)</dt></dl>
+
+<dl><dt><a name="Server_Socket_Thread_Receive-setName"><strong>setName</strong></a>(self, name)</dt></dl>
+
+<dl><dt><a name="Server_Socket_Thread_Receive-start"><strong>start</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="threading.html#Thread">threading.Thread</a>:<br>
+<dl><dt><strong>daemon</strong></dt>
+</dl>
+<dl><dt><strong>ident</strong></dt>
+</dl>
+<dl><dt><strong>name</strong></dt>
+</dl>
+<hr>
+Data descriptors inherited from <a href="threading.html#_Verbose">threading._Verbose</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-broadcast_client_thread"><strong>broadcast_client_thread</strong></a>(mult_group_ip, mult_port, server_list)</dt><dd><tt>Function&nbsp;run&nbsp;by&nbsp;client&nbsp;that&nbsp;broadcasts&nbsp;that&nbsp;there&nbsp;is&nbsp;a&nbsp;job&nbsp;it&nbsp;wants&nbsp;servers<br>
+to&nbsp;perform,&nbsp;and&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;tuples&nbsp;of&nbsp;avaliable&nbsp;servers&nbsp;and&nbsp;how<br>
+'avaliable'&nbsp;and&nbsp;willing&nbsp;to&nbsp;take&nbsp;new&nbsp;chunks&nbsp;each&nbsp;of&nbsp;them&nbsp;are<br>
+&nbsp;<br>
+:param&nbsp;mult_group_ip:&nbsp;multicast&nbsp;group&nbsp;ip&nbsp;address&nbsp;on&nbsp;which&nbsp;to&nbsp;broadcast<br>
+:param&nbsp;mult_port:&nbsp;multicast&nbsp;port&nbsp;to&nbsp;send&nbsp;to<br>
+:param&nbsp;server_list:&nbsp;empty&nbsp;list&nbsp;to&nbsp;add&nbsp;to&nbsp;avaliable&nbsp;server/server&nbsp;avaliability&nbsp;metric&nbsp;tuples</tt></dd></dl>
+ <dl><dt><a name="-chunk_list"><strong>chunk_list</strong></a>(data, sz)</dt><dd><tt>Creates&nbsp;chunks&nbsp;of&nbsp;size&nbsp;`sz`&nbsp;from&nbsp;data.&nbsp;Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;chunks,&nbsp;<br>
+which&nbsp;are&nbsp;also&nbsp;lists.<br>
+&nbsp;<br>
+These&nbsp;chunks&nbsp;will&nbsp;be&nbsp;sent&nbsp;to&nbsp;other&nbsp;machines&nbsp;on&nbsp;the&nbsp;network&nbsp;for&nbsp;processing.<br>
+&nbsp;<br>
+:param&nbsp;data:&nbsp;the&nbsp;data&nbsp;(of&nbsp;type&nbsp;list)&nbsp;to&nbsp;be&nbsp;split&nbsp;into&nbsp;chunks<br>
+:param&nbsp;sz:&nbsp;the&nbsp;desired&nbsp;chunk&nbsp;size<br>
+:return:&nbsp;a&nbsp;2D&nbsp;array&nbsp;of&nbsp;chunks</tt></dd></dl>
+ <dl><dt><a name="-client_socket_thread_receive"><strong>client_socket_thread_receive</strong></a>(ip, port, queue, timeout)</dt><dd><tt>Starts&nbsp;a&nbsp;client&nbsp;socket&nbsp;that&nbsp;listens&nbsp;on&nbsp;the&nbsp;input&nbsp;port&nbsp;and&nbsp;writes<br>
+received&nbsp;messages&nbsp;to&nbsp;the&nbsp;queue.&nbsp;Is&nbsp;blocking,&nbsp;so&nbsp;should&nbsp;be&nbsp;run&nbsp;on&nbsp;a&nbsp;<br>
+separate&nbsp;thread<br>
+&nbsp;<br>
+:param&nbsp;ip:&nbsp;The&nbsp;ip&nbsp;address&nbsp;on&nbsp;which&nbsp;to&nbsp;listen<br>
+:param&nbsp;port:&nbsp;Port&nbsp;on&nbsp;which&nbsp;to&nbsp;listen&nbsp;for&nbsp;messages<br>
+:param&nbsp;queue:&nbsp;Queue&nbsp;to&nbsp;add&nbsp;messages&nbsp;to<br>
+:param&nbsp;timeout:&nbsp;how&nbsp;long&nbsp;in&nbsp;seconds&nbsp;to&nbsp;wait&nbsp;before&nbsp;giving&nbsp;up&nbsp;on&nbsp;receiving</tt></dd></dl>
+ <dl><dt><a name="-client_socket_thread_send"><strong>client_socket_thread_send</strong></a>(target_ip, target_port, msg, timeout)</dt><dd><tt>Starts&nbsp;a&nbsp;client&nbsp;thread&nbsp;to&nbsp;send&nbsp;a&nbsp;message&nbsp;to&nbsp;the&nbsp;target&nbsp;port<br>
+&nbsp;<br>
+:param&nbsp;target_ip:&nbsp;The&nbsp;ip&nbsp;address&nbsp;to&nbsp;which&nbsp;the&nbsp;message&nbsp;should&nbsp;be&nbsp;sent<br>
+:param&nbsp;target_port:&nbsp;The&nbsp;port&nbsp;to&nbsp;which&nbsp;the&nbsp;message&nbsp;should&nbsp;be&nbsp;sent<br>
+:param&nbsp;msg:&nbsp;The&nbsp;message&nbsp;to&nbsp;send<br>
+:return:&nbsp;how&nbsp;long&nbsp;in&nbsp;seconds&nbsp;to&nbsp;wait&nbsp;before&nbsp;giving&nbsp;up&nbsp;on&nbsp;sending</tt></dd></dl>
+ <dl><dt><a name="-flatten"><strong>flatten</strong></a>(multiarray)</dt><dd><tt>Flattens&nbsp;a&nbsp;2D&nbsp;array&nbsp;into&nbsp;a&nbsp;1D&nbsp;array&nbsp;using&nbsp;the&nbsp;itertools&nbsp;package.&nbsp;Ex:<br>
+&nbsp;<br>
+<a href="#-flatten">flatten</a>([[1,2,3],[4,5,6],[7,8,9]])&nbsp;=&nbsp;[1,2,3,4,5,6,7,8,9]<br>
+&nbsp;<br>
+:param&nbsp;multiarray:&nbsp;a&nbsp;2D&nbsp;array&nbsp;to&nbsp;be&nbsp;flattened<br>
+:return:&nbsp;a&nbsp;1D&nbsp;representation&nbsp;of&nbsp;multiarray</tt></dd></dl>
+ <dl><dt><a name="-get_chunk_assignments"><strong>get_chunk_assignments</strong></a>(avaliable_servers, num_chunks)</dt><dd><tt>Given&nbsp;a&nbsp;certain&nbsp;number&nbsp;of&nbsp;chunks,&nbsp;assigns&nbsp;each&nbsp;of&nbsp;them&nbsp;to&nbsp;a&nbsp;server<br>
+based&nbsp;on&nbsp;the&nbsp;number&nbsp;of&nbsp;servers&nbsp;who&nbsp;identified&nbsp;themselves&nbsp;and&nbsp;what<br>
+each&nbsp;of&nbsp;their&nbsp;avaliabilities&nbsp;are<br>
+&nbsp;<br>
+:param&nbsp;avaliable_servers:&nbsp;list&nbsp;of&nbsp;tuples&nbsp;with&nbsp;ip&nbsp;address&nbsp;of&nbsp;avaliable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;servers&nbsp;and&nbsp;each&nbsp;of&nbsp;their&nbsp;avaliability&nbsp;metrics<br>
+:param&nbsp;num_chunks:&nbsp;number&nbsp;of&nbsp;chunks&nbsp;to&nbsp;assign<br>
+:return:&nbsp;list&nbsp;of&nbsp;len(num_chunks)&nbsp;in&nbsp;which&nbsp;each&nbsp;index&nbsp;is&nbsp;the&nbsp;ip&nbsp;address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;the&nbsp;server&nbsp;to&nbsp;send&nbsp;the&nbsp;given&nbsp;chunk&nbsp;to</tt></dd></dl>
+ <dl><dt><a name="-send_op"><strong>send_op</strong></a>(result, foo, chunk, op, index, target_ip, own_ip, port, timeout)</dt><dd><tt>Sends&nbsp;an&nbsp;operation&nbsp;over&nbsp;the&nbsp;network&nbsp;for&nbsp;a&nbsp;server&nbsp;to&nbsp;process,&nbsp;and&nbsp;<br>
+receives&nbsp;the&nbsp;result.&nbsp;Since&nbsp;we&nbsp;want&nbsp;each&nbsp;chunk&nbsp;to&nbsp;be&nbsp;sent&nbsp;in&nbsp;<br>
+parallel,&nbsp;this&nbsp;should&nbsp;be&nbsp;threaded<br>
+&nbsp;<br>
+:param&nbsp;result:&nbsp;empty&nbsp;list&nbsp;passed&nbsp;by&nbsp;reference&nbsp;which&nbsp;will&nbsp;contain&nbsp;the&nbsp;result.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Necessary&nbsp;because&nbsp;threads&nbsp;don't&nbsp;allow&nbsp;standard&nbsp;return&nbsp;values<br>
+:param&nbsp;foo:&nbsp;function&nbsp;to&nbsp;use&nbsp;for&nbsp;map,&nbsp;filter,&nbsp;or&nbsp;reduce&nbsp;calls<br>
+:param&nbsp;chunk:&nbsp;chunk&nbsp;to&nbsp;perform&nbsp;operation&nbsp;on<br>
+:param&nbsp;op:&nbsp;string&nbsp;corresponding&nbsp;to&nbsp;operation&nbsp;to&nbsp;perform:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'map',&nbsp;'filter',&nbsp;'reduce'<br>
+:param&nbsp;index:&nbsp;chunk&nbsp;number&nbsp;to&nbsp;allow&nbsp;ordering&nbsp;of&nbsp;processed&nbsp;chunks<br>
+:param&nbsp;port:&nbsp;port&nbsp;of&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-server_socket_thread_send"><strong>server_socket_thread_send</strong></a>(ip, target_port, msg)</dt><dd><tt>Starts&nbsp;a&nbsp;server&nbsp;thread&nbsp;to&nbsp;send&nbsp;a&nbsp;message&nbsp;to&nbsp;the&nbsp;target&nbsp;port<br>
+&nbsp;<br>
+:param&nbsp;target_port:&nbsp;The&nbsp;port&nbsp;to&nbsp;which&nbsp;the&nbsp;message&nbsp;should&nbsp;be&nbsp;sent<br>
+:param&nbsp;msg:&nbsp;The&nbsp;message&nbsp;to&nbsp;send</tt></dd></dl>
+ <dl><dt><a name="-single_filter"><strong>single_filter</strong></a>(foo, data)</dt><dd><tt>Filter&nbsp;data&nbsp;(of&nbsp;type&nbsp;list)&nbsp;via&nbsp;a&nbsp;predicate&nbsp;formatted&nbsp;as&nbsp;a&nbsp;function.&nbsp;For&nbsp;<br>
+example,&nbsp;if&nbsp;data&nbsp;is&nbsp;a&nbsp;list&nbsp;of&nbsp;natural&nbsp;numbers&nbsp;from&nbsp;1&nbsp;to&nbsp;N:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[1,&nbsp;2,&nbsp;3,&nbsp;...,&nbsp;N]<br>
+&nbsp;<br>
+And&nbsp;you'd&nbsp;like&nbsp;to&nbsp;filter&nbsp;this&nbsp;list&nbsp;so&nbsp;that&nbsp;it&nbsp;contains&nbsp;only&nbsp;even&nbsp;numbers,&nbsp;<br>
+then&nbsp;simply&nbsp;define&nbsp;foo(elt,&nbsp;index)&nbsp;to&nbsp;be:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;elt&nbsp;%&nbsp;2&nbsp;==&nbsp;0<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;is&nbsp;meant&nbsp;to&nbsp;be&nbsp;used&nbsp;on&nbsp;a&nbsp;chunk,&nbsp;which&nbsp;is&nbsp;a&nbsp;portion&nbsp;of&nbsp;<br>
+a&nbsp;list&nbsp;designated&nbsp;for&nbsp;a&nbsp;single&nbsp;machine.&nbsp;This&nbsp;function&nbsp;is&nbsp;called&nbsp;by&nbsp;<br>
+parallelogram.p_filter()<br>
+&nbsp;<br>
+:param&nbsp;foo:&nbsp;the&nbsp;function&nbsp;to&nbsp;filter&nbsp;over&nbsp;data<br>
+:param&nbsp;data:&nbsp;the&nbsp;data&nbsp;to&nbsp;be&nbsp;filtered<br>
+:return:&nbsp;the&nbsp;filtered&nbsp;data</tt></dd></dl>
+ <dl><dt><a name="-single_map"><strong>single_map</strong></a>(foo, data)</dt><dd><tt>Map&nbsp;a&nbsp;function&nbsp;foo()&nbsp;over&nbsp;data&nbsp;(of&nbsp;type&nbsp;list).&nbsp;Map&nbsp;modifies&nbsp;data&nbsp;in&nbsp;place<br>
+and&nbsp;supplies&nbsp;foo()&nbsp;with&nbsp;both&nbsp;the&nbsp;current&nbsp;element&nbsp;of&nbsp;the&nbsp;list&nbsp;and&nbsp;its<br>
+respective&nbsp;index.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;is&nbsp;meant&nbsp;to&nbsp;be&nbsp;used&nbsp;on&nbsp;a&nbsp;chunk,&nbsp;which&nbsp;is&nbsp;a&nbsp;portion&nbsp;of&nbsp;<br>
+a&nbsp;list&nbsp;designated&nbsp;for&nbsp;a&nbsp;single&nbsp;machine.&nbsp;This&nbsp;function&nbsp;is&nbsp;called&nbsp;by&nbsp;<br>
+parallelogram.p_map()<br>
+&nbsp;<br>
+:param&nbsp;foo:&nbsp;the&nbsp;function&nbsp;to&nbsp;map&nbsp;over&nbsp;data<br>
+:param&nbsp;data:&nbsp;the&nbsp;data&nbsp;to&nbsp;be&nbsp;mapped<br>
+:return:&nbsp;the&nbsp;mapped&nbsp;data</tt></dd></dl>
+ <dl><dt><a name="-single_reduce"><strong>single_reduce</strong></a>(foo, data)</dt><dd><tt>Reduce&nbsp;data&nbsp;(of&nbsp;type&nbsp;list)&nbsp;by&nbsp;continually&nbsp;applying&nbsp;foo()&nbsp;to&nbsp;subsequent<br>
+elements&nbsp;of&nbsp;data.&nbsp;For&nbsp;exmaple,&nbsp;if&nbsp;data&nbsp;is&nbsp;a&nbsp;list&nbsp;of&nbsp;elements&nbsp;e_1&nbsp;to&nbsp;e_N:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[e_1,&nbsp;e_2,&nbsp;e_3,&nbsp;...,&nbsp;e_N]<br>
+&nbsp;<br>
+And&nbsp;you'd&nbsp;like&nbsp;to&nbsp;reduce&nbsp;this&nbsp;list&nbsp;to&nbsp;the&nbsp;sum&nbsp;of&nbsp;all&nbsp;the&nbsp;elements,&nbsp;then&nbsp;<br>
+simply&nbsp;define&nbsp;foo()&nbsp;to&nbsp;be:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;foo(elt1,&nbsp;elt2):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;elt1&nbsp;+&nbsp;elt2<br>
+&nbsp;<br>
+foo()&nbsp;is&nbsp;applied&nbsp;to&nbsp;data&nbsp;in&nbsp;the&nbsp;following&nbsp;way:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;[foo(e_1,&nbsp;e_2),&nbsp;e_3,&nbsp;...,&nbsp;e_N]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;[foo(foo(e_1,&nbsp;e_2),&nbsp;e_3),&nbsp;...,&nbsp;e_N]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;&nbsp;N&nbsp;-&nbsp;1.&nbsp;[foo(foo(foo(e_1,&nbsp;e_2),&nbsp;e_3),&nbsp;...,&nbsp;e_N)]<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;is&nbsp;meant&nbsp;to&nbsp;be&nbsp;used&nbsp;on&nbsp;a&nbsp;chunk,&nbsp;which&nbsp;is&nbsp;a&nbsp;portion&nbsp;of&nbsp;<br>
+a&nbsp;list&nbsp;designated&nbsp;for&nbsp;a&nbsp;single&nbsp;machine.&nbsp;This&nbsp;function&nbsp;is&nbsp;called&nbsp;by&nbsp;<br>
+parallelogram.p_reduce()<br>
+&nbsp;<br>
+Note:&nbsp;this&nbsp;function&nbsp;assumes&nbsp;non-empty&nbsp;data.&nbsp;An&nbsp;exception&nbsp;will&nbsp;be&nbsp;thrown<br>
+if&nbsp;an&nbsp;empty&nbsp;list&nbsp;is&nbsp;passed&nbsp;in.<br>
+&nbsp;<br>
+:param&nbsp;foo:&nbsp;the&nbsp;function&nbsp;to&nbsp;reduce&nbsp;over&nbsp;data<br>
+:param&nbsp;data:&nbsp;the&nbsp;data&nbsp;to&nbsp;be&nbsp;reduced<br>
+:return:&nbsp;a&nbsp;single&nbsp;reduction&nbsp;value</tt></dd></dl>
+</td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">
 <td colspan=3 valign=bottom>&nbsp;<br>
