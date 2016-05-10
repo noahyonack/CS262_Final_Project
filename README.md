@@ -89,6 +89,10 @@ Please see the `documentation/pydoc` folder and the **Implementation Details and
 		* Three different nosetests which ensure correctness of our local implementations of `map()`,
 				`filter()`, and `reduce()`
 
+## Restrictions on Functions for `p_map()`, `p_filter()`, and `p_reduce()`
+Due to restrictions on our pickling protocol, we require that all functions to be sent over the network must be avaliable in local scope to the p_* function. Dependencies on external libraries such as numpy are fine as long as the user can assure that they will be available on all possible servers.
+For more details, see the discussion of cloudpickle in the **Implementation Details and Design Choices** section of the [written report](https://docs.google.com/document/d/1Ll4crPgUnyQelSuNn2GgzwXmDg1-KnBF-hHA4Pz0HGY/edit?usp=sharing)
+
 ## Compatibility
 Parallelogram was tested on machines running Windows 8.1 using the anaconda distribution of python 2.7.11. Most packages used are standard, but those running other distributions may need to run setup.py to acquire those that are missing. We do not guarantee that the code will run properly on other OS, python versions, or distributions.
 

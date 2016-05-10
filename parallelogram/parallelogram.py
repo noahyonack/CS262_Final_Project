@@ -2,10 +2,13 @@
 This file contains our library's implementations of p_map(), p_filter(), and 
 p_reduce().
 
-We use the letter "p" because it indicates that the method is paralellized
+We use the letter "p" because it indicates that the method is parallelized
 and because doing so ensures that our functions are properly namespaced
 
 Imports helpers.py, which contains 'private' helper functions
+
+Note that you should check your code locally to the best of your ability.
+If your code crashes
 '''
 
 import Queue # allows machines to hold multiple chunks at one
@@ -188,5 +191,9 @@ def p_func(foo, data, port, op, timeout):
             available_servers = list()
             helpers._broadcast_client_thread(MULTICAST_GROUP_IP,
                 MULTICAST_PORT, available_servers)
+            if not available_servers:
+                raise RuntimeError("There aren't any available servers on the network!")
+            chunk_assignments = helpers._get_chunk_assignments(available_servers, len(chunks))
+
     return result
     
