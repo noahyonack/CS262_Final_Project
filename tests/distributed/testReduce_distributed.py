@@ -35,8 +35,8 @@ class TestReduce_Distributed(unittest.TestCase):
             '''
             return elt1 + elt2
 
-        output = parallelogram.p_reduce(foo_1, range(100), PORT, 10)
-        self.assertEqual(output, sum(range(100)))
+        output = parallelogram.p_reduce(foo_1, range(1000), PORT, 10)
+        self.assertEqual(output, sum(range(1000)))
 
     def test_reduce_3(self):
         '''

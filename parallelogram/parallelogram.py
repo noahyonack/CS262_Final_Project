@@ -13,7 +13,7 @@ import socket # allows for communication between machines
 import helpers # exposes our helper methods
 import threading # allows us to have multiple threads on clients/servers
 
-# somtimes Python can't find the actual variables inside of config, 
+# somtimes Python can't find the actual variables inside of config,
 # so it's safer to just assign variables this way
 import config
 MULTICAST_PORT = config.MULTICAST_PORT
@@ -21,10 +21,10 @@ MULTICAST_GROUP_IP = config.MULTICAST_GROUP_IP
 
 '''
 Our minimum chunk size in terms of number of elements. When asked to map(),
-filter(), or reduce() a presumably large list, we chunk it in pieces of 
+filter(), or reduce() a presumably large list, we chunk it in pieces of
 CHUNK_SIZE and send those chunks to other physical machines on the network.
 
-If the list on which to apply a function foo() is smaller than CHUNK_SIZE, 
+If the list on which to apply a function foo() is smaller than CHUNK_SIZE,
 it makes more sense to have the calling machine process the chunk instead
 of sending it over the wire.
 '''
@@ -46,7 +46,7 @@ def p_map(foo, data, port, timeout):
     :param foo: function to map over data
     :param data: a list of data to be mapped over
     :param port: a port by which to send over distributed operations
-    :param timeout: timeout, in seconds, that function should wait 
+    :param timeout: timeout, in seconds, that function should wait
                     for chunks to be returned
     :return: the mapped results
     '''
@@ -91,11 +91,11 @@ def p_reduce(foo, data, port, timeout):
 	the results of the initial reduction, so we call our function again
 	and either redistribute the initial results or simply locally-process
 	chunks, depending on the size of the initial results array.
-    
+
     :param foo: function to reduce over data
     :param data: a list of data to be reduced
     :param port: a port by which to send over distributed operations
-    :param timeout: timeout, in seconds, that function should wait for 
+    :param timeout: timeout, in seconds, that function should wait for
                     chunks to be returned
     :return: the reduced result (a single value!)
     '''
@@ -128,14 +128,14 @@ def p_func(foo, data, port, op, timeout):
     :param data: a list of data to be reduced
     :param port: a port by which to send over distributed operations
     :param op: operation to perform, can be 'map', 'reduce', or 'filter
-    :param timeout: timeout, in seconds, that function should wait 
+    :param timeout: timeout, in seconds, that function should wait
                     for chunks to be returned
     :return:
     '''
     # get list of avaliable servers to send to
     # can block since we need list of machines to continue, don't need to thread
     available_servers = list()
-    helpers._broadcast_client_thread(MULTICAST_GROUP_IP, 
+    helpers._broadcast_client_thread(MULTICAST_GROUP_IP,
         MULTICAST_PORT, available_servers)
 
     # chunk the data so it can be sent out in pieces
@@ -143,7 +143,7 @@ def p_func(foo, data, port, op, timeout):
 
     try:
         #list of length len(chunks) with the address to send each chunk to
-        chunk_assignments = helpers._get_chunk_assignments(available_servers, 
+        chunk_assignments = helpers._get_chunk_assignments(available_servers,
             len(chunks))
     except AssertionError:
         raise RuntimeError("There aren't any available servers on the network!")
@@ -161,7 +161,7 @@ def p_func(foo, data, port, op, timeout):
             # spawns separate thread to distribute each chunk and collect results
             compute_threads[index] = threading.Thread(
                 target = helpers._send_op,
-                args = (result, foo, chunk, op, index, 
+                args = (result, foo, chunk, op, index,
                     chunk_assignments[index], IP_ADDRESS, port, timeout))
             compute_threads[index].start()
             # ideally, we'd like to pop the chunk after processing
@@ -170,8 +170,8 @@ def p_func(foo, data, port, op, timeout):
         # wait for all threads to finish, so we know all results are in
         for thread in compute_threads:
             thread.join()
-        # doubles timeout in case chunk just took a really long time to process, 
-        # preventing the case where it keeps getting sent out but always times 
+        # doubles timeout in case chunk just took a really long time to process,
+        # preventing the case where it keeps getting sent out but always times
         # out and never succeeds
         timeout *= 2
         #recompute chunk destinations after removing failed machines
@@ -180,13 +180,13 @@ def p_func(foo, data, port, op, timeout):
         bad_machine_ips = set([available_servers[i] for i in bad_machine_indices])
         for server in bad_machine_ips:
             available_servers.remove(server)
-        # check if list is empty. If not, reassign to remaining machines. 
+        # check if list is empty. If not, reassign to remaining machines.
         # if yes, ask for machines again
         if available_servers:
             chunk_assignments = helpers._get_chunk_assignments(available_servers, len(chunks))
         else:
             available_servers = list()
-            helpers._broadcast_client_thread(MULTICAST_GROUP_IP, 
+            helpers._broadcast_client_thread(MULTICAST_GROUP_IP,
                 MULTICAST_PORT, available_servers)
     return result
     

@@ -44,6 +44,8 @@ class Server(threading.Thread):
         returns to waiting
         '''
         #infinite looping listening thread to identify itself to clients
+        print('Server is Running')
+
         self.bst = helpers._Broadcast_Server_Thread(MULTICAST_GROUP_IP, 
             MULTICAST_PORT, self.chunk_queue)
         self.bst.start()
@@ -81,7 +83,6 @@ class Server(threading.Thread):
                 }
 
                 #sends results back on port+1
-                #todo: find more elegant way of agreeing on a response port
                 self.ssts = threading.Thread(
                     target = helpers._server_socket_thread_send, 
                     args = (full_chunk[1], self.port + 1, 
@@ -95,6 +96,7 @@ class Server(threading.Thread):
         '''
         stops server and ensures proper cleanup of sockets
         '''
+        print('Server Stopped')
         self._abort = True
 
 if __name__ == '__main__':

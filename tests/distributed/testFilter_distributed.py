@@ -36,8 +36,8 @@ class TestFilter_Distributed(unittest.TestCase):
 			return elt % 2 == 0
 
 		# ensure correct output when filtering out odd numbers from big list
-		output = parallelogram.p_filter(foo_1, range(100), PORT, 10)
-		self.assertEqual(output, range(0, 100, 2))
+		output = parallelogram.p_filter(foo_1, range(1000), PORT, 10)
+		self.assertEqual(output, range(0, 1000, 2))
 
 	def test_filter_3(self):
 		'''

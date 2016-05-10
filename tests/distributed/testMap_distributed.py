@@ -36,8 +36,8 @@ class TestMap_Distributed(unittest.TestCase):
             '''
             return elt + 1
 
-        output = parallelogram.p_map(foo_1, range(10000), PORT, 30)
-        self.assertEqual(output, range(1, 10001))
+        output = parallelogram.p_map(foo_1, range(1000), PORT, 30)
+        self.assertEqual(output, range(1, 1001))
 
     def test_map_3(self):
         '''

@@ -401,8 +401,6 @@ class _Broadcast_Server_Thread(threading.Thread):
 #first attempt: give each chunk to minimum avaliability server, then increment
 #avaliability of that server modify this function to change how chunks are
 #assigned
-#todo: maybe this should pass in a function? Then can send assignment algorithm
-#      from top level instead of editing this function?
 def _get_chunk_assignments(avaliable_servers, num_chunks):
     '''
     Given a certain number of chunks, assigns each of them to a server
