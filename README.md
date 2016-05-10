@@ -8,6 +8,8 @@ Before you begin reading the README, please note that extensive documentation of
 
 Further design documentation can be found [here](https://docs.google.com/document/d/1Ll4crPgUnyQelSuNn2GgzwXmDg1-KnBF-hHA4Pz0HGY/edit?usp=sharing).
 
+Also, we have taken a screen capture of our parallelization in action for the interested viewer. In this video, we run the tests of all three of our distributed methods: p_map(), p_filter(), p_reduce(). The screen on the left-hand side of the video represents output from the driver, and the screen on the righthand side of the video represents output from the passenger (that is, the client’s machine). Click [here](https://youtu.be/4r8XON3m-3A) to watch the video.
+
 ## To begin using:
 
 Clone and `cd` into the repository. Simply run `sudo python setup.py install` to install the package. Running this command will install all the necessary external dependencies. **Note that Parallelogram currently only supports the Windows platform.**
