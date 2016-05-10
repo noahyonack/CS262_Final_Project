@@ -12,10 +12,13 @@
     <p><tt>This&nbsp;file&nbsp;contains&nbsp;our&nbsp;library's&nbsp;implementations&nbsp;of&nbsp;<a href="#-p_map">p_map</a>(),&nbsp;<a href="#-p_filter">p_filter</a>(),&nbsp;and&nbsp;<br>
 <a href="#-p_reduce">p_reduce</a>().<br>
 &nbsp;<br>
-We&nbsp;use&nbsp;the&nbsp;letter&nbsp;"p"&nbsp;because&nbsp;it&nbsp;indicates&nbsp;that&nbsp;the&nbsp;method&nbsp;is&nbsp;paralellized<br>
+We&nbsp;use&nbsp;the&nbsp;letter&nbsp;"p"&nbsp;because&nbsp;it&nbsp;indicates&nbsp;that&nbsp;the&nbsp;method&nbsp;is&nbsp;parallelized<br>
 and&nbsp;because&nbsp;doing&nbsp;so&nbsp;ensures&nbsp;that&nbsp;our&nbsp;functions&nbsp;are&nbsp;properly&nbsp;namespaced<br>
 &nbsp;<br>
-Imports&nbsp;helpers.py,&nbsp;which&nbsp;contains&nbsp;'private'&nbsp;helper&nbsp;functions</tt></p>
+Imports&nbsp;helpers.py,&nbsp;which&nbsp;contains&nbsp;'private'&nbsp;helper&nbsp;functions<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;you&nbsp;should&nbsp;check&nbsp;your&nbsp;code&nbsp;locally&nbsp;to&nbsp;the&nbsp;best&nbsp;of&nbsp;your&nbsp;ability.<br>
+If&nbsp;your&nbsp;code&nbsp;crashes</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -52,7 +55,7 @@ join&nbsp;the&nbsp;filtered&nbsp;chunks&nbsp;before&nbsp;returning&nbsp;back&nbs
 :param&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;data&nbsp;to&nbsp;be&nbsp;reduced<br>
 :param&nbsp;port:&nbsp;a&nbsp;port&nbsp;by&nbsp;which&nbsp;to&nbsp;send&nbsp;over&nbsp;distributed&nbsp;operations<br>
 :param&nbsp;op:&nbsp;operation&nbsp;to&nbsp;perform,&nbsp;can&nbsp;be&nbsp;'map',&nbsp;'reduce',&nbsp;or&nbsp;'filter<br>
-:param&nbsp;timeout:&nbsp;timeout,&nbsp;in&nbsp;seconds,&nbsp;that&nbsp;function&nbsp;should&nbsp;wait&nbsp;<br>
+:param&nbsp;timeout:&nbsp;timeout,&nbsp;in&nbsp;seconds,&nbsp;that&nbsp;function&nbsp;should&nbsp;wait<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;chunks&nbsp;to&nbsp;be&nbsp;returned<br>
 :return:</tt></dd></dl>
  <dl><dt><a name="-p_map"><strong>p_map</strong></a>(foo, data, port, timeout)</dt><dd><tt>Map&nbsp;a&nbsp;function&nbsp;foo()&nbsp;over&nbsp;chunks&nbsp;of&nbsp;data&nbsp;(of&nbsp;type&nbsp;list)&nbsp;and<br>
@@ -65,7 +68,7 @@ inefficient.)<br>
 :param&nbsp;foo:&nbsp;function&nbsp;to&nbsp;map&nbsp;over&nbsp;data<br>
 :param&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;data&nbsp;to&nbsp;be&nbsp;mapped&nbsp;over<br>
 :param&nbsp;port:&nbsp;a&nbsp;port&nbsp;by&nbsp;which&nbsp;to&nbsp;send&nbsp;over&nbsp;distributed&nbsp;operations<br>
-:param&nbsp;timeout:&nbsp;timeout,&nbsp;in&nbsp;seconds,&nbsp;that&nbsp;function&nbsp;should&nbsp;wait&nbsp;<br>
+:param&nbsp;timeout:&nbsp;timeout,&nbsp;in&nbsp;seconds,&nbsp;that&nbsp;function&nbsp;should&nbsp;wait<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;chunks&nbsp;to&nbsp;be&nbsp;returned<br>
 :return:&nbsp;the&nbsp;mapped&nbsp;results</tt></dd></dl>
  <dl><dt><a name="-p_reduce"><strong>p_reduce</strong></a>(foo, data, port, timeout)</dt><dd><tt>Reduce&nbsp;a&nbsp;function&nbsp;foo()&nbsp;over&nbsp;chunks&nbsp;of&nbsp;data&nbsp;(of&nbsp;type&nbsp;list)&nbsp;and<br>
@@ -83,7 +86,7 @@ inefficient.)<br>
 :param&nbsp;foo:&nbsp;function&nbsp;to&nbsp;reduce&nbsp;over&nbsp;data<br>
 :param&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;data&nbsp;to&nbsp;be&nbsp;reduced<br>
 :param&nbsp;port:&nbsp;a&nbsp;port&nbsp;by&nbsp;which&nbsp;to&nbsp;send&nbsp;over&nbsp;distributed&nbsp;operations<br>
-:param&nbsp;timeout:&nbsp;timeout,&nbsp;in&nbsp;seconds,&nbsp;that&nbsp;function&nbsp;should&nbsp;wait&nbsp;for&nbsp;<br>
+:param&nbsp;timeout:&nbsp;timeout,&nbsp;in&nbsp;seconds,&nbsp;that&nbsp;function&nbsp;should&nbsp;wait&nbsp;for<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;chunks&nbsp;to&nbsp;be&nbsp;returned<br>
 :return:&nbsp;the&nbsp;reduced&nbsp;result&nbsp;(a&nbsp;single&nbsp;value!)</tt></dd></dl>
 </td></tr></table><p>
@@ -94,7 +97,7 @@ inefficient.)<br>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><strong>CHUNK_SIZE</strong> = 6<br>
-<strong>IP_ADDRESS</strong> = '192.168.1.6'<br>
+<strong>IP_ADDRESS</strong> = '192.168.0.106'<br>
 <strong>MULTICAST_GROUP_IP</strong> = '224.15.35.42'<br>
 <strong>MULTICAST_PORT</strong> = 10000</td></tr></table>
 </body></html>

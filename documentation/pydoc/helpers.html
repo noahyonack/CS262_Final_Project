@@ -11,7 +11,21 @@
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/jackmurtagh/GitHub/parallelogram/parallelogram/helpers.py">/Users/jackmurtagh/GitHub/parallelogram/parallelogram/helpers.py</a></font></td></tr></table>
     <p><tt>This&nbsp;file&nbsp;defines&nbsp;helper&nbsp;functions,&nbsp;methods,&nbsp;and&nbsp;classes&nbsp;for&nbsp;in&nbsp;<br>
 our&nbsp;implementations&nbsp;of&nbsp;p_map(),&nbsp;p_filter(),&nbsp;and&nbsp;p_reduce(),&nbsp;in&nbsp;addition<br>
-to&nbsp;our&nbsp;server&nbsp;implementation.</tt></p>
+to&nbsp;our&nbsp;server&nbsp;implementation.<br>
+&nbsp;<br>
+Included&nbsp;in&nbsp;this&nbsp;file:<br>
+2D&nbsp;array&nbsp;flattening&nbsp;(_flatten)<br>
+Code&nbsp;to&nbsp;chunk&nbsp;the&nbsp;data&nbsp;for&nbsp;sending&nbsp;over&nbsp;the&nbsp;network&nbsp;(_chunk_list)<br>
+Single&nbsp;machine&nbsp;versions&nbsp;of&nbsp;the&nbsp;parallelized&nbsp;functions&nbsp;for&nbsp;the&nbsp;server&nbsp;to&nbsp;run<br>
+on&nbsp;each&nbsp;chunk&nbsp;or&nbsp;the&nbsp;client&nbsp;to&nbsp;run&nbsp;on&nbsp;small&nbsp;enough&nbsp;datasets&nbsp;(single_map,<br>
+single_filter,&nbsp;single_reduce)<br>
+Matching&nbsp;algorithms&nbsp;to&nbsp;implement&nbsp;the&nbsp;uber&nbsp;model,&nbsp;one&nbsp;for&nbsp;the&nbsp;servers&nbsp;to<br>
+calculate&nbsp;their&nbsp;availability&nbsp;(calc_avaliability)&nbsp;which&nbsp;is&nbsp;included&nbsp;in<br>
+networking&nbsp;code,&nbsp;and&nbsp;one&nbsp;for&nbsp;the&nbsp;client&nbsp;to&nbsp;assign&nbsp;chunks&nbsp;based&nbsp;on&nbsp;this<br>
+(_get_chunk_assignments)<br>
+Remaining&nbsp;functions,&nbsp;labeled&nbsp;using&nbsp;the&nbsp;terms&nbsp;client/server,<br>
+socket/broadcast,&nbsp;and&nbsp;send/receive&nbsp;perform&nbsp;the&nbsp;described&nbsp;networking<br>
+function&nbsp;for&nbsp;the&nbsp;described&nbsp;entity</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
