@@ -33,6 +33,9 @@ def _flatten(multiarray):
     Flattens a 2D array into a 1D array using the itertools package. Ex:
 
     flatten([[1,2,3],[4,5,6],[7,8,9]]) = [1,2,3,4,5,6,7,8,9]
+
+    :param multiarray: a 2D array to be flattened
+    :return: a 1D representation of multiarray
     '''
     return list(itertools.chain.from_iterable(multiarray))
 
@@ -42,14 +45,15 @@ def _chunk_list(data, sz):
     which are also lists.
 
     These chunks will be sent to other machines on the network for processing.
+
+    :param data: the data (of type list) to be split into chunks
+    :param sz: the desired chunk size
+    :return: a 2D array of chunks
     '''
     chunks = []
     for i in xrange(0, len(data), sz):
         chunk = data[i:i + sz]
         chunks.append(chunk)
-        # ideally, we could remove the chunked elements from the 
-        # list so we don't clog memory, but this messes up the loop
-        # data[i:i + sz] = []
     return chunks
 
 def _single_map(foo, data):
@@ -61,6 +65,10 @@ def _single_map(foo, data):
     This function is meant to be used on a chunk, which is a portion of 
     a list designated for a single machine. This function is called by 
     parallelogram.p_map()
+
+    :param foo: the function to map over data
+    :param data: the data to be mapped
+    :return: the mapped data
     '''
     for index, elt in enumerate(data):
         data[index] = foo(elt, index)
@@ -81,6 +89,10 @@ def _single_filter(foo, data):
     This function is meant to be used on a chunk, which is a portion of 
     a list designated for a single machine. This function is called by 
     parallelogram.p_filter()
+
+    :param foo: the function to filter over data
+    :param data: the data to be filtered
+    :return: the filtered data
     '''
     for index, elt in reversed(list(enumerate(data))):
         if not foo(elt, index):
@@ -113,6 +125,10 @@ def _single_reduce(foo, data):
 
     Note: this function assumes non-empty data. An exception will be thrown
     if an empty list is passed in.
+
+    :param foo: the function to reduce over data
+    :param data: the data to be reduced
+    :return: a single reduction value
     '''
     # ensure that data actually exists
     assert(len(data) > 0)
