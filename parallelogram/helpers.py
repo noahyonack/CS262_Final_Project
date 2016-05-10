@@ -2,6 +2,20 @@
 This file defines helper functions, methods, and classes for in 
 our implementations of p_map(), p_filter(), and p_reduce(), in addition
 to our server implementation.
+
+Included in this file:
+2D array flattening (_flatten)
+Code to chunk the data for sending over the network (_chunk_list)
+Single machine versions of the parallelized functions for the server to run
+on each chunk or the client to run on small enough datasets (single_map,
+single_filter, single_reduce)
+Matching algorithms to implement the uber model, one for the servers to
+calculate their availability (calc_avaliability) which is included in
+networking code, and one for the client to assign chunks based on this
+(_get_chunk_assignments)
+Remaining functions, labeled using the terms client/server,
+socket/broadcast, and send/receive perform the described networking
+function for the described entity
 '''
 
 import Queue # allows machines to hold multiple chunks at one
@@ -156,6 +170,7 @@ def _send_op(result, foo, chunk, op, index, target_ip, own_ip, port, timeout):
     except RuntimeError, socket.timeout:
         return #do nothing on error, just end and the client will restart the sending protocol
 
+# based on examples from https://docs.python.org/2/howto/sockets.html
 def _server_socket_thread_send(ip, target_port, msg):
     '''
     Starts a server thread to send a message to the target port
@@ -173,13 +188,14 @@ def _server_socket_thread_send(ip, target_port, msg):
         raise RuntimeError("Socket connection broken!")
     clientsocket.close()
 
+# based on examples from https://docs.python.org/2/howto/sockets.html
 class _Server_Socket_Thread_Receive(threading.Thread):
     def __init__(self, ip, port, queue):
         '''
         Starts a server socket that listens on the input port and writes
         received messages to the queue. Has a blocking
         infinite loop, so should be run as a separate thread
-        A class rather than a function to make it stopable and allow
+        A class rather than a function to make it stoppable and allow
         cleaner socket closing in infinite loop
 
         :param port: Port on which to listen for messages
@@ -336,7 +352,8 @@ class _Broadcast_Server_Thread(threading.Thread):
         '''
         Function run by server to listen on the multicast channel for new
         clients, and to send back that the machine is avaliable and how
-        avaliable/busy it is
+        avaliable/busy it is. Implemented as a class since it listen forever
+        until the server is stopped, at which time it should exit nicely
 
         :param mult_group_ip: multicast group ip address on which to broadcast
         :param mult_port: multicast port to send to
@@ -398,7 +415,7 @@ class _Broadcast_Server_Thread(threading.Thread):
         self._abort = True
 
 
-#first attempt: give each chunk to minimum avaliability server, then increment
+#naive implementation: give each chunk to minimum avaliability server, then increment
 #avaliability of that server modify this function to change how chunks are
 #assigned
 def _get_chunk_assignments(avaliable_servers, num_chunks):

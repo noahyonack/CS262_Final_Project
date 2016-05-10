@@ -2,6 +2,10 @@
 This file defines a Server class, which allows machines to listen on 
 a port for jobs. This class should be instantiated by every machine
 in the distributed system that is meant to process jobs.
+
+The main of this file is configured such that executing the file
+will immediately start this server with the configuration specified
+in config.py.
 '''
 
 import time # allows us to avoid busy waiting

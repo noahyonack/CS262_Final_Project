@@ -87,6 +87,9 @@ Please see the `documentation/pydoc` folder and the **Implementation Details and
 		* Three different nosetests which ensure correctness of our local implementations of `map()`,
 				`filter()`, and `reduce()`
 
+## Compatibility
+Parallelogram was tested on machines running Windows 8.1 using the anaconda distribution of python 2.7.11. Most packages used are standard, but those running other distributions may need to run setup.py to acquire those that are missing. We do not guarantee that the code will run properly on other OS, python versions, or distributions.
+
 ## How can I run or write tests?
 
 Nose is a Python package that makes running the tests themselves easy. It automatically gets installed when you run `python setup.py install`. To run tests, navigate to the root directory. Then execute:

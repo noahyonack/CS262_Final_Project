@@ -11,7 +11,7 @@ class TestFilter_Distributed(unittest.TestCase):
 
 	def test_filter_1(self):
 		'''
-		Test a basic filtering case by filtering out odd numbers a small list
+		Test a basic filtering case by filtering out odd numbers from a small list
 		'''
 
 		def foo_1(elt, index):
@@ -26,7 +26,7 @@ class TestFilter_Distributed(unittest.TestCase):
 
 	def test_filter_2(self):
 		'''
-		Test a basic filtering case by filtering out odd numbers of a big list
+		Test a basic filtering case by filtering out odd numbers from a big list
 		'''
 
 		def foo_1(elt, index):
